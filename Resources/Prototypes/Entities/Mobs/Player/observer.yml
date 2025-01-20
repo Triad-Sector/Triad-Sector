@@ -101,6 +101,9 @@
   - type: Tag
     tags:
     - BypassInteractionRangeChecks
+  - type: Speech #Goobstation - Dead chat verbs
+    speechVerb: Dead
+  - type: GhostColor
   - type: PointLight
     netsync: false
     radius: 6

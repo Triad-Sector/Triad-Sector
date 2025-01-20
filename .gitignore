@@ -310,6 +310,8 @@ Resources/MapImages
 # Direnv stuff
 .direnv/
 
+config.json
+
 # Link Files
 *.lnk
 

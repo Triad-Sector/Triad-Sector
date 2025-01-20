@@ -1,3 +1,4 @@
+using Content.Server._RMC14.LinkAccount; // RMC - Patreon
 using Content.Server._NF.Auth;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
@@ -73,6 +74,8 @@ namespace Content.Server.IoC
             IoCManager.Register<PlayerRateLimitManager>();
             IoCManager.Register<SharedPlayerRateLimitManager, PlayerRateLimitManager>();
             IoCManager.Register<MappingManager>();
+            IoCManager.Register<ServerCurrencyManager>(); // Goobstation - Server Currency
+            IoCManager.Register<LinkAccountManager>(); // RMC - Patreon
             IoCManager.Register<IWatchlistWebhookManager, WatchlistWebhookManager>();
             IoCManager.Register<ConnectionManager>();
             IoCManager.Register<MultiServerKickManager>();
