@@ -392,7 +392,8 @@ namespace Content.Server.Administration.Managers
 
             _admins.Add(session, reg);
 
-            if (session.ContentData()!.Stealthed)
+            var contentData = session.ContentData(); // Goobstation - Queue
+            if (contentData != null && contentData.Stealthed)
                 reg.Data.Stealth = true;
 
             if (reg.Data.Active)
