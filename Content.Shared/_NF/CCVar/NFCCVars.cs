@@ -121,6 +121,12 @@ public sealed class NFCCVars
     public static readonly CVarDef<float> ShipyardSellRate =
         CVarDef.Create("shuttle.shipyard_base_sell_rate", 0.85f, CVar.SERVERONLY);
 
+    /// <summary>
+    /// Whether to validate ship checksums when loading. Can be disabled for compatibility with old saves.
+    /// </summary>
+    public static readonly CVarDef<bool> ShipyardChecksumValidation =
+        CVarDef.Create("shuttle.shipyard_checksum_validation", true, CVar.SERVERONLY);
+
     /*
      * Salvage
      */

@@ -522,6 +522,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         bool voucherUsed = deed.PurchasedWithVoucher;
 
+        // Check if this is a loaded ship by looking at the ship's deed component
+        if (TryComp<ShuttleDeedComponent>(shuttleUid.Value, out var shipDeed) && shipDeed.PurchasedWithVoucher)
+        {
+            ConsolePopup(player, "This vessel cannot be sold as it was loaded from a saved manifest.");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
         if (!TryComp<BankAccountComponent>(player, out var bank))
         {
             ConsolePopup(player, Loc.GetString("shipyard-console-no-bank"));

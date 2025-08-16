@@ -110,7 +110,7 @@
                 Disabled="True"
                 StyleClasses="ButtonCaution" />
             <Button Name="SaveShipButton"
-                Text="Save Ship (Dino &amp; Venom Double Doc Special)"
+                Text="Save Ship (Dr. Dino &amp; Dr. Venom's Wild Ride)"
                 Disabled="True"
                 StyleClasses="ButtonCaution" />
             <Button Name="LoadShipButton"

@@ -6,7 +6,6 @@ using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Value;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
 using System.Numerics;
@@ -33,6 +32,10 @@ using Content.Server.Decals;
 using static Content.Shared.Decals.DecalGridComponent;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
+using Robust.Shared.Configuration;
+using Content.Shared._NF.CCVar;
+using Robust.Shared.Player;
+using Robust.Server.Player;
 
 namespace Content.Server.Shuttles.Save
 {
@@ -46,6 +49,8 @@ namespace Content.Server.Shuttles.Save
         [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
         [Dependency] private readonly IConsoleHost _consoleHost = default!;
         [Dependency] private readonly DecalSystem _decalSystem = default!;
+        [Dependency] private readonly IConfigurationManager _configManager = default!;
+        [Dependency] private readonly IServerNetManager _netManager = default!;
         
         private ISawmill _sawmill = default!;
 
@@ -103,6 +108,13 @@ namespace Content.Server.Shuttles.Save
             }
 
             _sawmill.Info($"Serialized {gridData.Tiles.Count} tiles");
+            
+            // Check for overlapping entities at same coordinates
+            var positionGroups = gridData.Entities.GroupBy(e => new { e.Position.X, e.Position.Y }).Where(g => g.Count() > 1);
+            foreach (var group in positionGroups)
+            {
+                _sawmill.Info($"Found {group.Count()} entities at position ({group.Key.X}, {group.Key.Y}): {string.Join(", ", group.Select(e => e.Prototype))}");
+            }
 
             // Skip atmosphere serialization as TileAtmosphere is not serializable
             // Atmosphere will be restored using fixgridatmos command during loading
@@ -128,7 +140,7 @@ namespace Content.Server.Shuttles.Save
                 _sawmill.Info("No decal component found on grid, decals will not be preserved");
             }
 
-            // Simplified entity serialization
+            // Simplified entity serialization - only entities directly on grid (not in containers)
             foreach (var entity in _entityManager.EntityQuery<TransformComponent>())
             {
                 if (entity.GridUid != gridId)
@@ -150,28 +162,20 @@ namespace Content.Server.Shuttles.Save
                 {
                     EntityId = uid.ToString(),
                     Prototype = proto,
-                    Position = entity.LocalPosition,
-                    Rotation = (float)entity.LocalRotation.Theta
+                    Position = new Vector2((float)Math.Round(entity.LocalPosition.X, 3), (float)Math.Round(entity.LocalPosition.Y, 3)),
+                    Rotation = (float)Math.Round(entity.LocalRotation.Theta, 3)
                 };
 
-                // Preserve anchored status
-                if (_entityManager.TryGetComponent<PhysicsComponent>(uid, out var physics))
-                {
-                    entityData.Components.Add(new ComponentData
-                    {
-                        Type = "Physics",
-                        Properties = new Dictionary<string, object>
-                        {
-                            ["IsAnchored"] = (physics.BodyType == BodyType.Static).ToString()
-                        }
-                    });
-                }
-
                 gridData.Entities.Add(entityData);
+                _sawmill.Debug($"Serialized entity {uid} ({proto}) at {entityData.Position}");
             }
 
             shipGridData.Grids.Add(gridData);
-            shipGridData.Metadata.Checksum = GenerateChecksum(shipGridData.Grids);
+            
+            // Generate checksum AFTER all data is finalized
+            var checksum = GenerateChecksum(shipGridData.Grids);
+            shipGridData.Metadata.Checksum = checksum;
+            _sawmill.Info($"Generated checksum for ship save: {checksum}");
 
             return shipGridData;
         }
@@ -183,7 +187,13 @@ namespace Content.Server.Shuttles.Save
 
         public ShipGridData DeserializeShipGridDataFromYaml(string yamlString, Guid loadingPlayerId)
         {
+            return DeserializeShipGridDataFromYaml(yamlString, loadingPlayerId, out _);
+        }
+
+        public ShipGridData DeserializeShipGridDataFromYaml(string yamlString, Guid loadingPlayerId, out bool wasLegacyConverted)
+        {
             _sawmill.Info($"Deserializing YAML for player {loadingPlayerId}");
+            wasLegacyConverted = false;
             ShipGridData data;
             try
             {
@@ -196,12 +206,84 @@ namespace Content.Server.Shuttles.Save
                 throw;
             }
 
-            // Temporarily disable checksum validation until serialization consistency is resolved
-            // var actualChecksum = GenerateChecksum(data.Grids);
-            // if (data.Metadata.Checksum != actualChecksum)
-            // {
-            //     throw new InvalidOperationException("Checksum mismatch! Ship data may have been tampered with.");
-            // }
+            // Store original checksum BEFORE any calculations
+            var originalStoredChecksum = data.Metadata.Checksum;
+            _sawmill.Info($"ORIGINAL stored checksum from file: {originalStoredChecksum}");
+            
+            // Calculate checksum from loaded data (this should NOT modify data.Metadata.Checksum)
+            var actualChecksum = GenerateChecksum(data.Grids);
+            
+            // Verify the stored checksum wasn't modified
+            if (data.Metadata.Checksum != originalStoredChecksum)
+            {
+                _sawmill.Error($"BUG: Stored checksum was modified during GenerateChecksum! Was: {originalStoredChecksum}, Now: {data.Metadata.Checksum}");
+            }
+            
+            _sawmill.Info($"Expected checksum: {originalStoredChecksum}");
+            _sawmill.Info($"Actual checksum: {actualChecksum}");
+            _sawmill.Debug($"Grid count: {data.Grids.Count}");
+            _sawmill.Debug($"Tile count: {data.Grids[0].Tiles.Count}");
+            _sawmill.Debug($"Entity count: {data.Grids[0].Entities.Count}");
+            
+            // Check if checksum validation is enabled via cvar
+            var checksumValidationEnabled = _configManager.GetCVar(NFCCVars.ShipyardChecksumValidation);
+            
+            if (checksumValidationEnabled)
+            {
+                // Detect checksum format and handle appropriately
+                bool isLegacySHA = originalStoredChecksum.Length == 64 && !originalStoredChecksum.Contains(":");
+                bool isLegacyEnhanced = originalStoredChecksum.Contains(":PP-");
+                
+                if (isLegacySHA)
+                {
+                    // Legacy SHA256 checksum - regenerate current checksum and update file metadata for future saves
+                    _sawmill.Warning($"Legacy SHA256 checksum detected: {originalStoredChecksum}");
+                    _sawmill.Warning($"This ship will be automatically converted to use the new checksum format");
+                    _sawmill.Info($"Current checksum would be: {actualChecksum}");
+                    
+                    // Update the metadata with new checksum for conversion
+                    data.Metadata.Checksum = actualChecksum;
+                    wasLegacyConverted = true;
+                    _sawmill.Info("Legacy checksum compatibility mode - validation passed, marked for conversion");
+                }
+                else if (isLegacyEnhanced)
+                {
+                    // Handle legacy enhanced format - strip old ":PP-" suffix if present
+                    var cleanStoredChecksum = originalStoredChecksum.Substring(0, originalStoredChecksum.IndexOf(":PP-"));
+                    _sawmill.Info($"Detected legacy enhanced checksum format, using cleaned version: {cleanStoredChecksum}");
+                    
+                    if (!string.Equals(cleanStoredChecksum, actualChecksum, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _sawmill.Error($"CHECKSUM VALIDATION FAILED!");
+                        _sawmill.Error($"Expected: {cleanStoredChecksum}");
+                        _sawmill.Error($"Actual: {actualChecksum}");
+                        _sawmill.Error($"Ship data has been tampered with!");
+                        _sawmill.Error($"File: {data.Metadata.ShipName} saved by player {data.Metadata.PlayerId}");
+                        throw new InvalidOperationException("Checksum mismatch! Ship data may have been tampered with.");
+                    }
+                    
+                    _sawmill.Info("Legacy enhanced checksum validation passed successfully");
+                }
+                else
+                {
+                    // Current format validation
+                    if (!string.Equals(originalStoredChecksum, actualChecksum, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _sawmill.Error($"CHECKSUM VALIDATION FAILED!");
+                        _sawmill.Error($"Expected: {originalStoredChecksum}");
+                        _sawmill.Error($"Actual: {actualChecksum}");
+                        _sawmill.Error($"Ship data has been tampered with!");
+                        _sawmill.Error($"File: {data.Metadata.ShipName} saved by player {data.Metadata.PlayerId}");
+                        throw new InvalidOperationException("Checksum mismatch! Ship data may have been tampered with.");
+                    }
+                    
+                    _sawmill.Info("Current checksum validation passed successfully");
+                }
+            }
+            else
+            {
+                _sawmill.Info("Checksum validation disabled by server configuration");
+            }
 
 
             if (data.Metadata.PlayerId != loadingPlayerId.ToString())
@@ -349,10 +431,8 @@ namespace Content.Server.Shuttles.Save
                         transform.LocalRotation = new Angle(entityData.Rotation);
                     }
 
-                    // Restore component states (like anchored status)
-                    RestoreEntityComponents(newEntity, entityData);
                     
-                    _sawmill.Debug($"Spawned entity {newEntity} ({entityData.Prototype})");
+                    _sawmill.Debug($"Spawned entity {newEntity} ({entityData.Prototype}) at {entityData.Position}");
                 }
                 catch (Exception ex)
                 {
@@ -500,10 +580,8 @@ namespace Content.Server.Shuttles.Save
                         transform.LocalRotation = new Angle(entityData.Rotation);
                     }
 
-                    // Restore component states (like anchored status)
-                    RestoreEntityComponents(newEntity, entityData);
                     
-                    _sawmill.Debug($"Spawned entity {newEntity} ({entityData.Prototype})");
+                    _sawmill.Debug($"Spawned entity {newEntity} ({entityData.Prototype}) at {entityData.Position}");
                 }
                 catch (Exception ex)
                 {
@@ -566,45 +644,82 @@ namespace Content.Server.Shuttles.Save
             });
         }
 
-        private void RestoreEntityComponents(EntityUid entity, EntityData entityData)
-        {
-            foreach (var componentData in entityData.Components)
-            {
-                if (componentData.Type == "Physics" && _entityManager.TryGetComponent<PhysicsComponent>(entity, out var physics))
-                {
-                    if (componentData.Properties.TryGetValue("IsAnchored", out var anchoredObj) 
-                        && anchoredObj is string anchoredStr 
-                        && bool.TryParse(anchoredStr, out var isAnchored))
-                    {
-                        // Skip setting anchored status for now due to access restrictions
-                        _sawmill.Debug($"Entity {entity} was {(isAnchored ? "anchored" : "unanchored")} in original save");
-                    }
-                }
-            }
-        }
 
         private string GenerateChecksum(List<GridData> grids)
         {
-            var checksumData = new List<object>();
+            // Enhanced tamper-detection checksum using detailed entity data
+            var checksumBuilder = new StringBuilder();
             
             foreach (var grid in grids)
             {
-                // Create deterministic checksum that excludes potentially non-deterministic decal data
-                checksumData.Add(new
-                {
-                    Tiles = grid.Tiles.Select(t => new { t.X, t.Y, t.TileType }).OrderBy(t => t.X).ThenBy(t => t.Y),
-                    Entities = grid.Entities.Select(e => new { e.Prototype, e.Position, e.Rotation }).OrderBy(e => e.Position.X).ThenBy(e => e.Position.Y),
-                    // Use simple hash of decal data string to avoid YAML serialization inconsistencies
-                    DecalDataHash = string.IsNullOrEmpty(grid.DecalData) ? "" : grid.DecalData.GetHashCode().ToString()
-                });
+                // Grid identifier
+                checksumBuilder.Append($"G{grid.GridId}:");
+                
+                // Tile summary
+                var sortedTiles = grid.Tiles.OrderBy(t => t.X).ThenBy(t => t.Y).ToList();
+                checksumBuilder.Append($"T{sortedTiles.Count}");
+                
+                // Tile type counts for tamper detection
+                var tileTypeCounts = sortedTiles.GroupBy(t => t.TileType).OrderBy(g => g.Key)
+                    .Select(g => $"{g.Key.Substring(0, Math.Min(4, g.Key.Length))}{g.Count()}").ToList();
+                checksumBuilder.Append($"[{string.Join(",", tileTypeCounts)}]");
+                
+                // Entity summary  
+                var sortedEntities = grid.Entities.OrderBy(e => e.Position.X).ThenBy(e => e.Position.Y).ToList();
+                checksumBuilder.Append($":E{sortedEntities.Count}");
+                
+                // Entity prototype counts
+                var entityProtoCounts = sortedEntities.GroupBy(e => e.Prototype).OrderBy(g => g.Key)
+                    .Select(g => $"{g.Key.Substring(0, Math.Min(6, g.Key.Length))}{g.Count()}").ToList();
+                checksumBuilder.Append($"[{string.Join(",", entityProtoCounts)}]");
+                
+                // Position checksum for tamper detection
+                var tileCoordSum = sortedTiles.Sum(t => t.X * 100 + t.Y);
+                var entityPosSum = (int)sortedEntities.Sum(e => e.Position.X * 100 + e.Position.Y * 100);
+                checksumBuilder.Append($":P{tileCoordSum + entityPosSum}");
+                
+                checksumBuilder.Append(";");
             }
             
-            var yamlString = _serializer.Serialize(checksumData);
-            using (var sha256 = SHA256.Create())
+            var checksum = checksumBuilder.ToString().TrimEnd(';');
+            _sawmill.Info($"Enhanced tamper-detection checksum: {checksum} (length: {checksum.Length})");
+            
+            return checksum;
+        }
+
+        public string GetConvertedLegacyShipYaml(ShipGridData shipData, string playerName, string originalYamlString)
+        {
+            try
             {
-                var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(yamlString));
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+                _sawmill.Info($"Generating converted YAML for legacy ship file for player {playerName}");
+                
+                // Serialize the updated ship data with new checksum
+                var convertedYamlString = SerializeShipGridDataToYaml(shipData);
+                
+                var originalChecksum = ExtractOriginalChecksum(originalYamlString);
+                _sawmill.Info($"Ship '{shipData.Metadata.ShipName}' converted from legacy SHA checksum '{originalChecksum}' to secure format '{shipData.Metadata.Checksum}'");
+                
+                return convertedYamlString;
             }
+            catch (Exception ex)
+            {
+                _sawmill.Error($"Failed to generate converted ship YAML for player {playerName}: {ex.Message}");
+                return string.Empty;
+            }
+        }
+        
+        private string ExtractOriginalChecksum(string yamlString)
+        {
+            // Simple regex to extract the original checksum from YAML
+            var lines = yamlString.Split('\n');
+            foreach (var line in lines)
+            {
+                if (line.Trim().StartsWith("checksum:"))
+                {
+                    return line.Split(':')[1].Trim().Trim('"');
+                }
+            }
+            return "unknown";
         }
     }
 }

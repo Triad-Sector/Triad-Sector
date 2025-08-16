@@ -51,6 +51,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     private ISawmill _sawmill = default!;
     private bool _enabled;
     private float _baseSaleRate;
+    private readonly HashSet<string> _loadedShipIds = new();
+    private readonly HashSet<NetUserId> _currentlyLoading = new();
 
     // The type of error from the attempted sale of a ship.
     public enum ShipyardSaleError
@@ -101,19 +103,36 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (playerSession == null)
             return;
 
+        // Prevent loading while already loading
+        if (_currentlyLoading.Contains(playerSession.UserId))
+        {
+            _sawmill.Warning($"Player {playerSession.Name} attempted to load ship while already loading");
+            return;
+        }
+        _currentlyLoading.Add(playerSession.UserId);
+
         _sawmill.Info($"Player {playerSession.Name} requested to load ship from YAML data");
         var shipSerializationSystem = _entitySystemManager.GetEntitySystem<ShipSerializationSystem>();
 
         try
         {
             _sawmill.Debug($"Attempting to deserialize YAML data for player {playerSession.Name}");
-            var shipGridData = shipSerializationSystem.DeserializeShipGridDataFromYaml(message.YamlData, playerSession.UserId);
+            var shipGridData = shipSerializationSystem.DeserializeShipGridDataFromYaml(message.YamlData, playerSession.UserId, out bool wasLegacyConverted);
 
-            // Duplicate ship detection
+            // Duplicate ship detection using original grid ID
             _sawmill.Debug($"Checking for duplicate ship with OriginalGridId: {shipGridData.Metadata.OriginalGridId}");
-            if (EntityUid.TryParse(shipGridData.Metadata.OriginalGridId, out var originalGridUid) && _entityManager.EntityExists(originalGridUid))
+            if (_loadedShipIds.Contains(shipGridData.Metadata.OriginalGridId))
             {
-                throw new InvalidOperationException($"A ship with the original ID {shipGridData.Metadata.OriginalGridId} already exists on the server.");
+                _sawmill.Error($"Ship with ID {shipGridData.Metadata.OriginalGridId} has already been loaded.");
+                
+                // Show in-character message for duplicate ship loading
+                var playerEntity = playerSession.AttachedEntity;
+                if (playerEntity.HasValue)
+                {
+                    _popup.PopupEntity("This ship has already been loaded this round.", 
+                                     playerEntity.Value, playerEntity.Value, PopupType.LargeCaution);
+                }
+                return;
             }
 
             // Find a shipyard console with an ID card inserted
@@ -128,6 +147,13 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 {
                     if (HasComp<IdCardComponent>(targetId))
                     {
+                        // Check if ID card already has a deed
+                        if (HasComp<ShuttleDeedComponent>(targetId))
+                        {
+                            _sawmill.Error($"ID card {targetId} already has a ship deed, cannot load another ship.");
+                            return;
+                        }
+                        
                         targetConsole = consoleUid;
                         idCardInConsole = targetId;
                         break;
@@ -156,6 +182,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             }
 
             var newShipGridUid = shipSerializationSystem.ReconstructShipOnMap(shipGridData, ShipyardMap.Value, new Vector2(500f + _shuttleIndex, 1f));
+            // Track this ship as loaded to prevent duplicate loading
+            _loadedShipIds.Add(shipGridData.Metadata.OriginalGridId);
+            
             _sawmill.Info($"Player {playerSession.Name} successfully loaded ship {shipGridData.Metadata.ShipName} (Grid: {newShipGridUid}) on shipyard map.");
 
             // Update shuttle index for spacing
@@ -211,14 +240,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 _sawmill.Info($"Attempted to dock ship {newShipGridUid} to console grid {targetGrid}");
             }
 
-            // Add deed to the ID card in the console
+            // Add deed to the ID card in the console - mark as loaded to prevent exploits
             var deedComponent = EnsureComp<ShuttleDeedComponent>(idCardInConsole.Value);
-            AssignShuttleDeedProperties((idCardInConsole.Value, deedComponent), newShipGridUid, finalShipName, playerSession.Name, false);
+            AssignShuttleDeedProperties((idCardInConsole.Value, deedComponent), newShipGridUid, finalShipName, playerSession.Name, true); // Mark as loaded
             _sawmill.Info($"Added deed to ID card in console {idCardInConsole.Value}");
 
             // Also add deed to the ship itself (like purchased ships) but mark as loaded (not purchasable)
             var shipDeedComponent = EnsureComp<ShuttleDeedComponent>(newShipGridUid);
-            AssignShuttleDeedProperties((newShipGridUid, shipDeedComponent), newShipGridUid, finalShipName, playerSession.Name, true); // Mark as purchased with voucher to prevent sale
+            AssignShuttleDeedProperties((newShipGridUid, shipDeedComponent), newShipGridUid, finalShipName, playerSession.Name, true); // Mark as loaded to prevent sale
 
             // Station information already set up above during station creation
 
@@ -232,20 +261,65 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 _sawmill.Info($"Sent radio announcements for loaded ship {finalShipName}");
             }
 
+            // Play success sound like purchase confirmation 
+            if (TryComp<ShipyardConsoleComponent>(targetConsole.Value, out var loadConsoleComponent))
+            {
+                var playerEntity = playerSession.AttachedEntity ?? EntityUid.Invalid;
+                if (playerEntity != EntityUid.Invalid)
+                {
+                    // Use the same confirm sound as purchases - _audio is in Consoles partial class
+                    _audio.PlayEntity(loadConsoleComponent.ConfirmSound, playerEntity, targetConsole.Value);
+                }
+            }
+            
+            // Admin log for ship loading
+            _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Medium, $"{playerSession.Name} loaded ship {finalShipName} (Original ID: {shipGridData.Metadata.OriginalGridId}) via {ToPrettyString(targetConsole.Value)}");
+            
+            // Handle legacy ship conversion - force update the file to new secure format
+            if (wasLegacyConverted)
+            {
+                _sawmill.Warning($"Legacy SHA ship detected - forcing conversion to secure format for player {playerSession.Name}");
+                
+                var convertedYaml = shipSerializationSystem.GetConvertedLegacyShipYaml(shipGridData, playerSession.Name, message.YamlData);
+                if (!string.IsNullOrEmpty(convertedYaml))
+                {
+                    // Send the converted YAML back to client to overwrite their file
+                    var conversionMessage = new ShipConvertedToSecureFormatMessage
+                    {
+                        ConvertedYamlData = convertedYaml,
+                        ShipName = shipGridData.Metadata.ShipName
+                    };
+                    
+                    RaiseNetworkEvent(conversionMessage, playerSession);
+                    _sawmill.Info($"Sent converted ship file to player {playerSession.Name} - legacy file automatically upgraded to secure format");
+                    
+                    // Admin log for security audit trail
+                    _adminLogger.Add(LogType.ShipYardUsage, LogImpact.High, $"Legacy SHA ship '{finalShipName}' automatically converted to secure format for player {playerSession.Name}");
+                }
+                else
+                {
+                    _sawmill.Error($"Failed to generate converted YAML for legacy ship - player {playerSession.Name} should manually re-save their ship");
+                }
+            }
+            
             _sawmill.Info($"Successfully loaded and docked ship {shipGridData.Metadata.ShipName} for player {playerSession.Name}");
         }
         catch (InvalidOperationException e)
         {
             _sawmill.Error($"Ship loading failed for {playerSession.Name} due to data tampering: {e.Message}");
             
-            // Check if this is a checksum mismatch error specifically
-            if (e.Message.Contains("Checksum mismatch"))
+            // Show clear message for any InvalidOperationException (including checksum failures)
+            var playerEntity = playerSession.AttachedEntity;
+            if (playerEntity.HasValue)
             {
-                // Show in-character warning message for checksum failure
-                var playerEntity = playerSession.AttachedEntity;
-                if (playerEntity.HasValue)
+                if (e.Message.Contains("Checksum mismatch"))
                 {
-                    _popup.PopupEntity(Loc.GetString("shipyard-console-checksum-failure"), 
+                    _popup.PopupEntity("Ship data has been tampered with. Loading failed.", 
+                                     playerEntity.Value, playerEntity.Value, PopupType.LargeCaution);
+                }
+                else
+                {
+                    _popup.PopupEntity($"Ship loading failed: {e.Message}", 
                                      playerEntity.Value, playerEntity.Value, PopupType.LargeCaution);
                 }
             }
@@ -257,6 +331,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         catch (Exception e)
         {
             _sawmill.Error($"An unexpected error occurred during ship loading for {playerSession.Name}: {e.Message}");
+        }
+        finally
+        {
+            // Always remove player from loading set when done (success or failure)
+            _currentlyLoading.Remove(playerSession.UserId);
         }
     }
 

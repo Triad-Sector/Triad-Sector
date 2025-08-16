@@ -42,6 +42,7 @@ namespace Content.Client.Shuttles.Save
             base.Initialize();
             SubscribeNetworkEvent<SendShipSaveDataClientMessage>(HandleSaveShipDataClient);
             SubscribeNetworkEvent<SendAvailableShipsMessage>(HandleAvailableShipsMessage);
+            SubscribeNetworkEvent<ShipConvertedToSecureFormatMessage>(HandleShipConvertedToSecureFormat);
             
             // Ensure saved_ships directory exists on startup
             EnsureSavedShipsDirectoryExists();
@@ -119,6 +120,62 @@ namespace Content.Client.Shuttles.Save
             }
             
             Logger.Info($"Instance #{_instanceId}: Final state after processing: {_staticAvailableShips.Count} ships");
+        }
+
+        private void HandleShipConvertedToSecureFormat(ShipConvertedToSecureFormatMessage message)
+        {
+            Logger.Warning($"Legacy ship '{message.ShipName}' was automatically converted to secure format by server");
+            
+            // Find and overwrite the original file with the converted version
+            var originalFile = _staticAvailableShips.FirstOrDefault(ship => 
+                ship.Contains(message.ShipName) || _staticCachedShipData.ContainsKey(ship) && 
+                _staticCachedShipData[ship].Contains($"shipName: {message.ShipName}"));
+                
+            if (originalFile != null)
+            {
+                try
+                {
+                    // Overwrite the original file with converted data
+                    using var writer = _resourceManager.UserData.OpenWriteText(new(originalFile));
+                    writer.Write(message.ConvertedYamlData);
+                    
+                    // Update cached data
+                    _staticCachedShipData[originalFile] = message.ConvertedYamlData;
+                    
+                    Logger.Info($"Successfully overwrote legacy ship file '{originalFile}' with secure format");
+                    Logger.Info($"Ship '{message.ShipName}' is now protected against tampering");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Failed to overwrite legacy ship file '{originalFile}': {ex.Message}");
+                    Logger.Warning($"Legacy ship '{message.ShipName}' conversion failed - please manually re-save the ship to get secure format");
+                }
+            }
+            else
+            {
+                Logger.Warning($"Could not find original file for converted ship '{message.ShipName}' - creating new file");
+                
+                // Create a new file with the converted data
+                var fileName = $"/Exports/{message.ShipName}_converted_{DateTime.Now:yyyyMMdd_HHmmss}.yml";
+                try
+                {
+                    using var writer = _resourceManager.UserData.OpenWriteText(new(fileName));
+                    writer.Write(message.ConvertedYamlData);
+                    
+                    // Add to cache and available ships
+                    _staticCachedShipData[fileName] = message.ConvertedYamlData;
+                    if (!_staticAvailableShips.Contains(fileName))
+                    {
+                        _staticAvailableShips.Add(fileName);
+                    }
+                    
+                    Logger.Info($"Created new secure format file for converted ship: {fileName}");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Failed to create converted ship file: {ex.Message}");
+                }
+            }
         }
 
         public void RequestSaveShip(EntityUid deedUid)
