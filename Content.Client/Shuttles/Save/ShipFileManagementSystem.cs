@@ -18,8 +18,12 @@ namespace Content.Client.Shuttles.Save
 
         // Static data shared across all instances to handle multiple system instances
         private static readonly Dictionary<string, string> _staticCachedShipData = new();
+        private static readonly Dictionary<string, (string shipName, DateTime timestamp, string checksum)> _staticShipMetadataCache = new();
         private static readonly List<string> _staticAvailableShips = new();
         private static event Action? _staticOnShipsUpdated;
+        private static bool _staticIndexUpdateNeeded = false;
+        private static DateTime _lastIndexUpdate = DateTime.MinValue;
+        private static readonly TimeSpan IndexUpdateCooldown = TimeSpan.FromSeconds(1);
         
         public event Action? OnShipsUpdated
         {
@@ -33,12 +37,12 @@ namespace Content.Client.Shuttles.Save
         public ShipFileManagementSystem()
         {
             _instanceId = ++_instanceCounter;
-            Logger.Info($"ShipFileManagementSystem constructor called - Instance #{_instanceId}");
+            // Reduced logging for performance
         }
 
         public override void Initialize()
         {
-            Logger.Info($"ShipFileManagementSystem.Initialize() called - Instance #{_instanceId}, existing ships: {_staticAvailableShips.Count}, cached: {_staticCachedShipData.Count}");
+            // Reduced logging - only log if first instance or errors
             base.Initialize();
             SubscribeNetworkEvent<SendShipSaveDataClientMessage>(HandleSaveShipDataClient);
             SubscribeNetworkEvent<SendAvailableShipsMessage>(HandleAvailableShipsMessage);
@@ -55,10 +59,7 @@ namespace Content.Client.Shuttles.Save
                 // Load existing saved ships from user data
                 LoadExistingShips();
             }
-            else
-            {
-                Logger.Info($"Instance #{_instanceId}: Ships already loaded by previous instance, skipping reload");
-            }
+            // Skip reload if ships already loaded by previous instance
             
             // Request available ships from server
             RaiseNetworkEvent(new RequestAvailableShipsMessage());
@@ -97,8 +98,8 @@ namespace Content.Client.Shuttles.Save
                 _staticAvailableShips.Add(fileName);
             }
             
-            // Update ship index file to persist ship list between sessions
-            UpdateShipIndex();
+            // Mark index update as needed but don't update immediately
+            _staticIndexUpdateNeeded = true;
             
             // Trigger UI update
             _staticOnShipsUpdated?.Invoke();
@@ -187,17 +188,34 @@ namespace Content.Client.Shuttles.Save
 
         public async Task LoadShipFromFile(string filePath)
         {
-            // Get cached ship data and send to server for loading
-            if (_staticCachedShipData.TryGetValue(filePath, out var yamlData))
+            string? yamlData;
+            
+            // Check cache first, load from disk if needed (lazy loading)
+            if (_staticCachedShipData.TryGetValue(filePath, out yamlData))
             {
-                Logger.Info($"Client requested to load ship: {filePath}");
-                RaiseNetworkEvent(new RequestLoadShipMessage(yamlData));
+                // Data already cached
             }
             else
             {
-                Logger.Warning($"No cached data found for ship: {filePath}");
+                // Load from disk
+                try
+                {
+                    using var reader = _resourceManager.UserData.OpenText(new(filePath));
+                    yamlData = reader.ReadToEnd();
+                    _staticCachedShipData[filePath] = yamlData;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Failed to load ship data from {filePath}: {ex.Message}");
+                    return;
+                }
             }
-            await Task.CompletedTask; // Placeholder for async operation
+            
+            if (yamlData != null)
+            {
+                RaiseNetworkEvent(new RequestLoadShipMessage(yamlData));
+            }
+            await Task.CompletedTask;
         }
 
         private void LoadExistingShips()
@@ -215,27 +233,22 @@ namespace Content.Client.Shuttles.Save
                 foreach (var file in ymlFiles)
                 {
                     var filePath = file.ToString();
-                    Logger.Info($"Instance #{_instanceId}: Found file: {filePath}");
                     
                     // Accept any .yml file in Exports (not just ship_index)
                     if (filePath.Contains("Exports") && filePath.EndsWith(".yml") && !filePath.Contains("ship_index"))
                     {
-                        Logger.Info($"Instance #{_instanceId}: Adding ship file: {filePath}");
                         if (!_staticAvailableShips.Contains(filePath))
                         {
                             _staticAvailableShips.Add(filePath);
                             
-                            // Load ship data into cache
+                            // Use lazy loading - only cache metadata for now
                             try
                             {
-                                using var reader = _resourceManager.UserData.OpenText(file);
-                                var shipData = reader.ReadToEnd();
-                                _staticCachedShipData[filePath] = shipData;
-                                Logger.Info($"Instance #{_instanceId}: Cached ship data for {filePath}");
+                                CacheShipMetadata(filePath);
                             }
                             catch (Exception shipEx)
                             {
-                                Logger.Error($"Instance #{_instanceId}: Failed to load ship data for {filePath}: {shipEx.Message}");
+                                Logger.Error($"Failed to cache metadata for {filePath}: {shipEx.Message}");
                             }
                         }
                     }
@@ -296,13 +309,54 @@ namespace Content.Client.Shuttles.Save
         {
             try
             {
+                // Rate limit index updates
+                var now = DateTime.Now;
+                if (!_staticIndexUpdateNeeded || (now - _lastIndexUpdate) < IndexUpdateCooldown)
+                    return;
+                    
                 var indexContent = string.Join('\n', _staticAvailableShips);
                 using var writer = _resourceManager.UserData.OpenWriteText(new("/Exports/ship_index.txt"));
                 writer.Write(indexContent);
+                
+                _staticIndexUpdateNeeded = false;
+                _lastIndexUpdate = now;
             }
             catch (Exception ex)
             {
                 Logger.Error($"Failed to update ship index: {ex.Message}");
+            }
+        }
+
+        private void CacheShipMetadata(string filePath)
+        {
+            try
+            {
+                using var reader = _resourceManager.UserData.OpenText(new(filePath));
+                var content = reader.ReadToEnd();
+                
+                // Parse metadata without caching full content (lazy loading)
+                var lines = content.Split('\n');
+                var shipName = lines.FirstOrDefault(l => l.Trim().StartsWith("shipName:"))?.Split(':')[1].Trim() ?? "Unknown";
+                var timestampStr = lines.FirstOrDefault(l => l.Trim().StartsWith("timestamp:"))?.Split(':', 2)[1].Trim() ?? "";
+                var checksum = lines.FirstOrDefault(l => l.Trim().StartsWith("checksum:"))?.Split(':', 2)[1].Trim() ?? "";
+                
+                if (DateTime.TryParse(timestampStr, out var timestamp))
+                {
+                    _staticShipMetadataCache[filePath] = (shipName, timestamp, checksum);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warning($"Failed to cache metadata for {filePath}: {ex.Message}");
+            }
+        }
+
+        // Update ship index periodically instead of on every change
+        public void FlushPendingIndexUpdates()
+        {
+            if (_staticIndexUpdateNeeded)
+            {
+                UpdateShipIndex();
             }
         }
 
@@ -344,27 +398,28 @@ namespace Content.Client.Shuttles.Save
 
                 var ships = new List<(string filename, string shipName, DateTime timestamp, string checksum)>();
                 
-                // Parse ship metadata from cached ships
-                foreach (var (filename, yamlData) in _staticCachedShipData)
+                // Use cached metadata instead of re-parsing YAML
+                foreach (var filename in _staticAvailableShips)
                 {
-                    try
+                    if (_staticShipMetadataCache.TryGetValue(filename, out var metadata))
                     {
-                        if (yamlData.Contains("shipName:") && yamlData.Contains("timestamp:") && yamlData.Contains("checksum:"))
+                        ships.Add((filename, metadata.shipName, metadata.timestamp, metadata.checksum));
+                    }
+                    else
+                    {
+                        // Fallback: cache metadata if not already cached
+                        try
                         {
-                            var lines = yamlData.Split('\n');
-                            var shipName = lines.FirstOrDefault(l => l.Trim().StartsWith("shipName:"))?.Split(':')[1].Trim() ?? "Unknown";
-                            var timestampStr = lines.FirstOrDefault(l => l.Trim().StartsWith("timestamp:"))?.Split(':', 2)[1].Trim() ?? "";
-                            var checksum = lines.FirstOrDefault(l => l.Trim().StartsWith("checksum:"))?.Split(':', 2)[1].Trim() ?? "";
-                            
-                            if (DateTime.TryParse(timestampStr, out var timestamp))
+                            CacheShipMetadata(filename);
+                            if (_staticShipMetadataCache.TryGetValue(filename, out metadata))
                             {
-                                ships.Add((filename, shipName, timestamp, checksum));
+                                ships.Add((filename, metadata.shipName, metadata.timestamp, metadata.checksum));
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Warning($"Failed to parse ship metadata for {filename}: {ex.Message}");
+                        catch (Exception ex)
+                        {
+                            Logger.Warning($"Failed to get metadata for {filename}: {ex.Message}");
+                        }
                     }
                 }
 
