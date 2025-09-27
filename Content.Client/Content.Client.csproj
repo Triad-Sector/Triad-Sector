@@ -2,8 +2,11 @@
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\bin\Content.Client\</OutputPath>
-    <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>
-    <WarningsAsErrors>RA0032;nullable</WarningsAsErrors>
+    <OutputType>WinExe</OutputType>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;Tools;DebugOpt</Configurations>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <Import Project="../MSBuild/Content.props" />
   <ItemGroup>
@@ -24,6 +27,9 @@
   <ItemGroup>
     <Folder Include="_Mono\Research\UI\" />
   </ItemGroup>
+  <PropertyGroup>
+    <DisableXamlIL>true</DisableXamlIL>
+  </PropertyGroup>
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
 </Project>

@@ -116,6 +116,29 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         _missionParams = missionParams;
     }
 
+    // Compatibility overload (legacy parameter ordering without console / coordinates disk introduced in HardLight fork)
+    public SpawnSalvageMissionJob(
+        double maxTime,
+        IEntityManager entManager,
+        IGameTiming timing,
+        ILogManager logManager,
+        IPrototypeManager protoManager,
+        AnchorableSystem anchorable,
+        BiomeSystem biome,
+        DungeonSystem dungeon,
+        MetaDataSystem metaData,
+        SharedMapSystem map,
+        StationSystem stationSystem,
+        ShuttleSystem shuttleSystem,
+        SalvageSystem salvageSystem,
+        EntityUid station,
+        SalvageMissionParams missionParams,
+        CancellationToken cancellation = default)
+        : this(maxTime, entManager, timing, logManager, protoManager, anchorable, biome, dungeon, metaData, map, stationSystem, shuttleSystem, salvageSystem, station, null, null, missionParams, cancellation)
+    {
+        // Intentionally empty
+    }
+
     protected override async Task<bool> Process()
     {
         // Frontier: gracefully handle expedition failures

@@ -109,8 +109,9 @@
                 StyleClasses="ButtonSquare"
                 Disabled="True"
                 StyleClasses="ButtonCaution" />
+
             <Button Name="SaveShipButton"
-                Text="Save Ship (Dr. Dino &amp; Dr. Venom's Wild Ride)"
+                Text="Save Ship"
                 Disabled="True"
                 StyleClasses="ButtonCaution" />
             <Button Name="LoadShipButton"
@@ -147,7 +148,7 @@
         </BoxContainer>
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 8 0 2">
             <Label Text="Saved Ships:" />
-            <ItemList Name="SavedShipsList" 
+            <ItemList Name="SavedShipsList"
                       MinSize="0 100"
                       HorizontalExpand="True" />
         </BoxContainer>

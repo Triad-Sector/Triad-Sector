@@ -484,12 +484,94 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
         
         shipSaveSystem.RequestSaveShip(targetId, playerSession);
-        
-        // Remove the deed from the ID card after successful save
-        RemComp<ShuttleDeedComponent>(targetId);
-        
-        ConsolePopup(player, $"Ship {deed.ShuttleName} has been saved!");
+
+        // Note: Deed removal happens after server confirms save success in ShipSaveSystem
+        ConsolePopup(player, $"Saving ship {deed.ShuttleName}... Check your Exports folder.");
         PlayConfirmSound(player, uid, component);
+    }
+
+    public void OnLoadMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleLoadMessage args)
+    {
+        if (args.Actor is not { Valid: true } player)
+            return;
+
+        if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
+        {
+            ConsolePopup(player, Loc.GetString("shipyard-console-no-idcard"));
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        if (!TryComp<IdCardComponent>(targetId, out var idCard))
+        {
+            ConsolePopup(player, "Invalid ID card");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        // Check if the ID card already has a deed
+        if (HasComp<ShuttleDeedComponent>(targetId))
+        {
+            ConsolePopup(player, "ID card already has a ship deed");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        // Get player session for loading
+        if (!TryComp<MindContainerComponent>(player, out var mindContainerComp) || !mindContainerComp.HasMind)
+        {
+            ConsolePopup(player, "Unable to load ship - player mind not found");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        if (!TryComp<Content.Shared.Mind.MindComponent>(mindContainerComp.Mind.Value, out var mindComp) || mindComp.UserId == null)
+        {
+            ConsolePopup(player, "Unable to load ship - player mind user not found");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        var playerSession = _player.GetSessionById(mindComp.UserId.Value);
+        if (playerSession == null)
+        {
+            ConsolePopup(player, "Unable to load ship - player session not found");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        // Load ship using the comprehensive 5-step process
+        _taskManager.RunOnMainThread(async () =>
+        {
+            try
+            {
+                // Extract ship name from YAML if possible, or use a default
+                string shipName = ExtractShipNameFromYaml(args.YamlData) ?? $"LoadedShip_{DateTime.Now:yyyyMMdd_HHmmss}";
+                string playerUserId = playerSession.UserId.ToString();
+
+                // Use the comprehensive ship loading system
+                bool success = await TryLoadShipComprehensive(uid, targetId, args.YamlData, shipName, playerUserId, playerSession, component.ShipyardChannel, args.SourceFilePath);
+
+                if (success)
+                {
+                    _sawmill.Info($"Ship '{shipName}' loaded successfully for player {playerSession.UserId}");
+                    ConsolePopup(player, $"Ship '{shipName}' loaded successfully!");
+                    PlayConfirmSound(player, uid, component);
+                }
+                else
+                {
+                    _sawmill.Error($"Failed to load ship from YAML data for player {playerSession.UserId}");
+                    ConsolePopup(player, "Failed to load ship from YAML data");
+                    PlayDenySound(player, uid, component);
+                }
+            }
+            catch (Exception ex)
+            {
+                _sawmill.Error($"Failed to load ship from YAML data for player {playerSession.UserId}: {ex}");
+                ConsolePopup(player, "Failed to load ship - internal error");
+                PlayDenySound(player, uid, component);
+            }
+        });
     }
 
     public void OnSellMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleSellMessage args)

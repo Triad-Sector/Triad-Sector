@@ -317,7 +317,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         RenameLineEdit.Editable = hasShipDeed;
         RenameButton.Disabled = !hasShipDeed;
 
-        SaveShipButton.Disabled = state.ShipDeedTitle == null;
+        SaveShipButton.Disabled = !state.IsTargetIdPresent;
         LoadShipButton.Disabled = !state.IsTargetIdPresent;
         LoadShipButton.ToolTip = state.IsTargetIdPresent 
             ? null 

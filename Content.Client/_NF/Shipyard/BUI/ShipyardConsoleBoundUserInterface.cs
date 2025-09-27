@@ -68,7 +68,11 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             return;
 
         var shipCount = _shipFileManagementSystem.GetSavedShipFiles().Count;
-        Logger.Info($"InitializeSaveLoadControls: ShipFileManagementSystem has {shipCount} ships");
+        // Only log if there are ships to avoid spam when no ships are saved
+        if (shipCount > 0)
+        {
+            Logger.Debug($"InitializeSaveLoadControls: ShipFileManagementSystem has {shipCount} ships");
+        }
 
         _loadShipButton = _menu.FindControl<Button>("LoadShipButton");
         _saveShipButton = _menu.FindControl<Button>("SaveShipButton");
@@ -112,7 +116,26 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         
         var selectedItem = _savedShipsList[_selectedShipIndex];
         var filePath = (string)selectedItem.Metadata!;
-        await _shipFileManagementSystem.LoadShipFromFile(filePath);
+
+        // Load ship YAML data and send via console-specific message
+        try
+        {
+            var yamlData = await _shipFileManagementSystem.GetShipYamlData(filePath);
+            if (yamlData != null)
+            {
+                // Send the load message through the console's BoundUserInterface system
+                SendMessage(new ShipyardConsoleLoadMessage(yamlData, filePath));
+                Logger.Info($"Sent ship load request for '{selectedItem.Text}' via console");
+            }
+            else
+            {
+                Logger.Error($"Failed to load YAML data for ship '{selectedItem.Text}'");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"Error loading ship '{selectedItem.Text}': {ex.Message}");
+        }
     }
 
     private void OnSavedShipSelected(ItemList.ItemListSelectedEventArgs args)
@@ -255,6 +278,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         {
             // Unsubscribe from events to prevent memory leaks
             _shipFileManagementSystem.OnShipsUpdated -= RefreshSavedShipList;
+            _shipFileManagementSystem.OnShipLoaded -= OnShipLoaded;
         }
     }
 }

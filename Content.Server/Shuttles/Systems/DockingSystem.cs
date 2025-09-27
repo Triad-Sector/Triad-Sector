@@ -178,6 +178,23 @@ namespace Content.Server.Shuttles.Systems
             // This little gem is for docking deserialization
             if (component.DockedWith != null)
             {
+                // Guard: ignore invalid or zero entity references that can appear in legacy / malformed YAML
+                if (!component.DockedWith.Value.IsValid())
+                {
+                    component.DockedWith = null;
+                    component.DockJoint = null;
+                    component.DockJointId = null;
+                    return;
+                }
+
+                // If the referenced entity lacks metadata (not spawned or pruned) skip docking gracefully.
+                if (!TryComp<MetaDataComponent>(component.DockedWith.Value, out var _))
+                {
+                    component.DockedWith = null;
+                    component.DockJoint = null;
+                    component.DockJointId = null;
+                    return;
+                }
                 // They're still initialising so we'll just wait for both to be ready.
                 if (MetaData(component.DockedWith.Value).EntityLifeStage < EntityLifeStage.Initialized)
                     return;

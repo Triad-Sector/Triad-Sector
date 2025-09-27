@@ -3,7 +3,9 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\bin\Content.Replay\</OutputPath>
     <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>
-    <WarningsAsErrors>RA0032;nullable</WarningsAsErrors>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <DisableXamlIL>true</DisableXamlIL>
   </PropertyGroup>
   <Import Project="../MSBuild/Content.props" />
 

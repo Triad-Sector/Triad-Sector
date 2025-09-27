@@ -5,6 +5,8 @@ using Content.Shared.Morgue;
 using Content.Shared.Morgue.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
+using Robust.Shared.Containers;
+using Content.Shared.Storage.EntitySystems;
 
 namespace Content.Server.Morgue;
 
@@ -12,6 +14,7 @@ public sealed class MorgueSystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!;
 
     public override void Initialize()
     {
@@ -48,6 +51,22 @@ public sealed class MorgueSystem : EntitySystem
     {
         if (!Resolve(uid, ref morgue, ref storage, ref app))
             return;
+        // Ship / map serialization edge case:
+        // Occasionally an EntityStorageComponent may deserialize without its container initialized yet,
+        // leaving storage.Contents as null -> NRE spam here. Guard and attempt late init; if still null just bail.
+        if (storage.Contents == null)
+        {
+            // Late init: mirror SharedEntityStorageSystem.OnComponentInit container creation.
+            storage.Contents = _container.EnsureContainer<Container>(uid, SharedEntityStorageSystem.ContainerName);
+            storage.Contents.ShowContents = storage.ShowContents;
+            storage.Contents.OccludesLight = storage.OccludesLight;
+
+            if (storage.Contents == null)
+            {
+                _appearance.SetData(uid, MorgueVisuals.Contents, MorgueContents.Empty);
+                return;
+            }
+        }
 
         if (storage.Contents.ContainedEntities.Count == 0)
         {

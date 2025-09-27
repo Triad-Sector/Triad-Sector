@@ -282,9 +282,9 @@ public sealed partial class DockingSystem
 
                             otherdockedAABB = otherdockedAABB.Rounded(DockRoundingDigits);
 
-                            // Different setup.
-                            if (!targetAngle.Equals(otherTargetAngle) ||
-                                !dockedAABB.Equals(otherdockedAABB))
+                            // Different setup: allow small tolerance on angle / AABB to aggregate more ports.
+                            if (!targetAngle.EqualsApprox(otherTargetAngle, 0.05) ||
+                                !Box2ApproximatelyEquals(dockedAABB, otherdockedAABB, 0.05f))
                             {
                                 continue;
                             }
@@ -305,6 +305,14 @@ public sealed partial class DockingSystem
         }
 
         return validDockConfigs;
+    }
+
+    private static bool Box2ApproximatelyEquals(Box2 a, Box2 b, float epsilon)
+    {
+        return MathF.Abs(a.Left - b.Left) <= epsilon &&
+               MathF.Abs(a.Right - b.Right) <= epsilon &&
+               MathF.Abs(a.Top - b.Top) <= epsilon &&
+               MathF.Abs(a.Bottom - b.Bottom) <= epsilon;
     }
 
     private DockingConfig? GetDockingConfigPrivate(
@@ -378,11 +386,32 @@ public sealed partial class DockingSystem
                     }
                 }
             }
-            // If it's not a map check it doesn't overlap the grid.
+            // If it's not a map then we're docking onto another grid; ensure we don't overlap either tiles OR
+            // anchored hard-collidable entities on that grid. Previously this only checked tiles which could
+            // miss walls/fixtures and allow clipping.
             else
             {
+                // First reject if any solid tiles intersect.
                 if (_mapSystem.GetLocalTilesIntersecting(gridEntity.Owner, gridEntity.Comp, aabb).Any())
                     return false;
+
+                // Additionally scan anchored entities on intersecting tiles and reject if any hard colliders are present.
+                var localTiles = _mapSystem.GetLocalTilesEnumerator(gridEntity.Owner, gridEntity.Comp, aabb);
+                while (localTiles.MoveNext(out var tile))
+                {
+                    var anchoredEnumerator = _mapSystem.GetAnchoredEntitiesEnumerator(gridEntity.Owner, gridEntity.Comp, tile.GridIndices);
+                    while (anchoredEnumerator.MoveNext(out var anc))
+                    {
+                        if (!_physicsQuery.TryGetComponent(anc, out var physics) ||
+                            !physics.CanCollide ||
+                            !physics.Hard)
+                        {
+                            continue;
+                        }
+
+                        return false;
+                    }
+                }
             }
         }
 

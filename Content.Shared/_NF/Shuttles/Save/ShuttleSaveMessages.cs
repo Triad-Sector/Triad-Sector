@@ -109,4 +109,6 @@ namespace Content.Shared.Shuttles.Save
             AdminName = adminName;
         }
     }
+
+
 }

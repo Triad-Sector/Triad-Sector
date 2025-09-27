@@ -20,11 +20,10 @@ namespace Content.Server.Shuttles.Save
         [Dependency] private readonly IMapManager _mapManager = default!;
         [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
         [Dependency] private readonly IServerNetManager _netManager = default!;
-        
-        // Store pending admin requests
-        private static readonly Dictionary<string, Action<string>> _pendingAdminRequests = new();
-        // Store player ship data for admin commands
-        private static readonly Dictionary<string, List<(string filename, string shipName, DateTime timestamp, string checksum)>> _playerShipCache = new();
+
+        // Static caches for admin ship save interactions
+        private static readonly Dictionary<string, Action<string>> PendingAdminRequests = new();
+        private static readonly Dictionary<string, List<(string filename, string shipName, DateTime timestamp)>> PlayerShipCache = new();
 
         public override void Initialize()
         {
@@ -44,37 +43,32 @@ namespace Content.Server.Shuttles.Save
 
 
             var deedUid = new EntityUid((int)msg.DeedUid);
-            if (!_entityManager.TryGetComponent<ShuttleDeedComponent>(deedUid, out var deedComponent))
+            // Only save the grid referenced by the shuttle deed. Do NOT fall back to the player's current grid / station.
+            if (!_entityManager.TryGetComponent<ShuttleDeedComponent>(deedUid, out var deed) || deed.ShuttleUid == null ||
+                !_entityManager.TryGetEntity(deed.ShuttleUid.Value, out var shuttleNetUid))
             {
-                Logger.Warning($"Player {playerSession.Name} tried to save ship with invalid deed UID: {msg.DeedUid}");
+                Logger.Warning($"Player {playerSession.Name} attempted ship save without a valid shuttle deed / shuttle reference on ID {deedUid}");
                 return;
             }
 
-            if (deedComponent.ShuttleUid == null)
+            var gridToSave = shuttleNetUid.Value;
+            if (!_entityManager.HasComponent<MapGridComponent>(gridToSave))
             {
-                Logger.Warning($"Player {playerSession.Name} tried to save ship with deed {msg.DeedUid} but no valid shuttle UID found.");
+                Logger.Warning($"Player {playerSession.Name} deed shuttle {gridToSave} is not a grid");
                 return;
             }
 
-            if (!_entityManager.TryGetEntity(deedComponent.ShuttleUid.Value, out var shuttleUid))
-            {
-                Logger.Warning($"Player {playerSession.Name} tried to save ship with deed {msg.DeedUid} but failed to convert NetEntity to EntityUid.");
-                return;
-            }
-            if (!_entityManager.TryGetComponent<MapGridComponent>(shuttleUid.Value, out var grid))
-            {
-                Logger.Warning($"Player {playerSession.Name} tried to save ship with deed {msg.DeedUid} but no valid shuttle UID found.");
-                return;
-            }
+            var shipName = deed.ShuttleName ?? $"SavedShip_{DateTime.Now:yyyyMMdd_HHmmss}";
 
-            // ShipSerializationSystem was removed - ship saving now handled by ShipyardGridSaveSystem
-            var shipName = deedComponent.ShuttleName ?? "SavedShip_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-
-            // TODO: Integrate with ShipyardGridSaveSystem for ship saving functionality
-            Logger.Warning($"Ship saving temporarily disabled - ShipSerializationSystem was removed");
-            return;
+            var shipyardGridSaveSystem = _entitySystemManager.GetEntitySystem<Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem>();
+            Logger.Info($"Player {playerSession.Name} is saving deed-referenced ship {shipName} (grid {gridToSave})");
+            var success = shipyardGridSaveSystem.TrySaveGridAsShip(gridToSave, shipName, playerSession.UserId.ToString(), playerSession);
+            if (success)
+                Logger.Info($"Successfully saved ship {shipName}");
+            else
+                Logger.Error($"Failed to save ship {shipName}");
         }
-    public void RequestSaveShip(EntityUid deedUid, ICommonSession? playerSession)
+        public void RequestSaveShip(EntityUid deedUid, ICommonSession? playerSession)
         {
             if (playerSession == null)
             {
@@ -97,9 +91,23 @@ namespace Content.Server.Shuttles.Save
             // ShipSerializationSystem was removed - ship saving now handled by ShipyardGridSaveSystem
             var shipName = deedComponent.ShuttleName ?? "SavedShip_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-            // TODO: Integrate with ShipyardGridSaveSystem for ship saving functionality
-            Logger.Warning($"Ship saving temporarily disabled - ShipSerializationSystem was removed");
-            return;
+            // Get the ShipyardGridSaveSystem and use it to save the ship
+            var shipyardGridSaveSystem = _entitySystemManager.GetEntitySystem<Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem>();
+
+            Logger.Info($"Player {playerSession.Name} is saving ship {shipName} via ShipyardGridSaveSystem");
+
+            // Save the ship using the working grid-based system (synchronously on main thread)
+            var success2 = shipyardGridSaveSystem.TrySaveGridAsShip(shuttleUid.Value, shipName, playerSession.UserId.ToString(), playerSession);
+            if (success2)
+            {
+                // Clean up the deed after successful save
+                _entityManager.RemoveComponent<ShuttleDeedComponent>(deedUid);
+                Logger.Info($"Successfully saved and removed ship {shipName}");
+            }
+            else
+            {
+                Logger.Error($"Failed to save ship {shipName}");
+            }
         }
 
         private void OnRequestLoadShip(RequestLoadShipMessage msg, EntitySessionEventArgs args)
@@ -128,11 +136,11 @@ namespace Content.Server.Shuttles.Save
         private void OnAdminSendPlayerShips(AdminSendPlayerShipsMessage msg, EntitySessionEventArgs args)
         {
             var key = $"player_ships_{msg.AdminName}";
-            if (_pendingAdminRequests.TryGetValue(key, out var callback))
+            if (PendingAdminRequests.TryGetValue(key, out var callback))
             {
-                // Cache the ship data for later blacklist commands
-                _playerShipCache[key] = msg.Ships;
-                
+                // Cache the ship data for later commands
+                PlayerShipCache[key] = msg.Ships;
+
                 var result = $"=== Ships for player ===\n\n";
                 for (int i = 0; i < msg.Ships.Count; i++)
                 {
@@ -148,7 +156,7 @@ namespace Content.Server.Shuttles.Save
                 result += "Use: shipsave_blacklist [player] [ship_id] [reason]\n";
                 result += "Use: shipsave_unblacklist [player] [ship_id]";
                 callback(result);
-                _pendingAdminRequests.Remove(key);
+                PendingAdminRequests.Remove(key);
             }
         }
         
@@ -167,16 +175,16 @@ namespace Content.Server.Shuttles.Save
         private void OnAdminSendShipData(AdminSendShipDataMessage msg, EntitySessionEventArgs args)
         {
             var key = $"ship_data_{msg.AdminName}_{msg.ShipFilename}";
-            if (_pendingAdminRequests.TryGetValue(key, out var callback))
+            if (PendingAdminRequests.TryGetValue(key, out var callback))
             {
                 callback(msg.ShipData);
-                _pendingAdminRequests.Remove(key);
+                PendingAdminRequests.Remove(key);
             }
         }
 
         public static void RegisterAdminRequest(string key, Action<string> callback)
         {
-            _pendingAdminRequests[key] = callback;
+            PendingAdminRequests[key] = callback;
         }
 
         public void SendAdminRequestPlayerShips(Guid playerId, string adminName, ICommonSession targetSession)

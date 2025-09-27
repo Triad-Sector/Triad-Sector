@@ -14,6 +14,10 @@ namespace Content.Shared.Shuttles.Save
         [DataField("metadata")]
         public ShipMetadata Metadata { get; set; } = new();
 
+        // NOTE: Legacy saves used 'meta' instead of 'metadata'. We no longer map it here because
+        // the source generator attempted to access it for serialization (causing CS0154). The
+        // loader now rewrites a top-level 'meta:' key to 'metadata:' prior to deserialization.
+
         [DataField("grids")]
         public List<GridData> Grids { get; set; } = new();
     }
@@ -28,16 +32,21 @@ namespace Content.Shared.Shuttles.Save
         [DataField("timestamp")]
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
+        [DataField("original_grid_id")]
+        public string OriginalGridId { get; set; } = string.Empty;
 
-    [DataField("original_grid_id")]
-    public string OriginalGridId { get; set; } = string.Empty;
-
-    [DataField("player_id")]
-    public string PlayerId { get; set; } = string.Empty;
+        [DataField("player_id")]
+        public string PlayerId { get; set; } = string.Empty;
 
         [DataField("ship_name")]
         public string ShipName { get; set; } = string.Empty;
 
+        // Original grid rotation in radians (local rotation of the saved grid root) so we can restore
+        // the ship's orientation prior to attempting auto-dock. Legacy / old saves will default to 0.
+        [DataField("original_grid_rotation")]
+        public float OriginalGridRotation { get; set; } = 0f;
+
+        // Legacy checksum field - ignored but kept for backward compatibility with old ship files
         [DataField("checksum")]
         public string Checksum { get; set; } = string.Empty;
 
@@ -48,9 +57,8 @@ namespace Content.Shared.Shuttles.Save
     [DataDefinition]
     public sealed partial class GridData // Added partial
     {
-
-    [DataField("grid_id")]
-    public string GridId { get; set; } = string.Empty;
+        [DataField("grid_id")]
+        public string GridId { get; set; } = string.Empty;
 
         [DataField("tiles")]
         public List<TileData> Tiles { get; set; } = new();
@@ -83,9 +91,8 @@ namespace Content.Shared.Shuttles.Save
     [DataDefinition]
     public sealed partial class EntityData // Added partial
     {
-
-    [DataField("entity_id")]
-    public string EntityId { get; set; } = string.Empty;
+        [DataField("entity_id")]
+        public string EntityId { get; set; } = string.Empty;
 
         [DataField("prototype")]
         public string Prototype { get; set; } = string.Empty;
