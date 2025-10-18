@@ -42,8 +42,19 @@ using Robust.Shared.Serialization.Markdown.Sequence;
 using Robust.Shared.Serialization.Markdown.Value;
 using Robust.Shared.Utility;
 using YamlDotNet.Core;
-using YamlDotNet.RepresentationModel;
+using Robust.Shared.Serialization;
+using Content.Shared.Storage.Components;
+using Robust.Shared.GameStates;
+using Content.Shared.Wall; // WallMountComponent for preserving wall-mounted fixtures
+using Robust.Shared.Physics;
+using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Components.SolutionManager;
 
+// Suppress RA0004 for this file. There is no Task<Result> usage here, but the analyzer
+// occasionally reports a false positive during Release/integration builds.
+#pragma warning disable RA0004
+// Suppress naming rule for _NF namespace prefix (modding convention)
+#pragma warning disable IDE1006
 namespace Content.Server._NF.Shipyard.Systems;
 
 /// <summary>

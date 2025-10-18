@@ -65,7 +65,9 @@
     range: 8
     sound:
       path: /Audio/Ambience/Objects/drain.ogg
-
+  - type: Physics # Hardlight
+    bodyType: Static
+    canCollide: false
 
 - type: entity
   name: sink
