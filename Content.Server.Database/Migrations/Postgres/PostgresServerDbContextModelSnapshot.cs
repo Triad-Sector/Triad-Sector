@@ -1215,6 +1215,12 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.HasIndex("DiscordRole")
                         .IsUnique();
 
+                    b.HasIndex("LobbyMessage")
+                        .HasDatabaseName("IX_rmc_patron_tiers_lobby_message");
+
+                    b.HasIndex("RoundEndShoutout")
+                        .HasDatabaseName("IX_rmc_patron_tiers_round_end_shoutout");
+
                     b.ToTable("rmc_patron_tiers", (string)null);
                 });
 

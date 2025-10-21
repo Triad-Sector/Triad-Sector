@@ -30,6 +30,8 @@ public sealed class RMCLinkedAccount
 }
 
 [Table("rmc_patron_tiers")]
+[Index(nameof(LobbyMessage))]
+[Index(nameof(RoundEndShoutout))]
 public sealed class RMCPatronTier
 {
     [Key]

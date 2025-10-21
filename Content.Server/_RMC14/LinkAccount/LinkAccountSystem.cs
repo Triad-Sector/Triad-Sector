@@ -108,11 +108,11 @@ public sealed class LinkAccountSystem : EntitySystem
         }
     }
 
-    private async void GetRandomLobbyMessage()
+    private void GetRandomLobbyMessage()
     {
         try
         {
-            _nextLobbyMessage = await _db.GetRandomLobbyMessage();
+            _nextLobbyMessage = _linkAccount.GetRandomLobbyMessage();
         }
         catch (Exception e)
         {
@@ -120,11 +120,11 @@ public sealed class LinkAccountSystem : EntitySystem
         }
     }
 
-    private async void GetRandomShoutout()
+    private void GetRandomShoutout()
     {
         try
         {
-            (_nextNTShoutout) = await _db.GetRandomShoutout();
+            _nextNTShoutout = _linkAccount.GetRandomShoutout();
         }
         catch (Exception e)
         {

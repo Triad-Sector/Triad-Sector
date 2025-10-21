@@ -3,6 +3,7 @@ using System;
 using Content.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Content.Server.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteServerDbContext))]
-    partial class SqliteServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251020233911_RMCPatronButItDoesntSpamTheDatabase")]
+    partial class RMCPatronButItDoesntSpamTheDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
@@ -327,11 +330,6 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
-
-                    b.Property<string>("ShortName")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("short_name");
 
                     b.HasKey("Id")
                         .HasName("PK_admin_rank");
@@ -710,6 +708,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("last_read_rules");
 
+                    b.Property<TimeSpan?>("LastRolledAntag")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("last_rolled_antag");
+
                     b.Property<string>("LastSeenAddress")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -723,6 +725,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("last_seen_user_name");
+
+                    b.Property<int>("ServerCurrency")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("server_currency");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT")
@@ -754,9 +760,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("TEXT")
                         .HasColumnName("admin_ooc_color");
 
-                    b.Property<int>("MonoCoins")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("mono_coins");
+                    b.PrimitiveCollection<string>("ConstructionFavorites")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("construction_favorites");
 
                     b.Property<int>("SelectedCharacterSlot")
                         .HasColumnType("INTEGER")
@@ -786,19 +793,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("age");
 
-                    b.Property<int>("BankBalance")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("bank_balance");
-
                     b.Property<string>("CharacterName")
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("char_name");
-
-                    b.Property<string>("Company")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("company");
 
                     b.Property<string>("EyeColor")
                         .IsRequired()
@@ -1971,7 +1969,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasPrincipalKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_rmc_linked_accounts_logs_player__player_id1");
+                        .HasConstraintName("FK_rmc_linked_accounts_logs_player_player_id1");
 
                     b.Navigation("Discord");
 
