@@ -43,6 +43,15 @@ namespace Content.Server.Atmos.Components
         public float LowPressureModifier = 0f;
 
         /// <summary>
+        /// Damage Modifier Values - Mono
+        /// </summary>
+        [ViewVariables(VVAccess.ReadWrite)]
+        public float LowPressureDamageModifier = 1;
+        [ViewVariables(VVAccess.ReadWrite)]
+        public float HighPressureDamageModifier = 1;
+
+
+        /// <summary>
         /// Whether the entity is immuned to pressure (i.e possess the PressureImmunity component)
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]

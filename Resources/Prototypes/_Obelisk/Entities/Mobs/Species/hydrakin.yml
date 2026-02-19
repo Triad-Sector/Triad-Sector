@@ -74,6 +74,8 @@
     ignoreHeatResistance: true
   - type: PressureProtection
     lowPressureMultiplier: 1.2
+  - type: Barotrauma # Innate low pressure damage resist TODO: implement it into pressureprotection, maybe, maybe not.
+    LowPressureDamageModifier: 0.5
   - type: Inventory
     speciesId: hydrakin
     templateId: hydrakin
