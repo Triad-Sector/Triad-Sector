@@ -23,7 +23,7 @@
     projectileSpeed: 170
     minAngle: 0
     maxAngle: 3
-    burstCooldown: 0.4
+    burstCooldown: 0.3
     burstFireRate: 10
     shotsPerBurst: 2
     selectedMode: Burst
