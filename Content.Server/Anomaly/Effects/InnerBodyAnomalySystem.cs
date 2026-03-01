@@ -17,6 +17,8 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 using Robust.Server.GameObjects; // Frontier
+using Content.Shared.Damage; // Mono
+using Content.Shared.Damage.Prototypes; // Mono
 
 namespace Content.Server.Anomaly.Effects;
 
@@ -35,8 +37,26 @@ public sealed class InnerBodyAnomalySystem : SharedInnerBodyAnomalySystem
     [Dependency] private readonly StunSystem _stun = default!;
     [Dependency] private readonly TransformSystem _transform = default!; // Frontier
     [Dependency] private readonly SharedAnomalyCoreSystem _anomalyCore = default!; // Frontier
+    [Dependency] DamageableSystem _damageable = default!; // Mono
 
     private readonly Color _messageColor = Color.FromSrgb(new Color(201, 22, 94));
+
+    private readonly DamageSpecifier _superCriticalDamage = new() // Mono
+    {
+        DamageDict = new()
+        {
+            { "Radiation", 250 },
+        }
+    };
+
+    private readonly DamageSpecifier _superCriticalGeneticDamage = new() // Mono
+    {
+        DamageDict = new()
+        {
+            { "Genetic", 50 },
+        }
+    };
+
 
     public override void Initialize()
     {
@@ -135,7 +155,10 @@ public sealed class InnerBodyAnomalySystem : SharedInnerBodyAnomalySystem
         if (!TryComp<BodyComponent>(ent, out var body))
             return;
 
-        _body.GibBody(ent, true, body, splatModifier: 5f);
+        //_body.GibBody(ent, true, body, splatModifier: 5f);
+
+        _damageable.TryChangeDamage(ent, _superCriticalDamage, true);
+        _damageable.TryChangeDamage(ent, _superCriticalGeneticDamage, false); // to ensure we don't deal genetic damage to IPCs
     }
 
     private void OnSeverityChanged(Entity<InnerBodyAnomalyComponent> ent, ref AnomalySeverityChangedEvent args)
