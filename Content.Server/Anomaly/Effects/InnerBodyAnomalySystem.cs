@@ -46,6 +46,8 @@ public sealed class InnerBodyAnomalySystem : SharedInnerBodyAnomalySystem
         DamageDict = new()
         {
             { "Radiation", 250 },
+            { "Caustic", 300 },
+            { "Heat", 100 },
         }
     };
 
@@ -53,7 +55,7 @@ public sealed class InnerBodyAnomalySystem : SharedInnerBodyAnomalySystem
     {
         DamageDict = new()
         {
-            { "Genetic", 50 },
+            { "Cellular", 50 },
         }
     };
 
