@@ -17,10 +17,10 @@
     range: 500
   - type: GunSignalControl
   - type: Gun
-    fireRate: 0.8
+    fireRate: 0.5
     recoil: 5
     minAngle: 0
-    maxAngle: 0
+    maxAngle: 2
     shootThermalSignature: 8000000 # ~5km if firing continuously
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/rocket_launcher.ogg

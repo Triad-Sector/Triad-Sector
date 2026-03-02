@@ -52,7 +52,7 @@
     </ColorBox>
     <ColorBox Color="#5a9926">
       <Box HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="2">
-        0.8 RPS
+        0.5 RPS
       </Box>
     </ColorBox>
     <ColorBox Color="#8f2b65">
