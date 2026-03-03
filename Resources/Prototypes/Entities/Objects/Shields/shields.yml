@@ -425,7 +425,7 @@
       color: "#678AD9" # WD EDIT
     - type: ItemTogglePointLight
     - type: Reflect
-      reflectProb: 1 # WD EDIT
+      reflectProb: 0.75 # WD EDIT
       damageOnReflectModifier: 1 # Goob edit
       reflects:
         - Energy
