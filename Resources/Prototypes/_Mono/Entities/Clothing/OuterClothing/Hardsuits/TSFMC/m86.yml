@@ -18,11 +18,11 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.4
-        Slash: 0.4
-        Piercing: 0.4
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.55
         Shock: 0.8
-        Heat: 0.8
+        Heat: 0.4
         Radiation: 0.5
         Caustic: 0.6
   - type: StaminaDamageResistance
@@ -67,7 +67,7 @@
         Slash: 0.45
         Piercing: 0.45
         Shock: 0.95
-        Heat: 0.7
+        Heat: 0.4
         Poison: 0.825
         Radiation: 0.5
         Caustic: 0.6
