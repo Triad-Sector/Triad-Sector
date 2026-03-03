@@ -22,7 +22,7 @@
         Slash: 0.6
         Piercing: 0.55
         Shock: 0.8
-        Heat: 0.4
+        Heat: 0.35
         Radiation: 0.5
         Caustic: 0.6
   - type: StaminaDamageResistance
