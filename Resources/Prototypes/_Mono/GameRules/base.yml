@@ -7,8 +7,8 @@
         tableId: DamagedAIShipsTable
       minimumTimeUntilFirstEvent: 3600 # 60 minutes
       minMaxEventTiming:
-        min: 5400 # 90 minutes between events
-        max: 7200 # 120 minutes between events
+        min: 7200 # 120 minutes between events
+        max: 9000 # 150 minutes between events
 
 - type: entity
   id: MonoAISTCShuttleSpawnerSchedulerTier2
@@ -20,7 +20,7 @@
     minimumTimeUntilFirstEvent: 14400 # 4 hours
     minMaxEventTiming:
       min: 3600 # 60 minutes between events
-      max: 3600 # 60 minutes between events
+      max: 4800 # 80 minutes between events
 
 - type: entity
   id: MonoAsakimSTCShuttleSpawnerScheduler
