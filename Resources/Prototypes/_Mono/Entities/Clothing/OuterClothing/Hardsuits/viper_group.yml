@@ -21,7 +21,7 @@
         Blunt: 0.55
         Slash: 0.5
         Piercing: 0.5
-        Heat: 0.6
+        Heat: 0.4
         Radiation: 0.6
         Caustic: 0.5
   - type: StaminaDamageResistance # Mono - Stamres
@@ -74,8 +74,8 @@
   - type: StaminaDamageResistance # Mono - Stamres
     coefficient: 0.65
   - type: ClothingSpeedModifier
-    walkModifier: 1
-    sprintModifier: 1
+    walkModifier: 1.05
+    sprintModifier: 1.05
   - type: HeldSpeedModifier
   - type: ToggleableClothing # Goobstation - Modsuits change - Mono - this is a solution for helmet attachment/cover to not fit on hardsuits
     requiredSlot: outerclothing
