@@ -18217,3 +18217,12 @@ Entries:
   id: 2009
   time: '2026-03-13T21:27:17.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3380
+- author: UnicornOnLSD
+  changes:
+    - type: Tweak
+      message: >-
+        (Nearly) All magboots have been made uniform. Rejoice merc players, you
+        now got proper jays
+  id: 2010
+  time: '2026-03-13T22:16:28.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3307
