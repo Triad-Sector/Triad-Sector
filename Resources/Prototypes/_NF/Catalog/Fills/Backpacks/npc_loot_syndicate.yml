@@ -418,8 +418,8 @@
   - type: SpawnItemsOnUse
     items:
       - id: WeaponSubMachineGunAtreidesExpedition
-      - id: Magazine57x28mmSubMachineGunFMJ
-      - id: Magazine57x28mmSubMachineGunFMJ
+      - id: Magazine9x19mmSubMachineGunFMJ
+      - id: Magazine9x19mmSubMachineGunFMJ
       - id: SpaceCash1000
       - id: SpaceCash1000
       # Bonus Loot T3

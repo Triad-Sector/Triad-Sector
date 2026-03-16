@@ -6381,7 +6381,7 @@ entities:
     - type: Transform
       pos: 6.586427,-3.4063356
       parent: 1
-- proto: AmmoBox57x28mmPractice
+- proto: AmmoBox9x19mmPractice
   entities:
   - uid: 332
     components:

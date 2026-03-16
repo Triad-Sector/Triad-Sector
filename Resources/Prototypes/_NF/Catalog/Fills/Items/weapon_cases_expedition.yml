@@ -280,9 +280,9 @@
     contents:
     - id: WeaponSubMachineGunAtreidesExpedition
       amount: 1
-    - id: Magazine57x28mmSubMachineGunFMJ
+    - id: Magazine9x19mmSubMachineGunFMJ
       amount: 2
-    - id: AmmoBox57x28mmFMJ
+    - id: AmmoBox9x19mmFMJ
       amount: 2
 
 - type: entity

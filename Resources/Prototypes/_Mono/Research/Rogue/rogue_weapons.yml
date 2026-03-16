@@ -78,7 +78,6 @@
   recipeUnlocks:
   - WeaponSubMachineGunAtreidesRogue
   - WeaponShotgunBulldogRogue
-  - AmmoBox57x28mmBigFMJ
   technologyPrerequisites:
   - RogueAdvancedGuns
   position: 20, 8
