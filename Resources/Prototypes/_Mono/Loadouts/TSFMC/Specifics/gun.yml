@@ -29,7 +29,7 @@
   name: loadout-group-magazine
   minLimit: 1
   loadouts:
-  - TSFCaselessAmmoBoxLoadout # Lecter
+  - Faction556x45mmAmmoLoadout #Lecter
   - FactionAcpSmgAmmoLoadout #Drozd
   - FactionAcpSmgEmpAmmoLoadout #Drozd EMP
   - Faction762x51mmAmmoLoadout #Vulcan
@@ -37,11 +37,4 @@
   # - Faction8x65mmAmmoLoadout #Bandit
   - FactionAcpPistolAmmoLoadout #MK58
   fallbacks:
-  - TSFCaselessAmmoBoxLoadout #Lecter
-
-- type: loadout # Lecter ammo - putting it here because other factions shouldnt be using this
-  id: TSFCaselessAmmoBoxLoadout
-  price: 0
-  storage:
-    back:
-    - BoxMagazine68x52mmFMJ
+  - Faction556x45mmAmmoLoadout

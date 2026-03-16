@@ -242,13 +242,6 @@
     back:
     - WeaponSubMachineGunWt550PMC
 
-- type: loadout #WT550 Ammo
-  id: Mercenary46x30mmTopAmmoLoadout
-  price: 1000
-  storage:
-    back:
-    - BoxMagazine46x30mmSubMachineGunTopMountedFMJ
-
 - type: loadout #C20r
   id: MercenaryC20rLoadout
   price: 12000
@@ -342,7 +335,7 @@
   price: 500
   storage:
     back:
-    - BoxMagazine45_ACPFMJ
+    - BoxMagazine45_ACPSubMachineGunFMJ
 
 - type: loadout #Sawn-off
   id: MercenarySawedOffLoadout
@@ -653,13 +646,6 @@
     back:
     - WeaponSubMachineGunWt550
 
-- type: loadout #WT550 Ammo
-  id: Faction46x30mmTopAmmo
-  price: 0
-  storage:
-    back:
-    - BoxMagazine46x30mmSubMachineGunTopMountedFMJ
-
 - type: loadout #C20r
   id: FactionC20RLoadout
   price: 0
@@ -741,7 +727,7 @@
   price: 0
   storage:
     back:
-    - BoxMagazine45_ACPFMJ
+    - BoxMagazine45_ACPPistolFMJ
 
 - type: loadout #MK58 Ammo
   id: FactionHawk4Pistol

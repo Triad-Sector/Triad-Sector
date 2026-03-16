@@ -211,10 +211,10 @@
     id: ExperimentalFactionWeapon
 
 - type: entity
-  name: TCA MMG-68 "Grizzly" (6.8x52mm Caseless)
+  name: TCA MMG-68 "Grizzly" (7.62x39mm)
   parent: [BaseWeaponLightMachineGun, BaseGunWieldable]
   id: WeaponLMGGrizzly
-  description: A medium machine gun chambered in 6.8x52mm Caseless, accepts both box and standard magazines. A label on the side reads "FOR MILITARY USE ONLY". The weight of the machine gun make it hard to wield easily. To assist with standardization, it also accepts 5.56x45mm and 7.62x39mm.
+  description: A medium machine gun chambered in 5.56x45mm, accepts both box and standard magazines. A label on the side reads "FOR MILITARY USE ONLY". The weight of the machine gun make it hard to wield easily. To assist with standardization, it also accepts 5.56x45mm.
   components:
   - type: Sprite
     sprite: _Mono/Objects/Weapons/Guns/LMGs/grizzly/Grizzly-icon.rsi
@@ -253,15 +253,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: AmmoBox68x52mmCaseless
+        startingItem: AmmoBox556x45mmFMJ
         insertSound: /Audio/Weapons/Guns/MagIn/lmg_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/lmg_magout.ogg
         priority: 2
         whitelist:
           tags:
-          - Magazine68x52mmCaselessBoxSmall
-          - Magazine68x52mmCaselessBoxBig
-          - Magazine68x52mmCaseless
           - Magazine556x45mmFMJ
           - Magazine556x45mmBox
           - Magazine762x39mmFMJ
@@ -270,11 +267,10 @@
         whitelistFailPopup: gun-magazine-whitelist-fail
       gun_chamber:
         name: Chamber
-        startingItem: Cartridge68x52mmCaseless
+        startingItem: Cartridge556x45mmFMJ
         priority: 1
         whitelist:
           tags:
-          - Cartridge68x52mmCaseless
           - Cartridge556x45mmFMJ
           - Cartridge762x39mmFMJ
   - type: ContainerContainer

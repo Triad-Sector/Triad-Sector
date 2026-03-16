@@ -321,6 +321,3 @@
   - type: TechnologyDisk
     recipes:
     - WeaponSubMachineGunMla73Rogue
-    - Magazine635x40mmCaseless
-    - AmmoBox635x40mmCaseless
-    - MagazineAsmgtUniversal635x40mm
