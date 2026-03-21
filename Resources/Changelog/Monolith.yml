@@ -18566,3 +18566,10 @@ Entries:
   id: 2048
   time: '2026-03-21T21:23:08.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3458
+- author: Redrover1760
+  changes:
+    - type: Fix
+      message: Dymeres and a few other shipguns now can be shot by guns properly
+  id: 2049
+  time: '2026-03-21T21:37:36.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3510
