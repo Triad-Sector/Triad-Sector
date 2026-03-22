@@ -489,6 +489,10 @@
           !type:PhysShapeAabb
           bounds: "-0.75,-0.75,0.75,0.75"
         density: 1500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
   - type: Gun
     projectileSpeed: 250
     fireRate: 0.75
@@ -500,7 +504,7 @@
       path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
   - type: BatterySelfRecharger
     autoRechargePause: true
-    autoRechargePauseTime: 60
+    autoRechargePauseTime: 20
     autoRecharge: true
     autoRechargeRate: 81600
   - type: SpaceArtillery
@@ -751,6 +755,10 @@
           !type:PhysShapeAabb
           bounds: "-0.75,-0.75,0.75,0.75"
         density: 1500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
   - type: ShipGunType
     shipType: Energy
   - type: ShipRepairable
@@ -792,6 +800,10 @@
           !type:PhysShapeAabb
           bounds: "-0.75,-0.75,0.75,0.75"
         density: 1500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
   - type: Gun
     projectileSpeed: 170
     fireRate: 13
@@ -880,7 +892,7 @@
   - type: WirelessNetworkConnection
     range: 500
   - type: Gun
-    fireRate: 0.04 # 25s
+    fireRate: 0.066 # 15s
     recoil: 0
     minAngle: 0
     maxAngle: 0
@@ -1214,9 +1226,9 @@
     range: 500
   - type: Gun
     recoil: 10 # 2/5x
-    projectileSpeed: 100
+    projectileSpeed: 150
     minAngle: 0
-    maxAngle: 8
+    maxAngle: 4
     burstCooldown: 0.4
     burstFireRate: 20
     shotsPerBurst: 3
