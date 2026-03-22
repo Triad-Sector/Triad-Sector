@@ -24,7 +24,7 @@
   access:
   - Detective
   accessGroups:
-  - GeneralNfsdAccess
+  - GeneralTsfAccess
   special:
   - !type:AddComponentSpecial
     components:

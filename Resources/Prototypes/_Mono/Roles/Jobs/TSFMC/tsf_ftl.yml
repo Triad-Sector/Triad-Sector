@@ -1,20 +1,33 @@
 - type: job
-  id: Deputy
-  name: job-name-deputy
-  description: job-description-deputy
-  playTimeTracker: JobSecurityOfficer
+  id: SeniorOfficer
+  name: job-name-senior-officer
+  description: job-description-senior-officer
+  playTimeTracker: JobSeniorOfficer
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 36000 # 10 hours
-  startingGear: DeputyGear
-  icon: JobIconDeputy
-  supervisors: job-supervisors-sergeant
-  weight: 130
-  displayWeight: 40
+      time: 72000 # 20 hours # mono
+    - !type:DepartmentTimeRequirement
+      department: Security
+      time: 28800 # 8 hours # mono
+    - !type:RoleTimeRequirement
+      role: JobSecurityOfficer
+      time: 36000 # 10 hours # mono
+  startingGear: SeniorOfficerGear
+  icon: JobIconSergeant
+  supervisors: job-supervisors-sheriff
+  weight: 140
+  displayWeight: 50
   assignedCompany: TSF
   canBeAntag: false
+  access:
+  - Armory
+  - Sergeant
+  - Bailiff
+  - Medical
+  - Chemistry
+  - TsfmcEngineering
   accessGroups:
-  - GeneralNfsdAccess
+  - GeneralTsfAccess
   special:
   - !type:AddComponentSpecial
     components:
@@ -33,11 +46,12 @@
     prototype: FrontierBirthdayGift
 
 - type: startingGear
-  id: DeputyGear
+  id: SeniorOfficerGear
   equipment:
     pocket1: WeaponPistolMk58 #WeaponPistolMk58Nonlethal
   storage:
     back:
     - Magazine45_ACPPistolFMJ
-    - BaseSecurityUplinkRadioDeputy #Mono: Added Deputy uplink
+    - BaseSecurityUplinkRadioOfficer
+#    - ShipVoucherNfsdSergeant # Mono
     - RadioHandheldNF # Mono

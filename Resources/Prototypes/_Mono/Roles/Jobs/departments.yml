@@ -23,3 +23,32 @@
   - USSPRifleman
   primary: false
   editorHidden: true
+
+- type: department
+  id: Frontier
+  name: department-Frontier
+  description: department-NF-description
+  color: "#334E6D"
+  weight: 50 # accounted for in jobs
+  roles:
+  - StationRepresentative
+  - StationTrafficController
+  - CCServiceWorker # nyano
+  - NFJanitor
+  - MailCarrier # nyano
+  - SecurityGuard
+
+- type: department
+  id: Antag
+  name: department-Antag
+  description: department-NFAntag-description
+  color: "#DE3A3A"
+  weight: 115 # Mono
+  roles:
+  - PirateCaptain
+  - PirateFirstMate
+  - PDVDenasvar # Mono
+  - Pirate
+  - PDVInfiltrator # Mono
+  - PdvBorg # Mono
+  - Prisoner #nyano

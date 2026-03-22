@@ -42,7 +42,7 @@
     access:
     - Sergeant # Frontier
     accessGroups: # Frontier
-    - GeneralNfsdAccess # Frontier
+    - GeneralTsfAccess # Frontier
 
 - type: entity
   parent: ShipVoucherNfsdSergeant
@@ -61,7 +61,7 @@
     - Sergeant # Frontier
     - Bailiff # Frontier
     accessGroups: # Frontier
-    - GeneralNfsdAccess # Frontier
+    - GeneralTsfAccess # Frontier
 
 # Service voucher
 - type: entity

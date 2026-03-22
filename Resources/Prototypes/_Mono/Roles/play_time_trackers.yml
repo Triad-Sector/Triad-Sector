@@ -17,9 +17,6 @@
   id: JobMercenary
 
 - type: playTimeTracker
-  id: JobPilot
-
-- type: playTimeTracker
   id: JobPublicAffairsLiaison
 
 - type: playTimeTracker

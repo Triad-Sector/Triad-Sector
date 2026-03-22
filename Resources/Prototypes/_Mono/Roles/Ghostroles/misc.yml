@@ -1,5 +1,4 @@
-#DISCLAIMER: THIS FILE IS LABELED "WHITELISTED" AS THEY WERE ALL WHITELISTED ROLES ON FRONTIER, HOWEVER I WILL BE REMOVING THEIR WHITELISTS WHILE PRESERVING THIS FILE TO KEEP THEIR PROTOTYPES.
-
+#old frontier ghost roles we still use that i put in the correct folder because cringe
 - type: ghostRole
   id: BabyDragon
   name: ghost-role-information-baby-dragon-name
@@ -78,3 +77,13 @@
   description: nf-ghost-role-information-buddy-description
   rules: ghost-role-information-nonantagonist-rules
   entityPrototype: NFMobHumanBuddy
+
+#Ghost Roles
+- type: entity
+  parent: BaseMindRole
+  id: MindRoleGhostRoleEmotionalSupportPet
+  name: Ghost Role (Emotional Support Pet)
+  components:
+  - type: MindRole
+    roleType: EmotionalSupportPet
+  - type: GhostRoleMarkerRole

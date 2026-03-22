@@ -27,7 +27,7 @@
   - Chemistry
   - TsfmcEngineering # Mono
   accessGroups:
-  - GeneralNfsdAccess
+  - GeneralTsfAccess
   special:
   - !type:AddComponentSpecial
     components:

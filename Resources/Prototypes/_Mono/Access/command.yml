@@ -1,0 +1,28 @@
+- type: accessLevel
+  id: Frontier
+  name: id-card-access-level-frontier
+
+- type: accessLevel
+  id: StationTrafficController
+  name: id-card-access-level-stc
+
+- type: accessGroup
+  id: GeneralAccess
+  tags:
+  - Maintenance
+  - External
+
+- type: accessGroup
+  id: GeneralCommandAccess
+  tags:
+  - Maintenance
+  - External
+  - Command
+
+- type: accessLevel
+  id: Mercenary
+  name: id-card-access-level-mercenary
+
+- type: accessLevel
+  id: Mail
+  name: id-card-access-level-mail
