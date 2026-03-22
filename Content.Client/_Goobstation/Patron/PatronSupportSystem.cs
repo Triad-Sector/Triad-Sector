@@ -1,5 +1,5 @@
 using Content.Client.Lobby;
-using Content.Shared._Goobstation.CCVar;
+using Content.Shared._Goobstation.CCVars;
 using Content.Shared.CCVar;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;

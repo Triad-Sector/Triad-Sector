@@ -19,7 +19,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
-using Content.Shared._Goobstation.CCVar; // Goobstation - Queue
+using Content.Shared._Goobstation.CCVars; // Goobstation - Queue
 using Content.Server._NF.Auth; // Frontier
 
 /*

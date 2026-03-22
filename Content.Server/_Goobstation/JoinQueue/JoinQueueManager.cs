@@ -14,9 +14,9 @@ using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
-using Content.Shared._Goobstation.CCVar;
+using Content.Shared._Goobstation.CCVars;
 using Content.Server._RMC14.LinkAccount;
-using Content.Shared._Goobstation.JoinQueue;
+using Content.Server.IoC;
 
 namespace Content.Server._Goobstation.JoinQueue;
 

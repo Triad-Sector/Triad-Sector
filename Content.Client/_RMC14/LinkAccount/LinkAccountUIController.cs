@@ -1,6 +1,6 @@
 ﻿using Content.Client.Lobby.UI;
 using Content.Client.Message;
-using Content.Shared._Goobstation.CCVar;
+using Content.Shared._Goobstation.CCVars;
 using Content.Shared._RMC14.LinkAccount;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
