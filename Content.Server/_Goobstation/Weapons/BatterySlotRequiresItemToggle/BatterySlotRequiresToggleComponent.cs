@@ -1,4 +1,4 @@
-namespace Content.Goobstation.Server.Weapons.BatterySlotRequiresItemToggle;
+namespace Content.Server._Goobstation.Weapons.BatterySlotRequiresItemToggle;
 
 [RegisterComponent]
 public sealed partial class BatterySlotRequiresToggleComponent : Component

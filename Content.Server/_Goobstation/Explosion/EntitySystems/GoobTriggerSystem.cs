@@ -1,5 +1,5 @@
-// using Content.Goobstation.Server.Explosion.Components;
-// using Content.Goobstation.Server.Explosion.Components.OnTrigger;
+// using Content.Server._Goobstation.Explosion.Components;
+// using Content.Server._Goobstation.Explosion.Components.OnTrigger;
 using Content.Server._Goobstation.Explosion.Components;
 // using Content.Server.Explosion.Components;
 using Content.Server.Explosion.EntitySystems;

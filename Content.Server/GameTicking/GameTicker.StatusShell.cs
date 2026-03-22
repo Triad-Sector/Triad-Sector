@@ -4,7 +4,7 @@ using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Robust.Server.ServerStatus;
 using Robust.Shared.Configuration;
-using Content.Goobstation.Common.JoinQueue; // Goobstation - Queue
+using Content.Shared._Goobstation.JoinQueue; // Goobstation - Queue
 
 namespace Content.Server.GameTicking
 {

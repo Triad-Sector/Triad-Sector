@@ -1,7 +1,7 @@
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Item.ItemToggle.Components;
 
-namespace Content.Goobstation.Server.Weapons.BatterySlotRequiresItemToggle;
+namespace Content.Server._Goobstation.Weapons.BatterySlotRequiresItemToggle;
 
 public sealed class BatterySlotRequiresToggleSystem : EntitySystem
 {
