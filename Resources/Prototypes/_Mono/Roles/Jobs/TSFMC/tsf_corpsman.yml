@@ -21,7 +21,7 @@
   assignedCompany: TSF
   canBeAntag: false
   accessGroups:
-  - GeneralNfsdBrigmedicAccess
+  - GeneralTsfCorpsmanAccess
   special:
   - !type:AddComponentSpecial
     components:

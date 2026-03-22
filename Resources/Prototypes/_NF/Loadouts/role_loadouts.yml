@@ -45,36 +45,6 @@
   - ContractorMag # Mono
   - CivGunCaseSpecial # Mono
 
-# Pilot
-- type: roleLoadout
-  id: JobPilot
-  groups:
-  - PilotHead
-  - PilotNeck
-  - PilotJumpsuit
-  - PilotGloves
-  - PilotBackpack
-  - PilotOuterClothing
-  - PilotShoes
-  - PilotFace
-  - PilotGlasses
-  - ContractorBelt
-  - PilotEars
-  - ContractorEncryptionKey
-  - ContractorBoxSurvival
-  - PilotPDA
-  - ContractorWallet
-  - ContractorCartridge
-  - ContractorImplanter
-  - ContractorUtility
-  - ContractorFun
-  - ContractorTrinkets
-  - ContractorBureaucracy
-  - NFSpeciesSpecific
-  - ContractorFirearm # Mono
-  - ContractorMag # Mono
-  - CivGunCaseSpecial # Mono
-
 # Mercenary
 - type: roleLoadout
   id: JobMercenary
