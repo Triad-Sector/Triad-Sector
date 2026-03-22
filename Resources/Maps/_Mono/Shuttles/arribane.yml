@@ -6562,7 +6562,7 @@ entities:
     - type: Transform
       pos: -5.5,2.5
       parent: 1
-- proto: ClothingUniformJumpskirtAtmos
+- proto: PirateClothingUniformJumpskirtAtmos
   entities:
   - uid: 625
     components:
@@ -6571,7 +6571,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ClothingUniformJumpsuitAtmos
+- proto: PirateClothingUniformJumpsuitAtmos
   entities:
   - uid: 626
     components:
@@ -6580,7 +6580,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ClothingUniformJumpsuitAtmosCasual
+- proto: PirateClothingUniformJumpsuitAtmosCasual
   entities:
   - uid: 627
     components:

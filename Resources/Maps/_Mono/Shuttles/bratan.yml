@@ -62,7 +62,7 @@ entities:
       name: grid
     - type: Transform
       pos: -1.53125,0.203125
-
+      
     - type: MapGrid
       chunks:
         0,0:
@@ -11030,7 +11030,7 @@ entities:
       pos: 18.5,5.5
       parent: 1
     - type: DeviceNetwork
-
+     
       deviceLists:
       - 11
     - type: AtmosPipeColor
@@ -11089,7 +11089,7 @@ entities:
       pos: 18.5,4.5
       parent: 1
     - type: DeviceNetwork
-
+      
       deviceLists:
       - 11
     - type: AtmosPipeColor
@@ -12334,11 +12334,11 @@ entities:
         Emergency Generator Terminal
 
 
-        Anchor a generator on this terminal in order to supplement the power grid in case of catastrophic damage to the AME/Solar Panels.
+        Anchor a generator on this terminal in order to supplement the power grid in case of catastrophic damage to the AME/Solar Panels. 
 
 
         (GENERATOR NOT INCLUDED)
-- proto: ClothingUniformJumpskirtPrivateSec
+- proto: PirateClothingUniformJumpskirtPrivateSec
   entities:
   - uid: 1159
     components:
@@ -12347,7 +12347,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ClothingUniformJumpsuitPrivateSec
+- proto: PirateClothingUniformJumpsuitPrivateSec
   entities:
   - uid: 65
     components:
