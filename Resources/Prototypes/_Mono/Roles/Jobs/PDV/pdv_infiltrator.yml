@@ -24,7 +24,7 @@
   assignedCompany: PDV
   setPreference: true
   access:
-  - Pirate
+  - PDVBase
   - Mercenary
   accessGroups:
   - GeneralAccess

@@ -21,7 +21,7 @@
   canBeAntag: false
   access:
   - Armory
-  - Sergeant
+  - TsfFTL
   - TsfCaptain
   - Medical
   - Chemistry

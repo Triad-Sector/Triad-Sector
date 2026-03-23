@@ -35,7 +35,7 @@
   assignedCompany: PDV
   setPreference: true
   access:
-  - Pirate
+  - PDVBase
   - PDVCommand
   - Mercenary
   accessGroups:
