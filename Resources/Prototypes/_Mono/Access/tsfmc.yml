@@ -13,12 +13,12 @@
   - Captain # Frontier
 
 - type: accessLevel
-  id: FTL
+  id: TsfFTL
   name: id-card-access-level-tsf-ftl
   
 - type: accessLevel
-  id: Bailiff
-  name: id-card-access-level-bailiff
+  id: TsfCaptain
+  name: id-card-access-level-tsf-captain
   
 - type: accessGroup
   id: RecruitTsfAccess

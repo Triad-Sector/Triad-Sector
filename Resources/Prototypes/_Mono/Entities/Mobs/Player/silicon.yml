@@ -659,7 +659,7 @@
     - Freespeak
   - type: Access
     tags:
-    - Pirate
+    - PDVBase
     - GrandVizier
     - PDVCommand
 
@@ -703,7 +703,7 @@
     - PirateNF
   - type: Access
     tags:
-    - Pirate
+    - PDVBase
     - PDVCommand
     - GrandVizier
     - Mercenary
@@ -820,7 +820,7 @@
     tags:
     - Security
     - Armory
-    - Sergeant
+    - TsfFTL
     - Bailiff
     - Medical
     - Chemistry

@@ -26,8 +26,7 @@
   - Research
   - Service
   - StationTrafficController # Frontier
-  - Sergeant # Frontier
-  - Bailiff # Frontier
+  - TsfCaptain # Frontier
   - Maintenance
   - External
   - Janitor
@@ -38,7 +37,6 @@
   - Chapel
   - Hydroponics
   - Atmospherics
-  - Pilot # Mono
 #  - Pirate # Mono
 
 # Mono start
@@ -77,6 +75,5 @@
   - Chapel
   - Hydroponics
   - Atmospherics
-  - Pilot
 
 # Mono end
