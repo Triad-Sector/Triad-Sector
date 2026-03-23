@@ -308,10 +308,11 @@ namespace Content.Shared.Preferences
             return new(this) { Gender = gender };
         }
 
-        // Frontier: this is probably an issue and should be removed.
-        public HumanoidCharacterProfile WithBankBalance(int bankBalance)
+        // Frontier: this is probably an issue and should be removed. Mono: YES, it is an issue. This is slightly better now.
+        public HumanoidCharacterProfile WithBankBalance(HumanoidCharacterProfile? profile)
         {
-            return new(this) { BankBalance = bankBalance };
+
+            return new(this) { BankBalance = profile?.BankBalance ?? DefaultBalance };
         }
         // End Frontier
 
