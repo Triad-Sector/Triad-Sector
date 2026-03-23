@@ -153,8 +153,8 @@
     redemptionsLeft: 2
     access: # note - removed HOS/colonel access to prevent free flyssa (its only ship that uses HOS access, so it should be fine)
     - Armory
-    - Sergeant
-    - Bailiff
+    - TsfFTL
+    - TsfCaptain
     - Security
     vessels:
     - Altair
