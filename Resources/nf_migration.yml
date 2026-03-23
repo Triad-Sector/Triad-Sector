@@ -85,8 +85,8 @@ WeaponRackPistolBaseSecurity: StructurePistolRackNfsd
 WeaponRackPistolWallmountedSecurity: StructurePistolRackWallmountedNfsd
 
 # 2024-10-09 Frontier: Fixups
-SpawnPointDetectiveNF: NFSpawnPointDetective
-
+#SpawnPointDetectiveNF: NFSpawnPointDetective
+#was doing some weird shit as it couldn't find the proto and i nuked it anyway
 # 2024-11-09
 WarpPointShip: WarpPoint
 

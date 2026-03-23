@@ -40,7 +40,7 @@
     consoleType: Security
     companyName: TSF
     access:
-    - Sergeant # Frontier
+    - TsfFTL # Frontier
     accessGroups: # Frontier
     - GeneralTsfAccess # Frontier
 

@@ -37,7 +37,7 @@
   name: pilot ID card
   components:
   - type: PresetIdCard
-    job: Pilot
+    job: Contractor
   - type: Sprite
     sprite: _NF/Objects/Misc/id_cards.rsi
     layers:
