@@ -21,14 +21,6 @@
   - MercenaryFace
 
 - type: loadoutGroup
-  id: PirateHead
-  name: loadout-group-contractor-head
-  minLimit: 0
-  subgroups: # mono
-  - MercenaryHead
-  - ContractorHead
-
-- type: loadoutGroup
   id: PirateTrinkets
   name: loadout-group-contractor-trinkets
   minLimit: 0
