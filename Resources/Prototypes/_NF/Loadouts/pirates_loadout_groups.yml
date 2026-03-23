@@ -6,8 +6,8 @@
   loadouts:
   - PirateJumpsuit
   - PirateJumpskirt
-  - PirateClothingUniformJumpsuitPirateSlops
-  - PirateClothingUniformJumpsuitPirateLuffy
+#  - PirateClothingUniformJumpsuitPirateSlops
+#  - PirateClothingUniformJumpsuitPirateLuffy -mono, all comments, basically didn't want to have to deal with more shit
   subgroups: # mono
   - PirateMercenaryJumpsuit
 
@@ -35,8 +35,8 @@
   id: PirateShoes
   name: loadout-group-contractor-shoes
   loadouts:
-  - PirateClothingShoesBootsLaceup
-  - PirateClothingShoesBootsPirateLuffy
+#  - PirateClothingShoesBootsLaceup
+#  - PirateClothingShoesBootsPirateLuffy
   subgroups: # mono
   - MercenaryShoes
   - ContractorShoes
@@ -46,10 +46,10 @@
   name: loadout-group-contractor-head
   minLimit: 0
   loadouts:
-  - PirateClothingHeadBandBlack
-  - PirateClothingHeadBandBrown
-  - PirateClothingHeadBandGrey
-  - PirateClothingHeadBandRed
+ # - PirateClothingHeadBandBlack
+ # - PirateClothingHeadBandBrown
+  #- PirateClothingHeadBandGrey
+  #- PirateClothingHeadBandRed
   subgroups: # mono
   - MercenaryHead
   - ContractorHead
@@ -71,8 +71,8 @@
   name: loadout-group-contractor-head
   minLimit: 0
   loadouts:
-  - PirateClothingHeadHatPirate
-  - PirateClothingHeadHatPirateLuffy
+#  - PirateClothingHeadHatPirate
+#  - PirateClothingHeadHatPirateLuffy
   subgroups: # mono
   - MercenaryHead
   - ContractorHead
@@ -123,8 +123,8 @@
   name: loadout-group-contractor-head
   minLimit: 0
   loadouts:
-  - PirateClothingHeadHatPirateTricord
-  - PirateClothingHeadHatPirateLuffy
+#  - PirateClothingHeadHatPirateTricord
+#  - PirateClothingHeadHatPirateLuffy
   subgroups: # mono
   - MercenaryHead
   - ContractorHead

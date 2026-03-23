@@ -21,8 +21,8 @@
   canBeAntag: false
   access:
   - Armory
-  - Sergeant
-  - Bailiff
+  - TsfFTL
+  - TsfCaptain
   - Medical
   - Chemistry
   - TsfmcEngineering
@@ -41,9 +41,6 @@
     - SolCommon
     languagesUnderstood:
     - SolCommon
-  - !type:GiveItemOnHolidaySpecial
-    holiday: FrontierBirthday
-    prototype: FrontierBirthdayGift
 
 - type: startingGear
   id: SeniorOfficerGear

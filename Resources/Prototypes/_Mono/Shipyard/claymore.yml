@@ -1,5 +1,5 @@
 # Author Info
-# GitHub:Rubeebeebee 
+# GitHub:Rubeebeebee
 # Discord: rubeebee
 
 # Shuttle Notes:
@@ -39,5 +39,4 @@
         - type: StationJobs
           availableJobs:
             Contractor: [ 0, 0 ]
-            Pilot: [ 0, 0 ]
             Mercenary: [ 0, 0 ]

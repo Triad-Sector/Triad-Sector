@@ -36,5 +36,4 @@
         - type: StationJobs
           availableJobs:
             Mercenary: [ 0, 0 ]
-            Pilot: [ 0, 0 ]
 
