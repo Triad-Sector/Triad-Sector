@@ -7891,13 +7891,6 @@ entities:
     - type: Transform
       pos: -4.5,2.5
       parent: 2
-- proto: SpawnPointPilot
-  entities:
-  - uid: 1136
-    components:
-    - type: Transform
-      pos: -4.5,2.5
-      parent: 2
 - proto: SpawnPointPirate
   entities:
   - uid: 1137

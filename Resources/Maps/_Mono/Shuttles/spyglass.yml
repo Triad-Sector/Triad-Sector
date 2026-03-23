@@ -3044,18 +3044,6 @@ entities:
     - type: Transform
       pos: 1.5,8.5
       parent: 1
-- proto: SpawnPointPilot
-  entities:
-  - uid: 352
-    components:
-    - type: Transform
-      pos: 1.5,8.5
-      parent: 1
-  - uid: 358
-    components:
-    - type: Transform
-      pos: -2.5,8.5
-      parent: 1
 - proto: StairStageWhite
   entities:
   - uid: 359

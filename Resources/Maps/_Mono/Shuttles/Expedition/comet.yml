@@ -8286,23 +8286,6 @@ entities:
     - type: Transform
       pos: 16.5,14.5
       parent: 1
-- proto: SpawnPointPilot
-  entities:
-  - uid: 1079
-    components:
-    - type: Transform
-      pos: 15.5,13.5
-      parent: 1
-  - uid: 1080
-    components:
-    - type: Transform
-      pos: 15.5,14.5
-      parent: 1
-  - uid: 1081
-    components:
-    - type: Transform
-      pos: 16.5,14.5
-      parent: 1
 - proto: SubstationBasic
   entities:
   - uid: 1358

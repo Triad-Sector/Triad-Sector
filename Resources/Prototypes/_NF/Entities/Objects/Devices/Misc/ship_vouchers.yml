@@ -58,8 +58,8 @@
     companyName: TSF
     access:
     - Armory
-    - Sergeant # Frontier
-    - Bailiff # Frontier
+    - TsfFTL # Frontier
+    - TsfCaptain # Frontier
     accessGroups: # Frontier
     - GeneralTsfAccess # Frontier
 

@@ -1,17 +1,6 @@
 # Pirate loadouts
 
 - type: loadoutGroup
-  id: PirateJumpsuit
-  name: loadout-group-contractor-jumpsuit
-  loadouts:
-  - PirateJumpsuit
-  - PirateJumpskirt
-#  - PirateClothingUniformJumpsuitPirateSlops
-#  - PirateClothingUniformJumpsuitPirateLuffy -mono, all comments, basically didn't want to have to deal with more shit
-  subgroups: # mono
-  - PirateMercenaryJumpsuit
-
-- type: loadoutGroup
   id: RakhshanPDA
   name: loadout-group-contractor-id
   hidden: true # No point in showing this, it gets auto-selected.
@@ -30,16 +19,6 @@
   - ContractorClothingMaskGas
   subgroups: # mono
   - MercenaryFace
-
-- type: loadoutGroup
-  id: PirateShoes
-  name: loadout-group-contractor-shoes
-  loadouts:
-#  - PirateClothingShoesBootsLaceup
-#  - PirateClothingShoesBootsPirateLuffy
-  subgroups: # mono
-  - MercenaryShoes
-  - ContractorShoes
 
 - type: loadoutGroup
   id: PirateHead
