@@ -7926,13 +7926,6 @@ entities:
     - type: Transform
       pos: -4.5,2.5
       parent: 2
-- proto: SpawnPointPublicAffairsLiaison
-  entities:
-  - uid: 1142
-    components:
-    - type: Transform
-      pos: -4.5,2.5
-      parent: 2
 - proto: SpawnPointSecurityGuard
   entities:
   - uid: 1143
