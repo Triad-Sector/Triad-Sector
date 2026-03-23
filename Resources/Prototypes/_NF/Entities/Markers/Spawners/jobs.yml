@@ -34,19 +34,6 @@
       - state: mercenary
 
 - type: entity
-  id: SpawnPointPilot
-  parent: SpawnPointJobBase
-  name: pilot
-  components:
-  - type: SpawnPoint
-    job_id: Pilot
-  - type: Sprite
-    sprite: _NF/Markers/jobs.rsi
-    layers:
-      - state: green
-      - state: pilot
-
-- type: entity
   id: SpawnPointPirate
   parent: SpawnPointJobBase
   name: pirate
@@ -178,23 +165,6 @@
   components:
   - type: SpawnPoint
     job_id: Cadet
-
-- type: entity
-  id: NFSpawnPointDetective
-  parent: SpawnPointDetective
-  name: detective
-  suffix: Frontier
-  components:
-  - type: SpawnPoint
-    job_id: NFDetective
-
-- type: entity
-  id: SpawnPointPublicAffairsLiaison
-  parent: SpawnPointLawyer
-  name: public affairs liaison
-  components:
-  - type: SpawnPoint
-    job_id: PublicAffairsLiaison
 
 - type: entity
   id: NFSpawnPointJanitor

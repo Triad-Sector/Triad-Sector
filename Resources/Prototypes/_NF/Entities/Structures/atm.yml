@@ -321,6 +321,6 @@
   - type: StationBankATM
     account: BlackMarket
   - type: AccessReader
-    access: [["Pirate"]]
+    access: [["PDVBase"]]
   - type: CompanyAccessReader
     requiredCompany: PDV

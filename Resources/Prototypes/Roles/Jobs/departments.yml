@@ -32,7 +32,6 @@
   # - ServiceWorker # Frontier
   - Contractor # Frontier
   - Mercenary # Frontier
-  - Pilot # Frontier
   - Borg # Frontier
 
 - type: department
@@ -117,7 +116,6 @@
   - PrisonGuard ##nyano
   - Brigmedic # Frontier
 #  - SecurityGuard # Frontier
-  - NFDetective # Frontier
   - Cadet # Frontier
   - Deputy # Frontier
   - Bailiff # Frontier
