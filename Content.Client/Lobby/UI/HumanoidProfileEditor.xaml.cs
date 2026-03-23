@@ -2084,7 +2084,7 @@ namespace Content.Client.Lobby.UI
 
         private void RandomizeEverything()
         {
-            Profile = HumanoidCharacterProfile.Random().WithBankBalance(Profile); // Mono: add WithBankBalance(Profile)
+            Profile = HumanoidCharacterProfile.Random().HandleRandomizedBankBalance(Profile); // Mono: add WithBankBalance(Profile)
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
@@ -2128,7 +2128,7 @@ namespace Content.Client.Lobby.UI
             {
                 var profile = _entManager.System<HumanoidAppearanceSystem>().FromStream(file, _playerManager.LocalSession!);
                 var oldProfile = Profile;
-                profile = profile.WithBankBalance(oldProfile); // Frontier: no free money (enforce import, don't care about import) Mono: Now uses profile.
+                profile = profile.HandleRandomizedBankBalance(oldProfile); // Frontier: no free money (enforce import, don't care about import) Mono: Now uses profile.
                 SetProfile(profile, CharacterSlot);
 
                 IsDirty = !profile.MemberwiseEquals(oldProfile);

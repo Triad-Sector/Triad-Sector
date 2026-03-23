@@ -308,11 +308,10 @@ namespace Content.Shared.Preferences
             return new(this) { Gender = gender };
         }
 
-        // Frontier: this is probably an issue and should be removed. Mono: YES, it is an issue. This is slightly better now.
-        public HumanoidCharacterProfile WithBankBalance(HumanoidCharacterProfile? profile)
+        // Frontier: this is probably an issue and should be removed. (correct)
+        public HumanoidCharacterProfile WithBankBalance(int bankBalance)
         {
-
-            return new(this) { BankBalance = profile?.BankBalance ?? DefaultBalance };
+            return new(this) { BankBalance = bankBalance };
         }
         // End Frontier
 
@@ -838,6 +837,15 @@ namespace Content.Shared.Preferences
             loadout.SetDefault(this, session, protoManager);
             return loadout;
         }
+
+
+        // Mono: Used for clientside calls for modifying bank balance (Danger)
+        public HumanoidCharacterProfile HandleRandomizedBankBalance(HumanoidCharacterProfile? profile)
+        {
+
+            return new(this) { BankBalance = profile?.BankBalance ?? DefaultBalance };
+        }
+        // End Mono
 
         public HumanoidCharacterProfile Clone()
         {
