@@ -10,7 +10,7 @@
   - TsfmcFace
   - USSPBelt
   - USSPEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - USSPRiflemanPDA
   - ContractorWallet
   - ContractorEncryptionKey
@@ -30,7 +30,7 @@
   - TsfmcFace
   - USSPBelt
   - USSPEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - USSPCorporalPDA
   - ContractorWallet
   - ContractorEncryptionKey
@@ -50,7 +50,7 @@
   - TsfmcShoes
   - TsfmcFace
   - USSPEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - USSPMedicPDA
   - ContractorWallet
   - ContractorEncryptionKey
@@ -70,7 +70,7 @@
   - TsfmcFace
   - USSPBelt
   - USSPEarsCommand
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - USSPSergeantPDA
   - ContractorWallet
   - ContractorEncryptionKey
@@ -91,7 +91,7 @@
   - TsfmcFace
   - USSPBelt
   - USSPEarsCommand
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - USSPCommissarPDA
   - ContractorWallet
   - ContractorEncryptionKey
