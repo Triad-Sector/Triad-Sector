@@ -43,7 +43,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 13
+        Piercing: 11
 
 - type: entity
   id: Pellet12_gaugeSpread
@@ -349,7 +349,7 @@
       types:
         Piercing: 28
         Structural: 250
-    armorPenetration: 0.5
+    armorPenetration: 0.6
   - type: Tracer
     color: "#6f7c82ff"
     length: 3
@@ -366,8 +366,8 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 8
-    armorPenetration: 0.4
+        Piercing: 7
+    armorPenetration: 0.6
   - type: Tracer
     color: "#6f7c82ff"
     length: 3
