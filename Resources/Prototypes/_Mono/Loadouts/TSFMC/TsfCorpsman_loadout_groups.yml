@@ -16,13 +16,6 @@
   - BrigmedicOuterClothing
 
 - type: loadoutGroup
-  id: BrigmedicHead
-  name: loadout-group-contractor-head
-  minLimit: 0
-  loadouts:
-  - BrigmedicClothingHeadHatBrigmedic
-
-- type: loadoutGroup
   id: BrigmedicGloves
   name: loadout-group-contractor-gloves
   hidden: true # No point in showing this, it gets auto-selected.
@@ -48,31 +41,3 @@
   - BrigmedicBrigmedicPDA
   fallbacks:
   - BrigmedicBrigmedicPDA
-  
-- type: loadoutGroup
-  id: BrigmedicGlasses
-  name: loadout-group-contractor-glasses
-  hidden: true # No point in showing this, it gets auto-selected.
-  loadouts:
-  - BrigmedicClothingEyesGlasses
-  fallbacks:
-  - BrigmedicClothingEyesGlasses
-
-- type: loadoutGroup
-  id: BrigmedicFace
-  name: loadout-group-contractor-face
-  hidden: true # No point in showing this, it gets auto-selected.
-  loadouts:
-  - BrigmedicClothingMaskBrigmedic
-  fallbacks:
-  - BrigmedicClothingMaskBrigmedic
-
-- type: loadoutGroup
-  id: BrigmedicBelt
-  minLimit: 1
-  name: loadout-group-contractor-belt
-  hidden: true # No point in showing this, it gets auto-selected.
-  loadouts:
-  - BrigmedicClothingBeltBrigmedicWebbing
-  fallbacks:
-  - BrigmedicClothingBeltBrigmedicWebbing
