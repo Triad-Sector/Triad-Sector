@@ -422,6 +422,8 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
             // Check if job is one of the pirate jobs
             isPirate = jobTitle.Equals(Loc.GetString("job-name-pirate"), StringComparison.OrdinalIgnoreCase) ||
                        jobTitle.Equals(Loc.GetString("job-name-pirate-captain"), StringComparison.OrdinalIgnoreCase) ||
+                       jobTitle.Equals(Loc.GetString("job-name-pdv-denasvar"), StringComparison.OrdinalIgnoreCase) ||
+                       jobTitle.Equals(Loc.GetString("job-name-pdv-infiltrator"), StringComparison.OrdinalIgnoreCase) ||
                        jobTitle.Equals(Loc.GetString("job-name-pirate-first-mate"), StringComparison.OrdinalIgnoreCase);
         }
 
@@ -432,6 +434,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
             isTSF = jobTitle.Equals(Loc.GetString("job-name-bailiff"), StringComparison.OrdinalIgnoreCase) ||
                     jobTitle.Equals(Loc.GetString("job-name-brigmedic"), StringComparison.OrdinalIgnoreCase) ||
                     jobTitle.Equals(Loc.GetString("job-name-cadet-nf"), StringComparison.OrdinalIgnoreCase) ||
+                    jobTitle.Equals(Loc.GetString("job-name-senior-officer"), StringComparison.OrdinalIgnoreCase) ||
                     jobTitle.Equals(Loc.GetString("job-name-deputy"), StringComparison.OrdinalIgnoreCase) ||
                     jobTitle.Equals(Loc.GetString("job-name-sheriff"), StringComparison.OrdinalIgnoreCase);
         }
