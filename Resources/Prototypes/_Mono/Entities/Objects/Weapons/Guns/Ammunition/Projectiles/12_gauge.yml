@@ -367,6 +367,7 @@
     damage:
       types:
         Piercing: 7
+        Structural: 50
     armorPenetration: 0.6
   - type: Tracer
     color: "#6f7c82ff"
