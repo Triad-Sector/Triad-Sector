@@ -13,33 +13,6 @@
   - TsfmcClothingBackpack
 
 - type: loadoutGroup
-  id: NfsdBoxSurvival
-  name: loadout-group-contractor-survival-box
-  hidden: true # No point in showing this, it gets auto-selected.
-  minLimit: 1
-  loadouts:
-  - NfsdBoxSurvivalNfsdOxygen
-  - NfsdBoxSurvivalNfsdNitrogen
-  fallbacks:
-  - NfsdBoxSurvivalNfsdOxygen
-  - NfsdBoxSurvivalNfsdNitrogen
-- type: loadoutGroup
-  id: TsfmcEngiModsuit
-  name: loadout-group-contractor-backpack
-  minLimit: 1
-  loadouts:
-  - TsfmcEngiClothingModsuit
-  - TsfmcEngiClothingModsuit2
-  - TsfmcClothingBackpack
-  - TsfmcClothingSatchel
-  - TsfmcClothingDuffel
-  - MonoSecurityGuardBackpack
-  - MonoSecurityGuardSatchel
-  - MonoSecurityGuardDuffel
-  fallbacks:
-  - TsfmcEngiClothingModsuit
-
-- type: loadoutGroup
   id: TsfmcJumpsuit
   name: loadout-group-contractor-jumpsuit
   minLimit: 1
@@ -61,6 +34,18 @@
   - TsfmcClothingDressUniform
   fallbacks:
   - TsfmcEngineeringClothingJumpsuit
+
+- type: loadoutGroup
+  id: NfsdBoxSurvival
+  name: loadout-group-contractor-survival-box
+  hidden: true # No point in showing this, it gets auto-selected.
+  minLimit: 1
+  loadouts:
+  - NfsdBoxSurvivalNfsdOxygen
+  - NfsdBoxSurvivalNfsdNitrogen
+  fallbacks:
+  - NfsdBoxSurvivalNfsdOxygen
+  - NfsdBoxSurvivalNfsdNitrogen
 
 - type: loadoutGroup
   id: TsfmcShoes
