@@ -11,3 +11,34 @@
   - TsfEngiPDA
   fallbacks:
   - TsfEngiPDA
+#colonel
+- type: loadout
+  id: SheriffSheriffPDA
+  equipment:
+    id: SheriffPDA
+#captain
+- type: loadout
+  id: BailiffBailiffPDA
+  equipment:
+    id: BailiffPDA
+#FTL
+- type: loadout
+  id: SeniorOfficerSeniorOfficerPDA
+  equipment:
+    id: SergeantPDA
+#corpsman
+- type: loadout
+  id: BrigmedicBrigmedicPDA
+  equipment:
+    id: BrigmedicNFPDA
+#marine
+- type: loadout
+  id: DeputyDeputyPDA
+  equipment:
+    id: DeputyPDA
+#recruit/private
+- type: loadout
+  id: CadetCadetPDA
+  equipment:
+    id: CadetPDA
+    

@@ -13,6 +13,17 @@
   - TsfmcClothingBackpack
 
 - type: loadoutGroup
+  id: NfsdBoxSurvival
+  name: loadout-group-contractor-survival-box
+  hidden: true # No point in showing this, it gets auto-selected.
+  minLimit: 1
+  loadouts:
+  - NfsdBoxSurvivalNfsdOxygen
+  - NfsdBoxSurvivalNfsdNitrogen
+  fallbacks:
+  - NfsdBoxSurvivalNfsdOxygen
+  - NfsdBoxSurvivalNfsdNitrogen
+- type: loadoutGroup
   id: TsfmcEngiModsuit
   name: loadout-group-contractor-backpack
   minLimit: 1

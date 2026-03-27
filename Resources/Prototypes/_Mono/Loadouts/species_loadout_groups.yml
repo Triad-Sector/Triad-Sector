@@ -21,9 +21,7 @@
   hidden: true
   loadouts:
   - LoadoutTankHarness
-  - NfsdVoxClothingMaskGasNfsd
   - LoadoutSpeciesVoxNitrogen
   fallbacks:
   - LoadoutTankHarness
-  - NfsdVoxClothingMaskGasNfsd
   - LoadoutSpeciesVoxNitrogen
