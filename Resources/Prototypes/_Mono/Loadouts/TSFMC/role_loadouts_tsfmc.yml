@@ -14,7 +14,7 @@
   - TsfmcGlasses
   - TsfmcBelt
   - TsfmcEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - CadetPDA
   - ContractorWallet
   - ContractorCartridge
@@ -42,7 +42,7 @@
   - TsfmcGlasses
   - TsfmcBelt
   - TsfmcEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - DeputyPDA
   - ContractorWallet
   - ContractorCartridge
@@ -69,7 +69,7 @@
   - TsfmcBrigmedicGlasses
   - TsfmcBrigmedicBelt
   - TsfmcEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - BrigmedicPDA
   - ContractorWallet
   - ContractorCartridge
@@ -96,7 +96,7 @@
   - TsfmcGlasses
   - TsfmcBelt
   - TsfmcEarsSenior
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - BailiffPDA
   - ContractorWallet
   - ContractorCartridge
@@ -123,7 +123,7 @@
   - TsfmcGlasses
   - TsfmcBelt
   - TsfmcEarsSenior
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - SeniorOfficerPDA
   - ContractorWallet
   - ContractorCartridge
@@ -150,7 +150,7 @@
   - TsfmcGlasses
   - TsfmcBelt
   - TsfmcEarsCommander
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - SheriffPDA
   - ContractorWallet
   - ContractorCartridge
@@ -176,7 +176,7 @@
   - TsfmcEngiGlasses
   - TsfmcUtilBelt
   - TsfmcEars
-  - NfsdBoxSurvival
+  - ContractorBoxSurvival
   - TsfEngiPDA
   - ContractorWallet
   - ContractorCartridge
