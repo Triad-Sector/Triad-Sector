@@ -10,7 +10,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 45
+        Piercing: 34
         Structural: 200
     armorPenetration: 0.2
 
@@ -43,7 +43,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 16
+        Piercing: 13
 
 - type: entity
   id: Pellet12_gaugeSpread
@@ -67,9 +67,8 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 7
-        Heat: 7
-    armorPenetration: -0.2
+        Piercing: 5
+        Heat: 4
   - type: IgnitionSource
     ignited: true
 
@@ -119,7 +118,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 10
+        Piercing: 7
         Slash: 5
     armorPenetration: -0.2
 
@@ -306,8 +305,8 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 40
-    armorPenetration: -0.4
+        Piercing: 25
+    armorPenetration: -0.5
 
 - type: entity
   id: Pellet12_gaugeOOBuckshotSpread
@@ -348,7 +347,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 36
+        Piercing: 28
         Structural: 250
     armorPenetration: 0.5
   - type: Tracer
@@ -367,7 +366,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 12
+        Piercing: 8
     armorPenetration: 0.4
   - type: Tracer
     color: "#6f7c82ff"
