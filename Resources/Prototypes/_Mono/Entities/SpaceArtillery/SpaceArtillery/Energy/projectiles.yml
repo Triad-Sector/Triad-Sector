@@ -477,7 +477,7 @@
     damage:
      types:
        Heat: 120
-       Structural: 125
+       Structural: 1250
   - type: HitscanSpawnEntity
     spawnedEntity: PrometheusExplosion
   - type: HitscanBasicRaycast
