@@ -1,6 +1,7 @@
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Content.Shared._Mono.Radar;
 
 namespace Content.Shared.Movement.Components;
 
@@ -29,6 +30,6 @@ public sealed partial class JetpackComponent : Component
     /// <summary>
     /// Mono - Determines the range that a jetpack shows up on blip radar.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite)]
+    [ViewVariables(VVAccess.ReadWrite), DataField]
     public float DetectionRange = 256f;
 }
