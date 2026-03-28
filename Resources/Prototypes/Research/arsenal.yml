@@ -81,6 +81,8 @@
   cost: 25000
   recipeUnlocks:
   - SignallerAdvanced
+  - PrintableBombCollar # Mono
+  - PrintableBombCollarSealer # Mono
   - SignalTrigger
   - VoiceTrigger
   - TimerTrigger
