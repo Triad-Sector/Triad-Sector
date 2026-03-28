@@ -318,20 +318,20 @@
           collection: MetalBreak
 
 - type: entity
-  id: BallisticArtilleryTier1HP # Basic PD. Slightly stronger than a reinforced wall.
+  id: BallisticArtilleryTier1HP # Basic PD. Rwall level.
   abstract: true
   components:
   - type: Destructible
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 3000
+        damage: 2500
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 2500
+        damage: 2000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -340,7 +340,7 @@
           collection: MetalBreak
 
 - type: entity
-  id: BallisticArtilleryTier2HP # Heavy Autocannons, Missiles, around 1.5x Plastitanium Health, 1x Reinforced Plastitanium Health. This is the baseline durability for your average sized anchorable weapon.
+  id: BallisticArtilleryTier2HP # Heavy Autocannons, Missiles, light pre-fracture weaponry, 1.4x stronger than plastitanium, 1x Reinforced Plastitanium Health. This is the baseline durability for your average sized anchorable weapon.
   abstract: true
   components:
   - type: Destructible
@@ -362,7 +362,7 @@
           collection: MetalBreak
 
 - type: entity
-  id: BallisticArtilleryTier3HP # Main cannons, Cyrexas, Torpedos, light pre-fracture weaponry. 2.1x Plastitanium health, Around 1.5x Reinforced Plastitanium Health. Typical for Larger-class weapons.
+  id: BallisticArtilleryTier3HP # Specialized weapons. Charons. Torpedos, some of the bigger medium sized guns. 2.1x Plastitanium health, Around 1.5x Reinforced Plastitanium Health. Typical for Larger-class weapons.
   abstract: true
   components:
   - type: Destructible
@@ -384,7 +384,7 @@
           collection: MetalBreak
 
 - type: entity
-  id: BallisticArtilleryTier4HP # Specialized, Capital Weapons, main cannon-level/specialized pre-fracture weaponry. 3.5x Plastitanium health, 2.5x Reinforced Plastitanium Health. Charons, siege guns, the like.
+  id: BallisticArtilleryTier4HP # Capital Weapons. Cyrexas, main cannons. Anything really big. 3.5x Plastitanium health, 2.5x Reinforced Plastitanium Health.
   abstract: true
   components:
   - type: Destructible
