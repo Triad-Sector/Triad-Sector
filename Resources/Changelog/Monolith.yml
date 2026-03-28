@@ -19048,3 +19048,12 @@ Entries:
   id: 2098
   time: '2026-03-28T18:16:36.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3459
+- author: EckoAurum
+  changes:
+    - type: Add
+      message: Added TSF and PDV Medical and Engineering Cyborg Variants.
+    - type: Add
+      message: Engineer cyborgs now have an inbuilt diagnostic hud.
+  id: 2099
+  time: '2026-03-28T18:43:12.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3444
