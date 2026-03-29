@@ -19112,3 +19112,10 @@ Entries:
   id: 2106
   time: '2026-03-29T15:49:12.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3598
+- author: Redrover1760
+  changes:
+    - type: Add
+      message: Adds tools VSC configuration.
+  id: 2107
+  time: '2026-03-29T16:19:46.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3618
