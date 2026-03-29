@@ -196,7 +196,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         var prototype = ShipShieldPrototype;
 
         var shield = Spawn(prototype, Transform(entity).Coordinates);
-        var shieldPhysics = AddComp<PhysicsComponent>(shield);
+        var shieldPhysics = EnsureComp<PhysicsComponent>(shield);
         var shieldComp = EnsureComp<ShipShieldComponent>(shield);
         shieldComp.Shielded = entity;
         shieldComp.Source = source;

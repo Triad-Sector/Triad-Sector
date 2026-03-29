@@ -6,3 +6,6 @@
   - type: ShipShield
   - type: ShipShieldVisuals
   - type: Fixtures
+  - type: Physics
+    bodyType: KinematicController
+    hard: false
