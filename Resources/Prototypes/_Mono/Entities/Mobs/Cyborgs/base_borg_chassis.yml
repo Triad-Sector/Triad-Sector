@@ -59,8 +59,8 @@
     tags:
     - Security
     - Armory
-    - Sergeant
-    - Bailiff
+    - TsfFTL
+    - TsfCaptain
     - Medical
     - Chemistry
     - TsfmcEngineering
@@ -123,7 +123,7 @@
     - PirateNF
   - type: Access
     tags:
-    - Pirate
+    - PDVBase
     - PDVCommand
     - GrandVizier
     - Mercenary
