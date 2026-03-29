@@ -25,13 +25,12 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     private const float EmitterUpdateRate = 1.5f;
 
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
-
     [Dependency] private readonly FixtureSystem _fixtureSystem = default!;
-
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
-
     [Dependency] private readonly PvsOverrideSystem _pvsSys = default!;
 
+    private EntityQuery<PhysicsComponent> _physicsQuery;
+    private EntityQuery<ProjectileComponent> _projectileQuery;
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -104,6 +103,9 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        _physicsQuery = GetEntityQuery<PhysicsComponent>();
+        _projectileQuery = GetEntityQuery<ProjectileComponent>();
+
         SubscribeLocalEvent<ShipShieldComponent, StartCollideEvent>(OnCollide);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentShutdown>(OnEmitterShutdown); // Mono
 
@@ -111,21 +113,13 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         InitializeEmitters();
     }
 
-
-    // Mono notes: THIS CODE BASICALLY DOES NOT WORK (especially for raycasted projectiles)
     private void OnCollide(EntityUid uid, ShipShieldComponent component, StartCollideEvent args)
     {
-        if (Transform(args.OtherEntity).Anchored)
-            return;
-
-        if (!TryComp<PhysicsComponent>(Transform(uid).GridUid, out var ourPhysics) || !TryComp<PhysicsComponent>(args.OtherEntity, out var theirPhysics))
-            return;
-
         // only handle ship weapons for now. engine update introduced physics regressions. Let's polish everything else and circle back yeah?
         if (!HasComp<ShipWeaponProjectileComponent>(args.OtherEntity))
             return;
 
-        if (!TryComp<ProjectileComponent>(args.OtherEntity, out var projectile))
+        if (!_projectileQuery.TryGetComponent(args.OtherEntity, out var projectile))
             return;
         if (projectile.Weapon is not null)
         {
@@ -133,17 +127,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (component.Shielded == Transform(projectile.Weapon.Value).GridUid)
                 return;
         }
-
-        var ourVelocity = ourPhysics.LinearVelocity;
-        var velocity = theirPhysics.LinearVelocity;
-
-        var collisionSpeedVector = Vector2.Subtract(ourVelocity, velocity);
-
-        if (Math.Abs(collisionSpeedVector.Length()) < CollisionThreshold)
-        {
-            return;
-        }
-
 
         //if (TryComp<TimedDespawnComponent>(args.OtherEntity, out var despawn))
         //    despawn.Lifetime += despawn.Lifetime;
@@ -163,7 +146,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
         if (component.Source != null)
         {
-            var ev = new ShieldDeflectedEvent(args.OtherEntity);
+            var ev = new ShieldDeflectedEvent(args.OtherEntity, projectile);
             RaiseLocalEvent(component.Source.Value, ref ev);
         }
     }
@@ -303,7 +286,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     }
 
     [ByRefEvent]
-    public record struct ShieldDeflectedEvent(EntityUid Deflected)
+    public record struct ShieldDeflectedEvent(EntityUid Deflected, ProjectileComponent Projectile)
     {
 
     }

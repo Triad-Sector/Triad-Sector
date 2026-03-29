@@ -46,15 +46,8 @@ public partial class ShipShieldsSystem
             component.Damage += exp.TotalIntensity;
         }
 
-        if (TryComp<ProjectileComponent>(args.Deflected, out var proj))
-        {
-            component.Damage += (float) proj.Damage.GetTotal();
-            proj.ProjectileSpent = true;
-        }
-        else if (TryComp<PhysicsComponent>(args.Deflected, out var phys))
-        {
-            component.Damage += phys.FixturesMass;
-        }
+        component.Damage += (float)args.Projectile.Damage.GetTotal();
+        args.Projectile.ProjectileSpent = true;
 
         QueueDel(args.Deflected);
     }
