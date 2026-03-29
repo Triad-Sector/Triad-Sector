@@ -19133,3 +19133,14 @@ Entries:
   id: 2107
   time: '2026-03-29T16:52:59.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3621
+- author: NazrinNya
+  changes:
+    - type: Tweak
+      message: improved mech and weapon larp.
+    - type: Tweak
+      message: improved inventory management.
+    - type: Add
+      message: added wyvern to shipyard
+  id: 2108
+  time: '2026-03-29T16:53:40.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3620
