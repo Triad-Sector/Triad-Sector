@@ -29,7 +29,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly PvsOverrideSystem _pvsSys = default!;
 
-    private EntityQuery<PhysicsComponent> _physicsQuery;
     private EntityQuery<ProjectileComponent> _projectileQuery;
     public override void Update(float frameTime)
     {
@@ -103,7 +102,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        _physicsQuery = GetEntityQuery<PhysicsComponent>();
         _projectileQuery = GetEntityQuery<ProjectileComponent>();
 
         SubscribeLocalEvent<ShipShieldComponent, StartCollideEvent>(OnCollide);
