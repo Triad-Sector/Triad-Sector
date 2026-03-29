@@ -19098,3 +19098,17 @@ Entries:
   id: 2104
   time: '2026-03-29T15:15:43.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3614
+- author: Ilya246
+  changes:
+    - type: Add
+      message: The xenopsychology research now lets you make the carp hardsuit.
+  id: 2105
+  time: '2026-03-29T15:48:53.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3599
+- author: Scarlet Lightweaver
+  changes:
+    - type: Tweak
+      message: Made the bulwarks gauntlets wideswing.
+  id: 2106
+  time: '2026-03-29T15:49:12.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3598
