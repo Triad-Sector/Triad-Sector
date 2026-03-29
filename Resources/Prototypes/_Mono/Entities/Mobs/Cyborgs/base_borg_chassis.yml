@@ -71,7 +71,7 @@
     - Mercenary
     - Captain
   - type: AccessReader
-    access: [["Security"], ["Armory"], ["Sergeant"], ["Bailiff"], ["TsfmcEngineering"], ["Brig"]]
+    access: [["Security"], ["Armory"], ["TsfFTL"], ["TsfCaptain"], ["TsfmcEngineering"], ["Brig"]]
   - type: IntrinsicRadioTransmitter
     channels:
     - Common
