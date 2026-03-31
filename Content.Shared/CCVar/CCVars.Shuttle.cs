@@ -258,7 +258,7 @@ public sealed partial class CCVars
     /// </summary>
     [CVarControl(AdminFlags.VarEdit)]
     public static readonly CVarDef<float> ImpactSlowdown =
-        CVarDef.Create("shuttle.impact.slowdown", 3f, CVar.SERVERONLY); //Previously: 1.6f
+        CVarDef.Create("shuttle.impact.slowdown", 2.5f, CVar.SERVERONLY); //Previously: 1.6f
 
     /// <summary>
     /// Minimum velocity change from impact for special throw effects (e.g. stuns, beakers breaking) to occur
