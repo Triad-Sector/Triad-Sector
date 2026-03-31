@@ -237,7 +237,7 @@ public sealed partial class CCVars
     /// </summary>
     [CVarControl(AdminFlags.VarEdit)]
     public static readonly CVarDef<float> ImpactStructuralDamage =
-        CVarDef.Create("shuttle.impact.structural_damage", 5f, CVar.SERVERONLY);
+        CVarDef.Create("shuttle.impact.structural_damage", 2f, CVar.SERVERONLY);
 
     /// <summary>
     /// Kinetic energy required to spawn sparks
