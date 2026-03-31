@@ -14,6 +14,12 @@ public sealed partial class MobThresholdsComponent : Component
     [DataField("thresholds", required: true)]
     public SortedDictionary<FixedPoint2, MobState> Thresholds = new();
 
+    /// <summary>
+    /// Mono - Prescaled Thresholds, used in HumanoidPhysicsScalingSystem
+    /// </summary>
+    [DataField]
+    public SortedDictionary<FixedPoint2, MobState> OldThresholds = new();
+
     [DataField("triggersAlerts")]
     public bool TriggersAlerts = true;
 
