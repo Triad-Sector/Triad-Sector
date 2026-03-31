@@ -106,7 +106,7 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
         Log.Debug($"Updated physics hitbox for {ToPrettyString(uid)}: Height={humanoid.Height:F2}, Width={humanoid.Width:F2}, Radius={newRadius:F2}");
     }
 
-    private void ScaleMobThresholds(EntityUid uid, float scale, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice
+    private void ScaleMobThresholds(EntityUid uid, float scale, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
     {
         if (!_mobThresholds.TryGetThresholdForState(uid, MobState.Dead, out var death, thresholdsComp))
             return;
