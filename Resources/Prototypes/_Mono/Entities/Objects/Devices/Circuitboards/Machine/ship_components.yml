@@ -188,7 +188,7 @@
       Glass: 20
       Steel: 20
       UraniumFissile: 2
-      
+
 - type: entity
   id: MachineDriveCTLA65Circuitboard
   parent: BaseMachineCircuitboard
@@ -198,7 +198,7 @@
   - type: Sprite
     state: security
   - type: MachineBoard
-    prototype: MachineFTLDrive50
+    prototype: MachineFTLDrive65
     requirements:
       Capacitor: 1
       Manipulator: 65

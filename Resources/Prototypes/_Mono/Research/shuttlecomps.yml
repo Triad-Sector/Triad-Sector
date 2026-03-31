@@ -1,6 +1,6 @@
 - type: technology
   id: ShuttleAdvancedComponents
-  name: research-technology-shuttle-advanced-components 
+  name: research-technology-shuttle-advanced-components
   entityIcon: ComputerAdvancedRadar
   discipline: CivilianServices
   tier: 3
@@ -32,6 +32,7 @@
   recipeUnlocks:
   - MachineDriveCTLA25sCircuitboard
   - MachineDriveCTLA50Circuitboard
+  - MachineDriveCTLA65Circuitboard
   technologyPrerequisites:
   - ShuttleAdvancedComponents
   - PortableFission

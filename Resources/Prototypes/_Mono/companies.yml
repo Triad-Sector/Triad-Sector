@@ -266,12 +266,12 @@
 - type: company
   id: RedSailCorsairs
   form: Antagonist
-  name: RedSail Corsairs 
+  name: RedSail Corsairs
   description: redsail-corsairs-description
   color: "#930000"
   image: /Textures/_Mono/Companies/redsailcorsairs.png
   disabled: true
-  logins: # Waiting for others to give me theyr SS14 names, 17 total 
+  logins: # Waiting for others to give me theyr SS14 names, 17 total
   - Corrupt
   - Jasos
   - Luksu
@@ -287,7 +287,7 @@
   - Ether
   - MapleSilk
   - Spacepeing
-  - zigcraft 
+  - zigcraft
   - burrrkeye
   - enkidienne
   - chugaa
@@ -298,5 +298,5 @@
   id: 65company
   form: Antagonist
   name: YARA KAMERONI (羢啇槳揯劶) INDUSTRIES INCORPORATED (钭欆龸)
-  description: 65company-description
+  description: six-five-company-description
   color: "#14515E"
