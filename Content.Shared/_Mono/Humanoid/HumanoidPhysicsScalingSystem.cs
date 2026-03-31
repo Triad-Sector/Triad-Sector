@@ -100,11 +100,13 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
             }
         }
 
+        ScaleMobThresholds(uid, scale);
+
         // Log the change for debugging
         Log.Debug($"Updated physics hitbox for {ToPrettyString(uid)}: Height={humanoid.Height:F2}, Width={humanoid.Width:F2}, Radius={newRadius:F2}");
     }
 
-    private void ScaleMobThresholds(EntityUid uid, float scale, MobThresholdsComponent? thresholdsComp = null)
+    private void ScaleMobThresholds(EntityUid uid, float scale, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice
     {
         if (!_mobThresholds.TryGetThresholdForState(uid, MobState.Dead, out var death, thresholdsComp))
             return;
@@ -115,8 +117,8 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
         var newCriticalValue = FixedPoint2.Max(0, crit.Value * scale);
         var newDeathValue = FixedPoint2.Max(0, death.Value * scale);
 
+        _mobThresholds.SetMobStateThreshold(uid, newCriticalValue, MobState.Critical, thresholdsComp);
         _mobThresholds.SetMobStateThreshold(uid, newDeathValue, MobState.Dead, thresholdsComp);
-        _mobThresholds.SetMobStateThreshold(uid, newDeathValue, MobState.Critical, thresholdsComp);
     }
 
     /// <summary>
