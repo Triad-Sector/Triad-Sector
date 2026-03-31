@@ -1,9 +1,11 @@
 using Content.Shared._Shitmed.Humanoid.Events;
 using Content.Shared.FixedPoint;
+using Content.Shared.Ghost;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Sprite;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Systems;
@@ -88,9 +90,8 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
 
         // Calculate the new radius based on height and width
         // We take the average of height and width for a circular hitbox
-        var scale = MathF.Sqrt(MathF.Pow(humanoid.Height, 2) + MathF.Pow(humanoid.Width, 2)) / MathF.Sqrt(2.0f);
+        CalculateScale(uid, humanoid, out var scale);
         var newRadius = DefaultHitboxRadius * scale;
-
         // Update all circular fixtures (most humanoids should have just one main fixture)
         foreach (var (fixtureId, fixture) in fixtures.Fixtures)
         {
@@ -100,25 +101,28 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
             }
         }
 
-        ScaleMobThresholds(uid, scale);
+        ScaleMobThresholds(uid, humanoid, MobState.Dead);
+        ScaleMobThresholds(uid, humanoid, MobState.Critical);
 
         // Log the change for debugging
         Log.Debug($"Updated physics hitbox for {ToPrettyString(uid)}: Height={humanoid.Height:F2}, Width={humanoid.Width:F2}, Radius={newRadius:F2}");
     }
 
-    private void ScaleMobThresholds(EntityUid uid, float scale, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
+    private void CalculateScale(EntityUid uid, HumanoidAppearanceComponent humanoid, out float scale)
     {
-        if (!_mobThresholds.TryGetThresholdForState(uid, MobState.Dead, out var death, thresholdsComp))
+        scale = MathF.Sqrt(MathF.Pow(humanoid.Height, 2) + MathF.Pow(humanoid.Width, 2)) / MathF.Sqrt(2.0f);
+    }
+
+    private void ScaleMobThresholds(EntityUid uid, HumanoidAppearanceComponent humanoid, MobState state, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
+    {
+
+        if (!_mobThresholds.TryGetThresholdForState(uid, state, out var threshold, thresholdsComp))
             return;
+        CalculateScale(uid, humanoid, out var scale);
 
-        if (!_mobThresholds.TryGetThresholdForState(uid, MobState.Critical, out var crit, thresholdsComp))
-            return;
+        var newThresholdValue = FixedPoint2.Max(0, threshold.Value * scale);
 
-        var newCriticalValue = FixedPoint2.Max(0, crit.Value * scale);
-        var newDeathValue = FixedPoint2.Max(0, death.Value * scale);
-
-        _mobThresholds.SetMobStateThreshold(uid, newCriticalValue, MobState.Critical, thresholdsComp);
-        _mobThresholds.SetMobStateThreshold(uid, newDeathValue, MobState.Dead, thresholdsComp);
+        _mobThresholds.SetMobStateThreshold(uid, newThresholdValue, state, thresholdsComp);
     }
 
     /// <summary>
