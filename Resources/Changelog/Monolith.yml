@@ -19350,3 +19350,12 @@ Entries:
   id: 2123
   time: '2026-03-30T19:41:36.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3650
+- author: mikusssssss
+  changes:
+    - type: Remove
+      message: Removed useless rules
+    - type: Tweak
+      message: Changed most rules
+  id: 2124
+  time: '2026-03-31T13:18:02.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3659
