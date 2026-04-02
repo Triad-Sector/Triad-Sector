@@ -1,4 +1,3 @@
-using Content.Shared._Mono.Traits.Physical;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -9,35 +8,38 @@ namespace Content.Shared._Mono.Traits.Physical;
 /// <summary>
 /// Applies the Will To Live trait effects by increasing the death health threshold.
 /// </summary>
-public sealed class SizeMobThresholdAdjustmentSystem : EntitySystem
+public sealed class MobThresholdScaleSystem : EntitySystem
 {
     [Dependency] private readonly MobThresholdSystem _mobThresholds = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SizeMobThresholdAdjustment, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<SizeMobThresholdAdjustment, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<MobThresholdScaleComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<MobThresholdScaleComponent, ComponentShutdown>(OnShutdown);
     }
 
-    private void OnStartup(Entity<WillToLiveComponent> ent, ref ComponentStartup args)
+    private void OnStartup(Entity<MobThresholdScaleComponent> ent, ref ComponentStartup args)
     {
-        AdjustDeathThreshold(ent.Owner, ent.Comp.DeadIncrease);
+        ScaleMobThresholds(ent, MobState.Critical);
+        ScaleMobThresholds(ent, MobState.Dead);
     }
 
-    private void OnShutdown(Entity<WillToLiveComponent> ent, ref ComponentShutdown args)
+    private void OnShutdown(Entity<MobThresholdScaleComponent> ent, ref ComponentShutdown args)
     {
-        AdjustDeathThreshold(ent.Owner, -ent.Comp.DeadIncrease);
+        ent.Comp.Scale = 1;
+        ScaleMobThresholds(ent, MobState.Critical);
+        ScaleMobThresholds(ent, MobState.Dead);
     }
 
-    private void AdjustDeathThreshold(EntityUid uid, int deltaPoints, MobThresholdsComponent? thresholdsComp = null)
+    private void ScaleMobThresholds(Entity<MobThresholdScaleComponent> ent, MobState state, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
     {
-        if (!_mobThresholds.TryGetThresholdForState(uid, MobState.Dead, out var current, thresholdsComp))
+
+        if (!_mobThresholds.TryGetThresholdForState(ent, state, out var threshold, thresholdsComp))
             return;
+        var thresholdModification = FixedPoint2.Max(0, threshold.Value * ent.Comp.scale);
 
-        var newValue = FixedPoint2.Max(0, current.Value + deltaPoints);
-
-        _mobThresholds.SetMobStateThreshold(uid, newValue, MobState.Dead, thresholdsComp);
+        _mobThresholds.SetMobStateThreshold(ent.Owner, newThresholdValue, state, thresholdsComp);
     }
 }
 
