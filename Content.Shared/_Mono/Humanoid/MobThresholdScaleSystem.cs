@@ -1,3 +1,4 @@
+using System.Xml;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -8,40 +9,61 @@ namespace Content.Shared._Mono.Traits.Physical;
 /// <summary>
 /// Applies the Will To Live trait effects by increasing the death health threshold.
 /// </summary>
-public sealed class MobThresholdScaleSystem : EntitySystem
+public sealed class MobThresholdAdjustmentSystem : EntitySystem
 {
     [Dependency] private readonly MobThresholdSystem _mobThresholds = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<MobThresholdScaleComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<MobThresholdScaleComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<MobThresholdAdjustmentComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<MobThresholdAdjustmentComponent, ComponentShutdown>(OnShutdown);
     }
 
-    private void OnStartup(Entity<MobThresholdScaleComponent> ent, ref ComponentStartup args)
+    private void OnStartup(EntityUid uid, MobThresholdAdjustmentComponent comp, ref ComponentStartup args)
     {
-        ScaleMobThresholds(ent, MobState.Critical);
-        ScaleMobThresholds(ent, MobState.Dead);
-    }
-
-    private void OnShutdown(Entity<MobThresholdScaleComponent> ent, ref ComponentShutdown args)
-    {
-        ent.Comp.Scale = 1;
-        ScaleMobThresholds(ent, MobState.Critical);
-        ScaleMobThresholds(ent, MobState.Dead);
-    }
-
-    private void ScaleMobThresholds(Entity<MobThresholdScaleComponent> ent, MobState state, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
-    {
-
-        if (!_mobThresholds.TryGetThresholdForState(ent, state, out var threshold, thresholdsComp))
+        if (!TryComp<MobThresholdsComponent>(uid, out var thresholdsComp))
             return;
-        var thresholdModification = FixedPoint2.Max(0, threshold.Value * ent.Comp.scale);
+        comp.OldThresholds = thresholdsComp.Thresholds;
+        ScaleMobThresholds(uid, comp);
+    }
 
-        _mobThresholds.SetMobStateThreshold(ent.Owner, newThresholdValue, state, thresholdsComp);
+    private void OnShutdown(EntityUid uid, MobThresholdAdjustmentComponent comp, ref ComponentShutdown args)
+    {
+        ResetMobThresholds(uid, comp);
+    }
+
+    private void ResetMobThresholds(EntityUid uid, MobThresholdAdjustmentComponent comp)
+    {
+        var oldThresholds = new Dictionary<FixedPoint2, MobState>(comp.OldThresholds);
+
+        foreach (var (damageThreshold, state) in oldThresholds)
+        {
+            _mobThresholds.SetMobStateThreshold(uid, damageThreshold, state);
+        }
+    }
+    public bool ScaleMobThresholds(EntityUid uid, MobThresholdAdjustmentComponent comp)
+    {
+        if (!TryComp<MobThresholdsComponent>(uid, out var thresholdsComp))
+            return false;
+
+        ResetMobThresholds(uid, comp);
+
+        foreach (MobState mobstate in Enum.GetValues<MobState>())
+        {
+            if (mobstate == MobState.Invalid)
+                continue;
+
+            if (_mobThresholds.TryGetThresholdForState(uid, mobstate, out var threshold, thresholdsComp))
+            {
+                threshold *= comp.Scale;
+                if (mobstate == MobState.Critical)
+                    threshold += comp.CritThresholdMod;
+                if (mobstate == MobState.Dead)
+                    threshold += comp.DeathThresholdMod;
+                _mobThresholds.SetMobStateThreshold(uid, (FixedPoint2)threshold, mobstate, thresholdsComp);
+            }
+        }
+        return true;
     }
 }
-
-
-

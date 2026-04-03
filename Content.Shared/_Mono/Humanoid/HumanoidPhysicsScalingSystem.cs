@@ -1,3 +1,4 @@
+using Content.Shared._Mono.Traits.Physical;
 using Content.Shared._Shitmed.Humanoid.Events;
 using Content.Shared.FixedPoint;
 using Content.Shared.Ghost;
@@ -6,6 +7,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Sprite;
+using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Systems;
@@ -18,7 +20,8 @@ namespace Content.Shared._Mono.Humanoid;
 public sealed class HumanoidPhysicsScalingSystem : EntitySystem
 {
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly MobThresholdSystem _mobThresholds = default!;
+    [Dependency] private readonly MobThresholdAdjustmentSystem _mobThresholdsAdjustment = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     /// <summary>
     /// The default radius for humanoid hitboxes. This is the baseline from which we scale.
@@ -101,8 +104,11 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
             }
         }
 
-        ScaleMobThresholds(uid, humanoid, MobState.Dead);
-        ScaleMobThresholds(uid, humanoid, MobState.Critical);
+        // Update Health
+        EnsureComp<MobThresholdAdjustmentComponent>(uid, out var adjustmentComp);
+        adjustmentComp.Scale = scale;
+        if (_net.IsServer)
+            _mobThresholdsAdjustment.ScaleMobThresholds(uid, adjustmentComp);
 
         // Log the change for debugging
         Log.Debug($"Updated physics hitbox for {ToPrettyString(uid)}: Height={humanoid.Height:F2}, Width={humanoid.Width:F2}, Radius={newRadius:F2}");
@@ -111,18 +117,6 @@ public sealed class HumanoidPhysicsScalingSystem : EntitySystem
     private void CalculateScale(EntityUid uid, HumanoidAppearanceComponent humanoid, out float scale)
     {
         scale = MathF.Sqrt(MathF.Pow(humanoid.Height, 2) + MathF.Pow(humanoid.Width, 2)) / MathF.Sqrt(2.0f);
-    }
-
-    private void ScaleMobThresholds(EntityUid uid, HumanoidAppearanceComponent humanoid, MobState state, MobThresholdsComponent? thresholdsComp = null) // issue: triggers twice. Get current hitbox vs old and recalcualte instead
-    {
-
-        if (!_mobThresholds.TryGetThresholdForState(uid, state, out var threshold, thresholdsComp))
-            return;
-        CalculateScale(uid, humanoid, out var scale);
-
-        var newThresholdValue = FixedPoint2.Max(0, threshold.Value * scale);
-
-        _mobThresholds.SetMobStateThreshold(uid, newThresholdValue, state, thresholdsComp);
     }
 
     /// <summary>

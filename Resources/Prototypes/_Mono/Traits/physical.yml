@@ -80,7 +80,8 @@
     components:
     - BorgChassis
   components:
-  - type: WillToLive
+  - type: MobThresholdAdjustment
+    deathThresholdMod: 15
 
 - type: trait
   id: WillToDie
@@ -96,7 +97,9 @@
     components:
     - BorgChassis
   components:
-  - type: WillToDie
+  - type: MobThresholdAdjustment
+    deathThresholdMod: -15
+
 
 - type: trait
   id: Thieving
@@ -256,8 +259,8 @@
     components:
     - BorgChassis
   components:
-  - type: WillToDie
-    deadDecrease: 100
+  - type: MobThresholdAdjustment
+    deathThresholdMod: -100
 
 - type: trait
   id: StrikingCalluses
@@ -308,7 +311,7 @@
           Blunt: 3.5
           Slash: 3.5
           Piercing: 3.5
-          
+
 - type: trait
   id: HardenedLymphocytes
   name: trait-hardened-lymphocytes-name
