@@ -19280,3 +19280,12 @@ Entries:
   id: 2126
   time: '2026-04-03T18:28:23.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3602
+- author: Redrover1760
+  changes:
+    - type: Tweak
+      message: >-
+        Civilian/Merc borg HP buffed 150->200, civ/merc borg burn damage
+        modifier reduced from 1.5 to 1.
+  id: 2127
+  time: '2026-04-03T18:29:10.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3578
