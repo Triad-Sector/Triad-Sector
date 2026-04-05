@@ -1,4 +1,5 @@
-﻿﻿﻿[head=3][color=#ff0000]WARNING: You must be 18 or older to play. Users under 18 will be banned immediately.[/head][/color]
+﻿<Document>
+﻿[head=3][color=#ff0000]WARNING: You must be 18 or older to play. Users under 18 will be banned immediately.[/head][/color]
 
 [color=#99ff99]Triad is an english speaking 18+ medium roleplay server[/color]
 
@@ -198,18 +199,23 @@ Leeway is given to theatrical roles such as the clown, boxer, and mime; these ro
 [color=#a4885c]12.4[/color] Don't intentionally round remove other players unless related to an objective. *1
 
 
-[color=#ffff00][head=3]Section 13: Ship saving[/head][/color] [color=#a4885c]13.1[/color] Ships are to be no larger than 80x50 tiles. [color=#a4885c] *1
+[color=#ffff00][head=3]Section 13: Ship saving[/head][/color]
 
-13.2[/color] Do not abuse the ship save mechanic to avoid in-character consequences. [color=#a4885c] *2
+[color=#a4885c]13.1[/color] Ships are to be no larger than 80x50 tiles. *1
 
-13.3[/color] Do not exploit the stash to duplicate items. This especially goes for contraband. [color=#a4885c] *3
+[color=#a4885c]13.2[/color] Do not abuse the ship save mechanic to avoid in-character consequences. *2
 
-13.4[/color] Do not use inventories to circumvent stash restrictions. [color=#a4885c] *2
+[color=#a4885c]13.3[/color] Do not exploit the stash to duplicate items. This especially goes for contraband. *3
 
-13.5[/color] Ship saving backups are only to be used in the event of ship destruction or loss due to a server crash or other unforseen issue. Loading backups otherwise is only to be done with admin permission. [color=#a4885c] *1
+[color=#a4885c]13.4[/color] Do not use inventories to circumvent stash restrictions. *2
 
-13.6[/color] Do not under any circumstances modify a ship save file without admin permission (like with the engine update). [color=#a4885c] *2
+[color=#a4885c]13.5[/color] Ship saving backups are only to be used in the event of ship destruction or loss due to a server crash or other unforseen issue. Loading backups otherwise is only to be done with admin permission. *1
 
-13.7[/color] Do not go afk for extended periods on your ship (like logging off to sleep). The ship saving is provided to allow people to save progress without the need to do this. UNATTENDED SHIPS WILL BE REMOVED. *1
+[color=#a4885c]13.6[/color] Do not under any circumstances modify a ship save file without admin permission (like with the engine update). *2
+
+[color=#a4885c]13.7[/color] Do not go afk for extended periods on your ship (like logging off to sleep). The ship saving is provided to allow people to save progress without the need to do this. UNATTENDED SHIPS WILL BE REMOVED. *1
 
 [color=#a4885c]13.8[/color] DO NOT ADD MORE THAN ONE BLUESPACE STASH PER SHIP. *3
+
+
+ </Document>
