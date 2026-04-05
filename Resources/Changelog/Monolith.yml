@@ -19369,3 +19369,10 @@ Entries:
   id: 2137
   time: '2026-04-05T10:30:34.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3697
+- author: Ilya246
+  changes:
+    - type: Fix
+      message: Drone cores will no longer endlessly keep firing at dead people.
+  id: 2138
+  time: '2026-04-05T12:21:26.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3699
