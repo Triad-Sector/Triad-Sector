@@ -6,11 +6,11 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server._Mono.Company;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
-using Content.Shared._Common.Consent; // Consent system
+using Content.Shared._Mono.Company;
 using Content.Shared.Administration.Logs;
-using Content.Shared.Construction.Prototypes;
 using Content.Shared.Database;
 using Content.Shared.Ghost.Roles;
 using Content.Shared.Humanoid;
@@ -1942,133 +1942,116 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
 
         #endregion
 
-        #region Consent Settings
+        // Mono
+        #region Company
 
-        private static async Task DeletePlayerConsentSettings(ServerDbContext db, NetUserId userId)
+        public async Task<bool> AddCompanyMember(Guid player, ProtoId<CompanyPrototype> company)
         {
-            var consentSettings = await db.ConsentSettings
-                .Where(c => c.UserId == userId.UserId)
+            await using var db = await GetDb();
+            var exists = await db.DbContext.CompanyMembers
+                .Where(w => w.PlayerUserId == player)
+                .Where(w => w.CompanyId == company.Id)
+                .AnyAsync();
+
+            if (exists)
+                return false;
+
+            var member = new CompanyMember
+            {
+                PlayerUserId = player,
+                CompanyId = company,
+            };
+            db.DbContext.CompanyMembers.Add(member);
+            await db.DbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<string>> GetPlayerCompanies(Guid player, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            return await db.DbContext.CompanyMembers
+                .Where(w => w.PlayerUserId == player)
+                .Select(w => w.CompanyId)
+                .ToListAsync(cancel);
+        }
+
+        public async Task<IEnumerable<CompanyMemberRecord>> GetCompanyMembers(ProtoId<CompanyPrototype> company, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var members = await db.DbContext.CompanyMembers
+                .Where(w => w.CompanyId == company.Id)
+                .Include(c => c.Player)
+                .ToListAsync(cancel);
+
+            return members.Select(m => new CompanyMemberRecord()
+            {
+                Company = company,
+                Owner = m.Owner,
+                PlayerUserId = m.PlayerUserId,
+                LastSeenUserName = m.Player.LastSeenUserName,
+            });
+        }
+
+        public async Task<IEnumerable<CompanyMemberRecord>> GetAllCompanyMembers(CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var members = await db.DbContext.CompanyMembers
+                .Include(c => c.Player)
+                .ToListAsync(cancel);
+
+            return members.Select(m => new CompanyMemberRecord()
+            {
+                Company = m.CompanyId,
+                Owner = m.Owner,
+                PlayerUserId = m.PlayerUserId,
+                LastSeenUserName = m.Player.LastSeenUserName,
+            });
+        }
+
+        public async Task<CompanyMemberRecord?> GetCompanyMember(ProtoId<CompanyPrototype> company, Guid player, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var member = await db.DbContext.CompanyMembers
+                .Where(w => w.CompanyId == company.Id)
+                .Where(w => w.PlayerUserId == player)
+                .Include(c => c.Player)
+                .FirstOrDefaultAsync();
+
+            if (member == null)
+                return null;
+
+            return new CompanyMemberRecord()
+            {
+                Company = company,
+                LastSeenUserName = member.Player.LastSeenUserName,
+                Owner = member.Owner,
+                PlayerUserId = member.PlayerUserId,
+            };
+        }
+
+        public async Task SetCompanyOwner(ProtoId<CompanyPrototype> company, Guid player, bool owner)
+        {
+            await using var db = await GetDb();
+            await db.DbContext.CompanyMembers
+                .Where(w => w.CompanyId == company.Id)
+                .Where(w => w.PlayerUserId == player)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Owner, owner));
+        }
+
+        public async Task<bool> RemoveCompanyMember(Guid player, ProtoId<CompanyPrototype> company)
+        {
+            await using var db = await GetDb();
+            var entry = await db.DbContext.CompanyMembers
+                .Where(w => w.PlayerUserId == player)
+                .Where(w => w.CompanyId == company.Id)
                 .SingleOrDefaultAsync();
 
-            if (consentSettings is null)
-            {
-                return;
-            }
+            if (entry == null)
+                return false;
 
-            db.ConsentSettings.Remove(consentSettings);
-        }
-
-        public async Task SavePlayerConsentSettingsAsync(NetUserId userId, PlayerConsentSettings? consentSettings)
-        {
-            await using var db = await GetDb();
-
-            if (consentSettings is null)
-            {
-                await DeletePlayerConsentSettings(db.DbContext, userId);
-                await db.DbContext.SaveChangesAsync();
-                return;
-            }
-
-            // Get current consent settings so we know if freetext needs updating and which toggles to add or remove
-            var currentConsentSettings = await db.DbContext.ConsentSettings
-                .Include(c => c.ConsentToggles)
-                .AsSplitQuery()
-                .SingleOrDefaultAsync(c => c.UserId == userId);
-
-            if (currentConsentSettings is null)
-            {
-                currentConsentSettings = new ConsentSettings() {
-                    UserId = userId,
-                    ConsentToggles = new(),
-                    ConsentFreetext = consentSettings.Freetext,
-                    ConsentFreetextUpdatedAt = DateTime.Now,
-                };
-
-                db.DbContext.ConsentSettings.Add(currentConsentSettings);
-            }
-            else if (currentConsentSettings.ConsentFreetext != consentSettings.Freetext)
-            {
-                currentConsentSettings.ConsentFreetext = consentSettings.Freetext;
-                currentConsentSettings.ConsentFreetextUpdatedAt = DateTime.Now;
-            }
-
-            Dictionary<ProtoId<ConsentTogglePrototype>, string> currentConsentToggles = currentConsentSettings.ConsentToggles.ToDictionary(
-                keySelector: t => new ProtoId<ConsentTogglePrototype>(t.ToggleProtoId),
-                elementSelector: t => t.ToggleProtoState
-            );
-
-            // Remove and update toggles
-            foreach (var toggle in currentConsentToggles)
-            {
-                if (consentSettings.Toggles.TryGetValue(toggle.Key, out var toggleState))
-                {
-                    currentConsentSettings.ConsentToggles.Where(t => t.ToggleProtoId == toggle.Key).First().ToggleProtoState = toggleState;
-                }
-                else
-                {
-                    currentConsentSettings.ConsentToggles.RemoveAll(t => t.ToggleProtoId == toggle.Key);
-                }
-            }
-            // Add new toggles
-            foreach (var toggle in consentSettings.Toggles)
-            {
-                if (currentConsentToggles.ContainsKey(toggle.Key))
-                    continue;
-
-                currentConsentSettings.ConsentToggles.Add(new ()
-                {
-                    ToggleProtoId = toggle.Key,
-                    ToggleProtoState = toggle.Value,
-                });
-            }
-
+            db.DbContext.CompanyMembers.Remove(entry);
             await db.DbContext.SaveChangesAsync();
-        }
-
-        public async Task<ConsentSettings> GetPlayerConsentSettingsAsync(NetUserId userId)
-        {
-            await using var db = await GetDb();
-
-            var consentSettings = await db.DbContext.ConsentSettings
-                .Include(c => c.ConsentToggles)
-                .Include(c => c.ReadReceipts)
-                .SingleOrDefaultAsync(c => c.UserId == userId);
-
-            if (consentSettings is null)
-                return new();
-
-            return consentSettings;
-        }
-
-        public async Task<ConsentFreetextReadReceipt?> GetPlayerConsentReadReceipt(NetUserId readerUserId, int consentSettingsId)
-        {
-            await using var db = await GetDb();
-
-            return await db.DbContext.ConsentFreetextReadReceipt
-                .SingleOrDefaultAsync(c => c.ReaderUserId == readerUserId && c.ReadConsentSettingsId == consentSettingsId);
-        }
-
-        public async Task<ConsentFreetextReadReceipt> UpdatePlayerConsentReadReceipt(NetUserId readerUserId, int readConsentSettingsId)
-        {
-            await using var db = await GetDb();
-
-            var readRecipe = await db.DbContext.ConsentFreetextReadReceipt
-                .SingleOrDefaultAsync(c => c.ReaderUserId == readerUserId && c.ReadConsentSettingsId == readConsentSettingsId);
-
-            if (readRecipe is null)
-            {
-                readRecipe = new ConsentFreetextReadReceipt
-                {
-                    ReaderUserId = readerUserId,
-                    ReadConsentSettingsId = readConsentSettingsId,
-                    ReadAt = DateTime.Now,
-                };
-            }
-            else {
-                readRecipe.ReadAt = DateTime.Now;
-            }
-
-            return readRecipe;
+            return true;
         }
 
         #endregion
