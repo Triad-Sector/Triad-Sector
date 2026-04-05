@@ -19476,3 +19476,10 @@ Entries:
   id: 2146
   time: '2026-04-05T21:34:46.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3075
+- author: Redrover1760
+  changes:
+    - type: Tweak
+      message: Increased 57mm explosive damage
+  id: 2147
+  time: '2026-04-05T21:42:55.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3334
