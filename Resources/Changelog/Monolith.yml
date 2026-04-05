@@ -19432,3 +19432,12 @@ Entries:
   id: 2144
   time: '2026-04-05T18:42:53.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3706
+- author: 10kee
+  changes:
+    - type: Fix
+      message: >-
+        Guidebook now correctly lists shift duration as six hours rather than
+        eight.
+  id: 2145
+  time: '2026-04-05T20:30:36.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3708
