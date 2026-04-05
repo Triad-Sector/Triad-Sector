@@ -1,0 +1,133 @@
+[game]
+hostname = "[EN][MRP][18+]Triad Sector"
+desc = "Triad Sector is a unique twist on the traditional Space Station gameplay. In the Triad Sector, everyone can be the captain of their own ship to venture forth and explore space beyond the station! Salvage, mine, research, trade, or explore your way to riches aboard your own vessel! Includes ships saving!"
+lobbyenabled = true
+lobbyduration = 180
+
+[game.panic_bunker]
+enabled = false
+min_overall_minutes = 240
+disable_with_admins = true
+enable_without_admins = true
+show_reason = true
+custom_reason = "You have not played on Triad sector long enough to connect to this server. Please play on Triad until you have more playtime."
+
+[infolinks]
+discord    = "https://discord.gg/q6dqdPcMnv" # Triad
+github     = "https://github.com/Triad-Sector/Triad"  # Triad
+
+[net]
+max_connections = 256
+tickrate = 30
+port = 25663
+bindto = "::,0.0.0.0"
+# Automatic port forwarding!
+# Disabled by default because you may not want to do this.
+# upnp = true
+
+[vote]
+restart_required_ratio = 0.85
+preset_enabled = true
+
+[nf14.salvage]
+expedition_rewards_enabled = true
+
+[netres]
+limit = 10.0
+
+[admin]
+see_own_notes = true
+deadmin_on_join = true
+allow_multi_server_play = false
+
+[admin.alert]
+min_players_sharing_connection = 2
+
+[server]
+id = "Triad"
+rules_file = "FrontierRuleset"
+uptime_restart_minutes = 0
+
+[discord]
+rich_main_icon_id = "Triad"
+# Webhook to send adminhelp messages to.
+ahelp_webhook = ""
+# Webhook to send round status messages to.
+round_update_webhook = ""
+# Optionally, a role ID to ping when the round has ended.
+# round_end_role = "<Role ID to ping>"
+
+[ic]
+flavor_text = true
+punctuation = true
+
+[worldgen]
+enabled = true
+
+[rules]
+time = 30
+
+[ahelp]
+admin_prefix = false
+admin_prefix_webhook = false
+
+[votekick]
+enabled = false
+eligible_number = 5
+initiator_ghost_requirement = false
+voter_ghost_requirement = false
+
+[atmos]
+space_wind = true
+
+[shuttle]
+arrivals = false
+emergency_dock_time = 1800 # an extra 28 minutes over the default
+emergency_transit_time_min = 300
+auto_call_extension_time = 45
+emergency_early_launch_allowed = false
+
+[biomass]
+easy_mode = false # reclaimer can work on soul-ful bodies, mrp server
+
+[control]
+storage_limit = 3
+
+[whitelist]
+enabled = true
+
+[auth]
+# Authentication (accounts):
+# 0 = Optional, 1 = Required, 2 = Disabled
+# Presumably do require authentication on any public server.
+mode = 1
+# If true, even if authentication is required, localhost is still allowed to login directly regardless.
+# You should probably never EVER need to touch this, but if you need a custom auth server,
+# (the auth server being the one which manages Space Station 14 accounts), you change it here.
+server = "https://auth.spacestation14.com/"
+
+[hub]
+# Set to true to show this server on the public server list
+# Before enabling this, read: https://docs.spacestation14.io/hosts/hub-rules
+advertise = true
+# Comma-separated list of tags, useful for categorizing your server.
+# See https://docs.spacestation14.io/hosts/hub-rules for more details on this when it becomes relevant.
+tags = "18+, lang:en, rp:med"
+# URL of your server. Fill this in if you have a domain name,
+# want to use HTTPS (with a reverse proxy), or other advanced scenarios.
+# Must be in the form of an ss14:// or ss14s:// URI pointing to the status API.
+server_url = ""
+# Comma-separated list of URLs of hub servers to advertise to.
+hub_urls = "https://hub.spacestation14.com/"
+
+[status]
+# The status server is the TCP side, used by the launcher to determine engine version, etc.
+# To be clear: Disabling it makes the launcher unable to connect!
+enabled = true
+# This is the address and port the status server binds to.
+# The port is by default set based on net.port so it will follow what you set there.
+bind = "*:25663"
+# This is the address of the SS14 server as the launcher uses it.
+# This is only needed if you're proxying the status HTTP server -
+#  by default the launcher will assume the address and port match that of the status server.
+connectaddress = ""
