@@ -19441,3 +19441,38 @@ Entries:
   id: 2145
   time: '2026-04-05T20:30:36.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3708
+- author: OneZerooo0
+  changes:
+    - type: Add
+      message: You can now print "Sticky bombs" with explosive research.
+    - type: Add
+      message: TSF get the "Smilodon" DEW LMG and the "Calico" DEW rifle
+    - type: Add
+      message: TSF get the "Osiris" grenade launcher.
+    - type: Add
+      message: PDV get the "Sultan" 4-gauge shotgun and "Panzero" portable anti-tank.
+    - type: Add
+      message: PDV are able to print "Dirty bombs" - radioactive area denial devices.
+    - type: Tweak
+      message: >-
+        Energy shields have reduced reflect chance and their reflected
+        projectiles deal less damage.
+    - type: Remove
+      message: >-
+        Ashstorm is no longer available to TSF. It has been superseded by the
+        Smilodon.
+    - type: Tweak
+      message: Buffed M86 heat/explosive/stamina protection
+    - type: Tweak
+      message: Buffed M92X soft shield and nerfed its base resistances.
+    - type: Tweak
+      message: Energy shields can break from lots of damage from lasers.
+    - type: Tweak
+      message: Energy swords can reflect lasers now.
+    - type: Tweak
+      message: Faction researches have been condensed and generalized.
+    - type: Tweak
+      message: Batteries contain lead now.
+  id: 2146
+  time: '2026-04-05T21:34:46.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3075
