@@ -19423,3 +19423,12 @@ Entries:
   id: 2143
   time: '2026-04-05T18:33:51.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3583
+- author: Ilya246
+  changes:
+    - type: Fix
+      message: >-
+        Shuttle consoles no longer automatically swap to anchor dampening mode
+        when depowered.
+  id: 2144
+  time: '2026-04-05T18:42:53.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3706
