@@ -86,61 +86,61 @@
   - MonoMonolithicEventsScheduler
 #  - PortstrikeAnnounceRuleHour4
 
-#- type: gamePreset
-#  id: MonoChimera
-#  name: mono-chimera-title
-#  description: mono-chimera-description
-#  showInVote: false
-#  rules:
-#  - NFAdventure
-#  - BasicStationEventScheduler
-#  - BluespaceEventScheduler
-#  - BluespaceDungeonEventScheduler
-#  - BluespaceSalvageEventScheduler
-#  - SmugglingEventScheduler
-#  - FrontierRoundstartVariation
-#  - MonoChimeraSTCShuttleSpawnerScheduler
-#  - MonoMonolithicEventsScheduler
-#  - PortstrikeAnnounceRuleHour4
-#
-#- type: gamePreset
-#  id: MonoMixed
-#  name: mono-mixed-title
-#  description: mono-mixed-description
-#  showInVote: false
-#  rules:
-# - NFAdventure
-# - BasicStationEventScheduler
-# - BluespaceEventScheduler
-# - BluespaceDungeonEventScheduler
-# - BluespaceSalvageEventScheduler
-# - SmugglingEventScheduler
-# - FrontierRoundstartVariation
-# - MonoChimeraSTCShuttleSpawnerSchedulerSlow
-# - MonoAISTCShuttleSpawnerSchedulerSlow
-# - MonoAISTCShuttleSpawnerSchedulerTier2Slow
-# - MonoAsakimSTCShuttleSpawnerSchedulerSlow
-# - MonoMonolithicEventsScheduler
-# - PortstrikeAnnounceRuleHour4
-#
-#- type: gamePreset
-#  id: MonoAllAtOnce
-#  name: mono-allatonce-title
-#  description: mono-allatonce-description
-#  showInVote: false # we ball
-#  weight: 0.25 # requires 80% votes
-#  rules:
-#  - NFAdventure
-#  - BasicStationEventScheduler
-#  - BluespaceEventScheduler
-#  - BluespaceDungeonEventScheduler
-#  - BluespaceSalvageEventScheduler
-#  - SmugglingEventScheduler
-#  - FrontierRoundstartVariation
-#  - MonoChimeraSTCShuttleSpawnerSchedulerApocalypse
-#  - MonoAISTCShuttleSpawnerSchedulerApocalypse
-#  - MonoAsakimSTCShuttleSpawnerSchedulerApocalypse
-#  - MonoMonolithicEventsScheduler
-#  - RoundEndRuleHour3
-#  - PortstrikeAnnounceRuleHour1
-#
+- type: gamePreset
+  id: MonoChimera
+  name: mono-chimera-title
+  description: mono-chimera-description
+  showInVote: false
+  rules:
+  - NFAdventure
+  - BasicStationEventScheduler
+  - BluespaceEventScheduler
+  - BluespaceDungeonEventScheduler
+  - BluespaceSalvageEventScheduler
+  - SmugglingEventScheduler
+  - FrontierRoundstartVariation
+  - MonoChimeraSTCShuttleSpawnerScheduler
+  - MonoMonolithicEventsScheduler
+  - PortstrikeAnnounceRuleHour4
+
+- type: gamePreset
+  id: MonoMixed
+  name: mono-mixed-title
+  description: mono-mixed-description
+  showInVote: false
+  rules:
+  - NFAdventure
+  - BasicStationEventScheduler
+  - BluespaceEventScheduler
+  - BluespaceDungeonEventScheduler
+  - BluespaceSalvageEventScheduler
+  - SmugglingEventScheduler
+  - FrontierRoundstartVariation
+  - MonoChimeraSTCShuttleSpawnerSchedulerSlow
+  - MonoAISTCShuttleSpawnerSchedulerSlow
+  - MonoAISTCShuttleSpawnerSchedulerTier2Slow
+  - MonoAsakimSTCShuttleSpawnerSchedulerSlow
+  - MonoMonolithicEventsScheduler
+  - PortstrikeAnnounceRuleHour4
+
+- type: gamePreset
+  id: MonoAllAtOnce
+  name: mono-allatonce-title
+  description: mono-allatonce-description
+  showInVote: false # we ball
+  weight: 0.25 # requires 80% votes
+  rules:
+  - NFAdventure
+  - BasicStationEventScheduler
+  - BluespaceEventScheduler
+  - BluespaceDungeonEventScheduler
+  - BluespaceSalvageEventScheduler
+  - SmugglingEventScheduler
+  - FrontierRoundstartVariation
+  - MonoChimeraSTCShuttleSpawnerSchedulerApocalypse
+  - MonoAISTCShuttleSpawnerSchedulerApocalypse
+  - MonoAsakimSTCShuttleSpawnerSchedulerApocalypse
+  - MonoMonolithicEventsScheduler
+  - RoundEndRuleHour3
+  - PortstrikeAnnounceRuleHour1
+
