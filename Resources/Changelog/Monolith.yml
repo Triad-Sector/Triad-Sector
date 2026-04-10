@@ -19615,3 +19615,10 @@ Entries:
   id: 2164
   time: '2026-04-10T15:16:43.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3745
+- author: Ilya246
+  changes:
+    - type: Fix
+      message: Fixed RSC company being unselectable.
+  id: 2165
+  time: '2026-04-10T18:58:20.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3746
