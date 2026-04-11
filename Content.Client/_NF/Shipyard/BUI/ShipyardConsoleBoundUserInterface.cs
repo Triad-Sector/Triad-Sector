@@ -37,31 +37,28 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
     protected override void Open()
     {
         base.Open();
-        if (_menu == null)
-        {
-            _menu = this.CreateWindow<ShipyardConsoleMenu>();
-            // Disable the NFSD popup for now.
-            // var rules = new FormattedMessage();
-            // _rulesWindow = new ShipyardRulesPopup(this);
-            _menu.OpenCentered();
-            // if (ShipyardConsoleUiKey.Security == (ShipyardConsoleUiKey) UiKey)
-            // {
-            //     rules.AddText(Loc.GetString($"shipyard-rules-default1"));
-            //     rules.PushNewline();
-            //     rules.AddText(Loc.GetString($"shipyard-rules-default2"));
-            //     _rulesWindow.ShipRules.SetMessage(rules);
-            //     _rulesWindow.OpenCentered();
-            // }
-            _menu.OnClose += Close;
-            _menu.OnOrderApproved += ApproveOrder;
-            _menu.OnSellShip += SellShip;
-            _menu.OnUnassignDeed += UnassignDeed;
-            _menu.OnRenameShip += RenameShip;
-            _menu.OnSaveShip += SaveShip;
-            var targetIdButton = _menu.FindControl<Button>("TargetIdButton");
-            if (targetIdButton != null)
-                targetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent("ShipyardConsole-targetId"));
-        }
+        _menu = this.CreateWindow<ShipyardConsoleMenu>();
+        // Disable the NFSD popup for now.
+        // var rules = new FormattedMessage();
+        // _rulesWindow = new ShipyardRulesPopup(this);
+        _menu.OpenCentered();
+        // if (ShipyardConsoleUiKey.Security == (ShipyardConsoleUiKey) UiKey)
+        // {
+        //     rules.AddText(Loc.GetString($"shipyard-rules-default1"));
+        //     rules.PushNewline();
+        //     rules.AddText(Loc.GetString($"shipyard-rules-default2"));
+        //     _rulesWindow.ShipRules.SetMessage(rules);
+        //     _rulesWindow.OpenCentered();
+        // }
+        _menu.OnClose += Close;
+        _menu.OnOrderApproved += ApproveOrder;
+        _menu.OnSellShip += SellShip;
+        _menu.OnUnassignDeed += UnassignDeed;
+        _menu.OnRenameShip += RenameShip;
+        _menu.OnSaveShip += SaveShip;
+        var targetIdButton = _menu.FindControl<Button>("TargetIdButton");
+        if (targetIdButton != null)
+            targetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent("ShipyardConsole-targetId"));
 
         InitializeSaveLoadControls();
     }
@@ -92,7 +89,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         // Subscribe to ship updates
         _shipFileManagementSystem.OnShipsUpdated += RefreshSavedShipList;
         _shipFileManagementSystem.OnShipLoaded += OnShipLoaded;
-        
+
         RefreshSavedShipList();
     }
 
@@ -106,7 +103,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             Logger.Warning("No ship selected for loading");
             return;
         }
-        
+
         var selectedItem = _savedShipsList[_selectedShipIndex];
         var filePath = (string)selectedItem.Metadata!;
 
@@ -151,10 +148,10 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         if (_savedShipsList == null)
             return;
         _savedShipsList.Clear();
-        
+
         var savedShipFiles = _shipFileManagementSystem.GetSavedShipFiles();
         //Logger.Info($"RefreshSavedShipList: Found {savedShipFiles.Count} ships to display");
-        
+
         foreach (var filePath in savedShipFiles)
         {
             // Extract filename without extension in a sandbox-safe way
@@ -163,7 +160,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             item.Metadata = filePath;
             //Logger.Info($"Added ship to UI list: {fileName} (path: {filePath})");
         }
-        
+
         // Enable/disable load button based on available ships
         if (_loadShipButton != null)
         {
@@ -208,10 +205,10 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 
         Balance = cState.Balance;
         ShipSellValue = cState.ShipSellValue;
-        var castState = (ShipyardConsoleInterfaceState) state;
+        var castState = (ShipyardConsoleInterfaceState)state;
         Populate(castState.ShipyardPrototypes.available, castState.ShipyardPrototypes.unavailable, castState.FreeListings, castState.IsTargetIdPresent);
         _menu?.UpdateState(castState);
-        
+
         // Only refresh saved ships list if the UI is actually open
         if (IsOpened)
         {
@@ -229,13 +226,13 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         var vesselId = row.Vessel.ID;
         SendMessage(new ShipyardConsolePurchaseMessage(vesselId));
     }
-    
+
     private void SellShip(ButtonEventArgs args)
     {
         //reserved for a sanity check, but im not sure what since we check all the important stuffs on server already
         SendMessage(new ShipyardConsoleSellMessage());
     }
-    
+
     private void UnassignDeed(ButtonEventArgs args)
     {
         SendMessage(new ShipyardConsoleUnassignDeedMessage());
@@ -255,7 +252,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        
+
         if (disposing)
         {
             // Unsubscribe from events to prevent memory leaks

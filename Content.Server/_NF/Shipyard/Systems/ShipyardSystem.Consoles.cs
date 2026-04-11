@@ -1480,6 +1480,17 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         // Remove the deed component from the ID card
         RemComp<ShuttleDeedComponent>(targetId);
 
+        // Clear the deed holder on the ship's deed and any other deeds
+        var query = EntityQueryEnumerator<ShuttleDeedComponent>();
+        while (query.MoveNext(out var deedEntity, out var otherDeed))
+        {
+            if (otherDeed.ShuttleUid == deed.ShuttleUid)
+            {
+                otherDeed.DeedHolder = null;
+                Dirty(deedEntity, otherDeed);
+            }
+        }
+
         // Set the cooldown
         cooldown.NextUnassignTime = currentTime + cooldown.CooldownDuration;
 

@@ -133,6 +133,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         SubscribeLocalEvent<ShipyardConsoleComponent, BoundUIOpenedEvent>(OnConsoleUIOpened);
         SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsoleSellMessage>(OnSellMessage);
         SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsolePurchaseMessage>(OnPurchaseMessage);
+        SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsoleUnassignDeedMessage>(OnUnassignDeedMessage);
+        SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsoleRenameMessage>(OnRenameMessage);
         // Ship saving/loading functionality
         SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsoleLoadMessage>(OnLoadMessage);
         SubscribeLocalEvent<ShipyardConsoleComponent, EntInsertedIntoContainerMessage>(OnItemSlotChanged);
@@ -1246,9 +1248,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return false;
 
         var shuttle = shuttleDeed.ShuttleUid;
-        if (shuttle != null
-             && Exists(shuttle.Value)
-             && _station.GetOwningStation(shuttle.Value) is EntityUid shuttleStation && shuttleStation.Valid)
+        if (shuttle != null && Exists(shuttle.Value))
         {
             // Update the primary deed
             shuttleDeed.ShuttleName = newName;
@@ -1273,9 +1273,13 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             }
 
             var fullName = GetFullName(shuttleDeed);
-            _station.RenameStation(shuttleStation, fullName, loud: false);
             _metaData.SetEntityName(shuttle.Value, fullName);
-            _metaData.SetEntityName(shuttleStation, fullName);
+
+            if (_station.GetOwningStation(shuttle.Value) is EntityUid shuttleStation && shuttleStation.Valid)
+            {
+                _station.RenameStation(shuttleStation, fullName, loud: false);
+                _metaData.SetEntityName(shuttleStation, fullName);
+            }
         }
         else
         {
