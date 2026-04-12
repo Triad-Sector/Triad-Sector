@@ -718,10 +718,34 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         var shuttleOwner = Name(player).Trim();
         const bool loadedFromSave = true; // mark as voucher-like to prevent resale
 
-        AssignShuttleDeedProperties(deedID, shuttleUid, name, shuttleOwner, loadedFromSave, null);
+        AssignShuttleDeedProperties(deedID, shuttleUid, name, shuttleOwner, loadedFromSave, targetId.ToString());
+        deedID.DeedHolder = targetId;
 
         var deedShuttle = EnsureComp<ShuttleDeedComponent>(shuttleUid);
-        AssignShuttleDeedProperties(deedShuttle, shuttleUid, name, shuttleOwner, loadedFromSave, null);
+        AssignShuttleDeedProperties(deedShuttle, shuttleUid, name, shuttleOwner, loadedFromSave, targetId.ToString());
+
+        // Lock all shuttle consoles on the ship to this deed
+        var shuttleConsoleQuery = EntityQueryEnumerator<ShuttleConsoleComponent, TransformComponent>();
+        while (shuttleConsoleQuery.MoveNext(out var consoleUid, out _, out var transform))
+        {
+            // Only process consoles on the purchased ship
+            if (transform.GridUid != shuttleUid)
+                continue;
+
+            // Add lock component and set the shuttle ID
+            var lockComp = EnsureComp<ShuttleConsoleLockComponent>(consoleUid);
+            _shuttleConsoleLock.SetShuttleId(consoleUid, shuttleUid.ToString(), lockComp);
+
+            // Log for debugging
+            Log.Debug("Locked shuttle console {0} to shuttle {1} for deed holder {2}", consoleUid, shuttleUid, targetId);
+        }
+
+        // Register ship ownership for auto-deletion when owner is offline too long
+        // We need to get the player's session from their entity
+        if (TryComp<ActorComponent>(player, out var actorComp) && actorComp.PlayerSession != null)
+        {
+            _shipOwnership.RegisterShipOwnership(shuttleUid, actorComp.PlayerSession);
+        }
 
         var stationList = EntityQueryEnumerator<StationRecordsComponent>();
 
