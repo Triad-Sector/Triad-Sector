@@ -612,11 +612,10 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             PlayDenySound(player, uid, component);
             return;
         }
-        // For loaded ships, we don't spawn a new station via a GameMap prototype; skip station init.
 
-        // Calculate appraisal cost for the loaded ship (charge 50% of appraisal)
+        // Calculate appraisal cost for the loaded ship (charge 60% of appraisal)
         var fullAppraisal = _pricing.AppraiseGrid(shuttleUid, null);
-        var appraisalCost = (int)MathF.Round((float)fullAppraisal * 0.5f);
+        var appraisalCost = (int) MathF.Round((float) fullAppraisal * 0.6f);
 
         // Check if player has a bank account and session to charge them
         if (!_player.TryGetSessionByEntity(player, out var playerSession))
@@ -718,10 +717,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var shuttleOwner = Name(player).Trim();
         const bool loadedFromSave = true; // mark as voucher-like to prevent resale
-        AssignShuttleDeedProperties(deedID, shuttleUid, name, shuttleOwner, loadedFromSave);
+
+        AssignShuttleDeedProperties(deedID, shuttleUid, name, shuttleOwner, loadedFromSave, null);
 
         var deedShuttle = EnsureComp<ShuttleDeedComponent>(shuttleUid);
-        AssignShuttleDeedProperties(deedShuttle, shuttleUid, name, shuttleOwner, loadedFromSave);
+        AssignShuttleDeedProperties(deedShuttle, shuttleUid, name, shuttleOwner, loadedFromSave, null);
 
         var stationList = EntityQueryEnumerator<StationRecordsComponent>();
 
@@ -749,7 +749,25 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 TryComp<FingerprintComponent>(player, out var fingerprintComponent);
                 TryComp<DnaComponent>(player, out var dnaComponent);
                 TryComp<StationRecordsComponent>(shuttleStation, out var stationRec);
-                _records.CreateGeneralRecord(shuttleStation.Value, targetId, playerProfile.Name, playerProfile.Age, playerProfile.Species, playerProfile.Gender, $"Captain", fingerprintComponent!.Fingerprint, dnaComponent!.DNA, playerProfile, stationRec!);
+
+                var fingerprint = fingerprintComponent?.Fingerprint ?? string.Empty;
+                var dna = dnaComponent?.DNA ?? string.Empty;
+
+                if (stationRec != null)
+                {
+                    _records.CreateGeneralRecord(
+                        shuttleStation.Value,
+                        targetId,
+                        playerProfile.Name,
+                        playerProfile.Age,
+                        playerProfile.Species,
+                        playerProfile.Gender,
+                        $"Captain",
+                        fingerprint,
+                        dna,
+                        playerProfile,
+                        stationRec);
+                }
             }
         }
         if (shuttleStation != null)
@@ -791,7 +809,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         RefreshState(uid, balance, true, name, sellValue, targetId, (ShipyardConsoleUiKey)args.UiKey, false);
 
-        _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} loaded shuttle {ToPrettyString(shuttleUid)} from {(args.SourceFilePath ?? "YAML data")} via {ToPrettyString(uid)}");
+        //_adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} loaded shuttle {ToPrettyString(shuttleUid)} from {(args.SourceFilePath ?? "YAML data")} via {ToPrettyString(uid)}");
 
         // After a successful server-side load, instruct the client to delete their local YAML file.
         if (!string.IsNullOrWhiteSpace(args.SourceFilePath) && _player.TryGetSessionByEntity(player, out var session))
@@ -807,7 +825,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             }
         }
     }
-
 
     public void OnSellMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleSellMessage args)
     {
