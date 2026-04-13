@@ -19721,3 +19721,14 @@ Entries:
   id: 2177
   time: '2026-04-13T14:57:19.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3754
+- author: Corrupt142
+  changes:
+    - type: Tweak
+      message: Serkesh has recieved some QoL tweaks/optimised PD layout
+    - type: Tweak
+      message: >-
+        Scallywag now has a boforos at the cost of its missiles, High power
+        gunnery downgraded to medium.
+  id: 2178
+  time: '2026-04-13T15:00:42.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3751
