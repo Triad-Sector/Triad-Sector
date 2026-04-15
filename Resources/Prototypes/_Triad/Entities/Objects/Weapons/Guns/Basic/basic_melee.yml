@@ -1,0 +1,20 @@
+- type: entity #for guns without bayonets
+  id: BaseGunMeleeBlunt
+  abstract: true
+  components:
+  - type: Sprite
+  - type: AltFireMelee
+  - type: MeleeRequiresWield
+  - type: MeleeWeapon
+    attackRate: .85
+    damage:
+      types:
+       Blunt: 10
+       Slash: 5
+    angle: 0
+    wideAnimationRotation: -90
+    animation: WeaponArcThrust
+    soundHit:
+      collection: MetalThud
+ # - type: DisarmMalus they can add it if they want
+ #   malus: 0.225

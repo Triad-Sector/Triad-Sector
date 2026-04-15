@@ -1,0 +1,59 @@
+- type: entity
+  name: Misriah Autorifle (762x51mm)
+  parent: [BaseWeaponRifle, BaseGunMeleeBlunt, BaseC3SyndicateContraband] # Frontier: BaseSecurityContraband<BaseC3SyndicateContraband
+  id: WeaponRifleMMisriahAutorifle
+  description: Standard issue assault rifle issued to marines and special forces; chambered in 762x51mm ammo. Produced by SESWC.
+  components:
+  - type: Sprite
+    sprite: _Triad/Objects/Weapons/Guns/Rifles/ma5b.rsi
+    layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: mag-0
+        map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _Triad/Objects/Weapons/Guns/Rifles/ma5b.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Gun
+    fireRate: 6
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/lmg.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  #- type: AltFireMelee
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: Magazine762x51mmFMJ
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - Magazine762x51mmFMJ
+            - Magazine762x51mmLowCapacityFMJ
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        startingItem: Cartridge762x51mmFMJ
+        priority: 1
+        whitelist:
+          tags:
+            - Cartridge762x51mmFMJ
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+ #- type: NFWeaponDetails
+ #  manufacturer: weapon-details-manufacturer-SESWC-consortium
+
