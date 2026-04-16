@@ -8,21 +8,21 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: Magazine68x52mmCaselessRubber
+        startingItem: Magazine556x45mmRubber
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
         whitelist:
           tags:
-            - Magazine68x52mmCaseless
+            - Magazine556x45mmFMJ
         whitelistFailPopup: gun-magazine-whitelist-fail
       gun_chamber:
         name: Chamber
-        startingItem: Cartridge68x52mmCaselessRubber
+        startingItem: Cartridge556x45mmRubber
         priority: 1
         whitelist:
           tags:
-            - Cartridge68x52mmCaseless
+            - Cartridge556x45mmFMJ
 
 #Delta-V
 - type: entity
@@ -215,9 +215,9 @@
 
 - type: entity
   id: WeaponRifleSVS
-  name: NCI SVS-42 (7.62x54mmR)
+  name: NCI SVS-42 (7.62x51mm)
   parent: [ BaseWeaponRifle, BaseGunMelee ]
-  description: "Originally designed by Samonov, this old surplus rifle looks like it's seen a few wars. Uses low capacity 10 rounder 762x54mmR magazines. Equipped with bayonet."
+  description: "Originally designed by Samonov, this old surplus rifle looks like it's seen a few wars. Uses 7.62x51mm magazines. Equipped with a bayonet."
   components:
   - type: Sprite
     sprite: _NF/Objects/Weapons/Guns/Rifles/svs42.rsi
@@ -246,21 +246,21 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: Magazine762x54mmRFMJ
+        startingItem: Magazine762x51mmFMJ
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
         whitelist:
           tags:
-            - Magazine762x54mmRFMJ
+            - Magazine762x51mmFMJ
         whitelistFailPopup: gun-magazine-whitelist-fail
       gun_chamber:
         name: Chamber
-        startingItem: Cartridge762x54mmRFMJ
+        startingItem: Cartridge762x51mmFMJ
         priority: 1
         whitelist:
           tags:
-            - Cartridge762x54mmRFMJ
+            - Cartridge762x51mmFMJ
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot

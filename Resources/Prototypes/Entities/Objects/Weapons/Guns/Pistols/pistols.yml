@@ -196,10 +196,10 @@
   - type: AmmoCounter
 
 - type: entity
-  name: CS PT-72 cobra (635x40mm)
+  name: CS PT-72 cobra (.45 ACP)
   parent: BaseWeaponPistol
   id: WeaponPistolCobra
-  description: A rugged, robust spec-ops handgun with an inbuilt silencer. Uses 6.35x40mm Caseless ammo. A common sight among Phaethon imperials, they are the most commonly seen sidearm among boarding crews or agents.
+  description: A rugged, robust spec-ops handgun with an inbuilt silencer. Uses .45 ACP ammo. A common sight among Phaethon imperials, they are the most commonly seen sidearm among boarding crews or agents.
   components:
   - type: Sprite
     sprite: Objects/Weapons/Guns/Pistols/cobra.rsi
@@ -210,8 +210,13 @@
       map: ["enum.GunVisualLayers.Mag"]
   - type: Clothing
     sprite: Objects/Weapons/Guns/Pistols/cobra.rsi
-  - type: ChamberMagazineAmmoProvider
-    boltClosed: null
+  - type: ChamberMagazineAmmoProvider # Mono
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/lmg_cock.ogg
+    soundBoltClosed:
+      path: /Audio/Weapons/Guns/Bolt/lmg_bolt_closed.ogg
+    soundBoltOpened:
+      path: /Audio/Weapons/Guns/Bolt/lmg_bolt_open.ogg
   - type: Gun
     fireRate: 4
     projectileSpeed: 30 # Mono
@@ -225,21 +230,21 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: Magazine635x40mmCaselessPistol
+        startingItem: Magazine45_ACPPistolFMJ
         insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
         priority: 2
         whitelist:
           tags:
-            - Magazine635x40mmCaselessPistol
+            - Magazine45_ACPPistolFMJ
         whitelistFailPopup: gun-magazine-whitelist-fail
       gun_chamber:
         name: Chamber
-        startingItem: Cartridge635x40mmCaseless
+        startingItem: Cartridge45_ACPFMJ
         priority: 1
         whitelist:
           tags:
-            - Cartridge635x40mmCaseless
+            - Cartridge45_ACPFMJ
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot

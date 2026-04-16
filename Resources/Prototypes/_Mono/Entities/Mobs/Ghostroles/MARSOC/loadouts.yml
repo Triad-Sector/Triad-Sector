@@ -119,12 +119,12 @@
     - BluespaceLifelineImplanter
     - PinpointerUniversal
     belt:
-    - Magazine8x65mmSKR
-    - Magazine8x65mmSKR
-    - Magazine8x65mmSKR
-    - Magazine8x65mmSKR
-    - AmmoBox8x65mmSKR
-    - AmmoBox8x65mmSKRIncendiary
+    - Magazine762x51mmFMJ
+    - Magazine762x51mmFMJ
+    - Magazine762x51mmFMJ
+    - Magazine762x51mmFMJ
+    - AmmoBox762x51mmFMJ
+    - AmmoBox762x51mmIncendiary
     - MotionDetectorBorg
     - HandHeldMassScannerBorg
 
@@ -167,12 +167,12 @@
     - AdvancedRetractor
     - BoneGel
     belt:
-    - Magazine46x30mmSubMachineGunTopMountedFMJ
-    - Magazine46x30mmSubMachineGunTopMountedFMJ
-    - Magazine46x30mmSubMachineGunTopMountedFMJ
-    - Magazine46x30mmSubMachineGunTopMountedFMJ
-    - AmmoBox46x30mmFMJ
-    - AmmoBox46x30mmIncendiary
+    - Magazine45_ACPSubMachineGunFMJ
+    - Magazine45_ACPSubMachineGunFMJ
+    - Magazine45_ACPSubMachineGunFMJ
+    - Magazine45_ACPSubMachineGunFMJ
+    - AmmoBox45_ACPFMJ
+    - AmmoBox45_ACPIncendiary
     - MotionDetectorBorg
     - HandHeldMassScannerBorg
 
@@ -253,10 +253,9 @@
     - BluespaceLifelineImplanter
     - PinpointerUniversal
     belt:
-    - AmmoBox68x52mmCaseless
-    - AmmoBox68x52mmCaseless
-    - AmmoBox68x52mmCaseless
-    - AmmoBox68x52mmCaseless
-    - AmmoBox68x52mmCaselessBig
+    - AmmoBox556x45mmFMJ
+    - AmmoBox556x45mmFMJ
+    - AmmoBox556x45mmFMJ
+    - AmmoBox556x45mmFMJ
     - MotionDetectorBorg
     - HandHeldMassScannerBorg

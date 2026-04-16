@@ -306,8 +306,8 @@
   - type: SpawnItemsOnUse
     items:
       - id: WeaponRifleMR8C # mono - change from AK
-      - id: Magazine8x65mmSKR
-      - id: Magazine8x65mmSKR
+      - id: Magazine762x51mmFMJ
+      - id: Magazine762x51mmFMJ
       - id: ClothingShoesBootsMagSyndie
       - id: SpaceCash10000
       # Bonus Loot T4
@@ -335,8 +335,8 @@
   - type: SpawnItemsOnUse
     items:
       - id: WeaponRifleLecter
-      - id: Magazine68x52mmCaseless # Mono
-      - id: Magazine68x52mmCaseless # Mono
+      - id: Magazine556x45mmFMJ # Mono
+      - id: Magazine556x45mmFMJ # Mono
       - id: ClothingShoesBootsMagSyndie
       - id: SpaceCash10000
       # Bonus Loot T4
@@ -418,8 +418,8 @@
   - type: SpawnItemsOnUse
     items:
       - id: WeaponSubMachineGunAtreidesExpedition
-      - id: Magazine57x28mmSubMachineGunFMJ
-      - id: Magazine57x28mmSubMachineGunFMJ
+      - id: Magazine9x19mmSubMachineGunFMJ
+      - id: Magazine9x19mmSubMachineGunFMJ
       - id: SpaceCash1000
       - id: SpaceCash1000
       # Bonus Loot T3
@@ -451,7 +451,7 @@
   - type: SpawnItemsOnUse
     items:
       - id: WeaponSubMachineGunWt550Expedition
-      - id: Magazine46x30mmSubMachineGunTopMountedFMJ
+      - id: Magazine45_ACPSubMachineGunFMJ
       - id: SpaceCash1000
       - id: SpaceCash500
       # Bonus Loot T3

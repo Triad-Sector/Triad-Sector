@@ -100,9 +100,9 @@
   - type: TechnologyDisk
     recipes:
     - WeaponRifleMR3CTSF
-    - Magazine8x65mmSKR
-    - Magazine8x65mmEmpty
-    - AmmoBox8x65mmSKR
+    - Magazine762x51mmFMJ
+    - Magazine762x51mmEmpty
+    - AmmoBox762x51mmFMJ
 
 - type: entity
   parent: TechDiskBase
@@ -321,6 +321,3 @@
   - type: TechnologyDisk
     recipes:
     - WeaponSubMachineGunMla73Rogue
-    - Magazine635x40mmCaseless
-    - AmmoBox635x40mmCaseless
-    - MagazineAsmgtUniversal635x40mm

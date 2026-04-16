@@ -422,7 +422,6 @@
     - WeaponCaseLongLightMachineGunL6
     - WeaponCaseHeavyAsmgtExpeditions
     - WeaponCaseLongXrayCannonExpedition
-    - WeaponCaseLongJackdaw
     - WeaponCaseLongHristovExpedition
     - WeaponCaseMr8c # Mono
     - WeaponCaseMla79 # Mono
@@ -470,7 +469,6 @@
     - WeaponCaseShortAmmoBoxLethal20
     - WeaponCaseShortAmmoBoxLethal30
     - WeaponCaseShortAmmoBoxLethal35
-    - WeaponCaseShortAmmoBoxLethal25
     - WeaponCaseShortAmmoAmmoBox12_gaugeBuckshotgun
     - WeaponCaseShortAmmoBoxSlugShotgun
     - WeaponCaseShortAmmoBoxLethal45
@@ -479,7 +477,6 @@
     rarePrototypes:
     - WeaponCaseShortAmmoBoxBigLethal20
     - WeaponCaseShortAmmoBoxBigLethal30
-    - WeaponCaseShortAmmoBoxBigLethal25
     - WeaponCaseShortAmmoBoxEmp35
     - WeaponCaseShortAmmoBoxFlareShotgun
     - SpawnDungeonLootAmmoRubber
@@ -506,14 +503,12 @@
     - WeaponCaseShortAmmoBoxRubber20
     - WeaponCaseShortAmmoBoxRubber30
     - WeaponCaseShortAmmoBoxRubber35
-    - WeaponCaseShortAmmoBoxRubber25
     - WeaponCaseShortAmmoBoxRubberShotgun
     - WeaponCaseShortAmmoBoxRubber45
     chance: 0.7
     offset: 0.0
     rarePrototypes:
     - WeaponCaseShortAmmoBoxBigRubber20
-    - WeaponCaseShortAmmoBoxBigRubber25
     rareChance: 0.01
 
 - type: entity
@@ -534,7 +529,6 @@
     - WeaponCaseShortAmmoBoxPractice20
     - WeaponCaseShortAmmoBoxPractice30
     - WeaponCaseShortAmmoBoxPractice35
-    - WeaponCaseShortAmmoBoxPractice25
     - WeaponCaseShortAmmoBoxPracticeShotgun
     - WeaponCaseShortAmmoBoxPractice45
     chance: 0.6
