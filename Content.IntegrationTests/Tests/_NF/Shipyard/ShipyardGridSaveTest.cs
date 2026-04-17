@@ -18,7 +18,7 @@ namespace Content.IntegrationTests.Tests._NF.Shipyard
     public sealed class ShipyardGridSaveTest
     {
         [Test]
-        public async Task TestAmbitionShipSave()
+        public async Task TestPhaeronShipSave()
         {
             await using var pair = await PoolManager.GetServerClient();
             var server = pair.Server;
@@ -28,39 +28,53 @@ namespace Content.IntegrationTests.Tests._NF.Shipyard
             var mapLoader = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<MapLoaderSystem>();
             var shipyardGridSaveSystem = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<ShipyardGridSaveSystem>();
 
+            // --- Setup ---
+            var mapId = default(MapId);
+            EntityUid? gridUid = null;
+
             await server.WaitPost(() =>
             {
-                // Create a test map
-                var mapId = mapManager.CreateMap();
-                var mapUid = mapManager.GetMapEntityId(mapId);
+                mapId = mapManager.CreateMap();
 
-                // Load the ambition ship
-                var mapLoaded = mapLoader.TryLoadGrid(mapId, new ResPath("/Maps/_Mono/Shuttles/phaeron.yml"), out var gridUid);
+                var loaded = mapLoader.TryLoadGrid(
+                    mapId,
+                    new ResPath("/Maps/_Mono/Shuttles/phaeron.yml"),
+                    out gridUid);
 
-                Assert.That(mapLoaded, Is.True, "Should successfully load the ambition ship");
-                Assert.That(gridUid, Is.Not.Null, "Should get a valid grid UID");
+                Assert.That(loaded, Is.True, "Grid should load");
+                Assert.That(gridUid, Is.Not.Null, "Grid UID should not be null");
+            });
 
-                // Test that the grid can be cleaned for saving without errors
-                if (gridUid != null)
-                    shipyardGridSaveSystem.CleanGridForSaving(gridUid.Value);
+            await server.WaitIdleAsync(); // ensure full spawn/initialization
 
-                // Check that vending machines have been deleted
-                var vendingMachineQuery = entityManager.EntityQueryEnumerator<VendingMachineComponent>();
+            // --- Act ---
+            shipyardGridSaveSystem.CleanGridForSaving(gridUid!.Value);
+
+            await server.WaitIdleAsync(); // ensure deletions propagate
+
+            // --- Assert ---
+            await server.WaitAssertion(() =>
+            {
                 var foundVendingMachine = false;
 
-                while (vendingMachineQuery.MoveNext(out var vendingUid, out var vendingComp))
+                var query = entityManager.EntityQueryEnumerator<VendingMachineComponent>();
+                while (query.MoveNext(out var uid, out _))
                 {
-                    var transform = entityManager.GetComponent<TransformComponent>(vendingUid);
-                    if (gridUid != null && transform.GridUid == gridUid.Value)
+                    var xform = entityManager.GetComponent<TransformComponent>(uid);
+                    if (xform.GridUid == gridUid)
                     {
                         foundVendingMachine = true;
                         break;
                     }
                 }
 
-                Assert.That(foundVendingMachine, Is.False, "No vending machines should remain in cleaned grid");
+                Assert.That(foundVendingMachine, Is.False,
+                    "No vending machines should remain in cleaned grid");
+            });
 
-                // Clean up
+            // --- Cleanup ---
+            await server.WaitPost(() =>
+            {
                 mapManager.DeleteMap(mapId);
             });
 
