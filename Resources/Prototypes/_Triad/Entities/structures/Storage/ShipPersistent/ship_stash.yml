@@ -39,27 +39,6 @@
       - Headset
   - type: HLPersistOnShipSave
 
-- type: constructionGraph
-  id: MilitaryStorageStashGraph
-  start: start
-  graph:
-  - node: start
-    edges:
-    - to: stash
-      steps:
-      - material: Steel
-        amount: 20
-      - tool: Welding
-        doAfter: 4
-      - material: Plasteel
-        amount: 10
-      - tool: Screwing
-        doAfter: 8
-      - material: Plastitanium
-        amount: 12
-      - tool: Welding
-        doAfter: 4
-
 - type: entity
   id: MedicalBluespaceDesk
   parent: BaseStructureDynamic
