@@ -284,130 +284,132 @@
     - MonoRemnantNoun
     - MonoRemnantModifier
 
-- type: entity
-  id: PlayerBorgRedactedGhostRole
-  parent: PlayerBorgRedacted
-  suffix: Ghost
-  components:
-  - type: GhostRole
-    name: ghost-role-information-redacted-borg
-    description: ghost-role-information-redacted-borg-description
-    rules: ghost-role-information-silicon-rules
-    raffle:
-      settings: default
-    prototype: RedactedBorg
-  - type: GhostTakeoverAvailable
+#Triad - Disabled
 
-- type: entity
-  id: PlayerBorgRedactedGhostRolePlaytime
-  parent: PlayerBorgRedacted
-  suffix: Ghost, Playtime
-  components:
-  - type: GhostRole
-    name: ghost-role-information-redacted-borg
-    description: ghost-role-information-redacted-borg-description
-    rules: ghost-role-information-silicon-rules
-    raffle:
-      settings: default
-    requirements:
-    - !type:OverallPlaytimeRequirement
-      time: 180000 # 50 hrs
-  - type: GhostTakeoverAvailable
+# - type: entity
+#   id: PlayerBorgRedactedGhostRole
+#   parent: PlayerBorgRedacted
+#   suffix: Ghost
+#   components:
+#   - type: GhostRole
+#     name: ghost-role-information-redacted-borg
+#     description: ghost-role-information-redacted-borg-description
+#     rules: ghost-role-information-silicon-rules
+#     raffle:
+#       settings: default
+#     prototype: RedactedBorg
+#   - type: GhostTakeoverAvailable
 
-# Remnant AI core
+# - type: entity
+#   id: PlayerBorgRedactedGhostRolePlaytime
+#   parent: PlayerBorgRedacted
+#   suffix: Ghost, Playtime
+#   components:
+#   - type: GhostRole
+#     name: ghost-role-information-redacted-borg
+#     description: ghost-role-information-redacted-borg-description
+#     rules: ghost-role-information-silicon-rules
+#     raffle:
+#       settings: default
+#     requirements:
+#     - !type:OverallPlaytimeRequirement
+#       time: 180000 # 50 hrs
+#   - type: GhostTakeoverAvailable
 
-- type: entity
-  id: PlayerStationAiRedacted
-  parent: PlayerStationAiEmpty
-  suffix: Ghost Role, Remnant
-  components:
-  - type: ContainerComp
-    proto: AiHeldRedacted
-    container: station_ai_mind_slot
-  - type: ContainerFill
-    containers:
-      station_ai_mind_slot:
-      - StationAiBrainRedacted
-  - type: Sprite
-    sprite: Mobs/Silicon/station_ai.rsi
-    layers:
-    - state: base
-    - state: ai
-      shader: unshaded
-  - type: Anchorable
+# Remnant AI core #Triad - Disabled
 
-- type: entity
-  id: StationAiBrainRedacted
-  parent: StationAiBrain
-  categories: [ HideSpawnMenu, DoNotMap ]
-  components:
-  - type: Sprite
-  - type: SiliconLawProvider
-    laws: Redacted
-  - type: GhostRole
-    name: ghost-role-information-redacted-core
-    description: ghost-role-information-redacted-core-description
-    rules: ghost-role-information-silicon-rules
-    raffle:
-      settings: default
-    prototype: RemnantAICore
-  - type: LanguageKnowledge
-    speaks:
-    - TauCetiBasic
-    - RobotTalk
-    - Draconic
-    - Azaziba
-    understands:
-    - TauCetiBasic
-    - RobotTalk
-    - Draconic
-    - Azaziba
-  - type: Access
-    groups:
-    - AllAccess
-    tags:
-    - NuclearOperative
-    - SyndicateAgent
-  - type: GhostTakeoverAvailable
-  - type: RandomMetadata
-    nameSegments:
-    - MonoRemnantCoreTitle
-    - MonoRemnantAdjective
-    - MonoRemnantNoun
-  - type: ShuttleBoostingPilot
-    angularMultiplier: 1.5
-    accelerationMultiplier: 1.5
+# - type: entity
+#   id: PlayerStationAiRedacted
+#   parent: PlayerStationAiEmpty
+#   suffix: Ghost Role, Remnant
+#   components:
+#   - type: ContainerComp
+#     proto: AiHeldRedacted
+#     container: station_ai_mind_slot
+#   - type: ContainerFill
+#     containers:
+#       station_ai_mind_slot:
+#       - StationAiBrainRedacted
+#   - type: Sprite
+#     sprite: Mobs/Silicon/station_ai.rsi
+#     layers:
+#     - state: base
+#     - state: ai
+#       shader: unshaded
+#   - type: Anchorable
 
-- type: entity
-  id: AiHeldRedacted
-  parent: AiHeldMono
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: IntrinsicRadioTransmitter
-    channels:
-    - Common
-    - Remnants
-    - Traffic
-  - type: ActiveRadio
-    channels:
-    - Common
-    - Remnants
-    - Traffic
-  - type: CollectiveMind
-    channels:
-    - Binary
-    defaultChannel: Binary
-  - type: LanguageKnowledge
-    speaks:
-    - TauCetiBasic
-    - RobotTalk
-    - Draconic
-    - Azaziba
-    understands:
-    - TauCetiBasic
-    - RobotTalk
-    - Draconic
-    - Azaziba
+# - type: entity
+#   id: StationAiBrainRedacted
+#   parent: StationAiBrain
+#   categories: [ HideSpawnMenu, DoNotMap ]
+#   components:
+#   - type: Sprite
+#   - type: SiliconLawProvider
+#     laws: Redacted
+#   - type: GhostRole
+#     name: ghost-role-information-redacted-core
+#     description: ghost-role-information-redacted-core-description
+#     rules: ghost-role-information-silicon-rules
+#     raffle:
+#       settings: default
+#     prototype: RemnantAICore
+#   - type: LanguageKnowledge
+#     speaks:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Draconic
+#     - Azaziba
+#     understands:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Draconic
+#     - Azaziba
+#   - type: Access
+#     groups:
+#     - AllAccess
+#     tags:
+#     - NuclearOperative
+#     - SyndicateAgent
+#   - type: GhostTakeoverAvailable
+#   - type: RandomMetadata
+#     nameSegments:
+#     - MonoRemnantCoreTitle
+#     - MonoRemnantAdjective
+#     - MonoRemnantNoun
+#   - type: ShuttleBoostingPilot
+#     angularMultiplier: 1.5
+#     accelerationMultiplier: 1.5
+
+# - type: entity
+#   id: AiHeldRedacted
+#   parent: AiHeldMono
+#   categories: [ HideSpawnMenu ]
+#   components:
+#   - type: IntrinsicRadioTransmitter
+#     channels:
+#     - Common
+#     - Remnants
+#     - Traffic
+#   - type: ActiveRadio
+#     channels:
+#     - Common
+#     - Remnants
+#     - Traffic
+#   - type: CollectiveMind
+#     channels:
+#     - Binary
+#     defaultChannel: Binary
+#   - type: LanguageKnowledge
+#     speaks:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Draconic
+#     - Azaziba
+#     understands:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Draconic
+#     - Azaziba
 
 # Vessel (Default) AI core
 
@@ -482,168 +484,168 @@
     - Binary
     defaultChannel: Binary
 
-# TSFMC AI core
+# TSFMC AI core #Triad - Disabled
 
-- type: entity
-  id: PlayerStationAiTSFMC
-  parent: PlayerStationAiEmpty
-  suffix: Ghost Role, TSFMC
-  components:
-  - type: ContainerComp
-    proto: AiHeldTSFMC
-    container: station_ai_mind_slot
-  - type: ContainerFill
-    containers:
-      station_ai_mind_slot:
-      - StationAiBrainTSFMC
-  - type: Sprite
-    sprite: Mobs/Silicon/station_ai.rsi
-    layers:
-    - state: base
-    - state: ai
-      shader: unshaded
-  - type: Anchorable
+# - type: entity
+#   id: PlayerStationAiTSFMC
+#   parent: PlayerStationAiEmpty
+#   suffix: Ghost Role, TSFMC
+#   components:
+#   - type: ContainerComp
+#     proto: AiHeldTSFMC
+#     container: station_ai_mind_slot
+#   - type: ContainerFill
+#     containers:
+#       station_ai_mind_slot:
+#       - StationAiBrainTSFMC
+#   - type: Sprite
+#     sprite: Mobs/Silicon/station_ai.rsi
+#     layers:
+#     - state: base
+#     - state: ai
+#       shader: unshaded
+#   - type: Anchorable
 
-- type: entity
-  id: StationAiBrainTSFMC
-  parent: StationAiBrain
-  categories: [ HideSpawnMenu, DoNotMap ]
-  components:
-  - type: Sprite
-  - type: SiliconLawProvider
-    laws: TSFMCLawset
-  - type: GhostRole
-    name: ghost-role-information-tsfmc-core
-    description: ghost-role-information-tsfmc-core-description
-    rules: ghost-role-information-silicon-rules
-    raffle:
-      settings: default
-    prototype: TSFMCAICore
-  - type: GhostTakeoverAvailable
-  - type: RandomMetadata
-    nameSegments: [ TSFMCCoreNameset ]
-  - type: LanguageKnowledge
-    speaks:
-    - TauCetiBasic
-    - RobotTalk
-    - SolCommon
-    understands:
-    - TauCetiBasic
-    - RobotTalk
-    - SolCommon
+# - type: entity
+#   id: StationAiBrainTSFMC
+#   parent: StationAiBrain
+#   categories: [ HideSpawnMenu, DoNotMap ]
+#   components:
+#   - type: Sprite
+#   - type: SiliconLawProvider
+#     laws: TSFMCLawset
+#   - type: GhostRole
+#     name: ghost-role-information-tsfmc-core
+#     description: ghost-role-information-tsfmc-core-description
+#     rules: ghost-role-information-silicon-rules
+#     raffle:
+#       settings: default
+#     prototype: TSFMCAICore
+#   - type: GhostTakeoverAvailable
+#   - type: RandomMetadata
+#     nameSegments: [ TSFMCCoreNameset ]
+#   - type: LanguageKnowledge
+#     speaks:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - SolCommon
+#     understands:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - SolCommon
 
-- type: entity
-  id: AiHeldTSFMC
-  parent: AiHeldMono
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: IntrinsicRadioTransmitter
-    channels:
-    - Common
-    - Traffic
-    - Science
-    - Supply
-    - Engineering
-    - Medical
-    - Nfsd
-    - Command
-  - type: ActiveRadio
-    channels:
-    - Common
-    - Traffic
-    - Science
-    - Supply
-    - Engineering
-    - Medical
-    - Nfsd
-    - Command
-  - type: CollectiveMind
-    channels:
-    - Binary
-    defaultChannel: Binary
+# - type: entity
+#   id: AiHeldTSFMC
+#   parent: AiHeldMono
+#   categories: [ HideSpawnMenu ]
+#   components:
+#   - type: IntrinsicRadioTransmitter
+#     channels:
+#     - Common
+#     - Traffic
+#     - Science
+#     - Supply
+#     - Engineering
+#     - Medical
+#     - Nfsd
+#     - Command
+#   - type: ActiveRadio
+#     channels:
+#     - Common
+#     - Traffic
+#     - Science
+#     - Supply
+#     - Engineering
+#     - Medical
+#     - Nfsd
+#     - Command
+#   - type: CollectiveMind
+#     channels:
+#     - Binary
+#     defaultChannel: Binary
 
-# PDV AI Core
+# PDV AI Core #Triad - Disabled
 
-- type: entity
-  id: PlayerStationAiPDV
-  parent: PlayerStationAiEmpty
-  suffix: Ghost Role, PDV
-  components:
-  - type: ContainerComp
-    proto: AiHeldPDV
-    container: station_ai_mind_slot
-  - type: ContainerFill
-    containers:
-      station_ai_mind_slot:
-      - StationAiBrainPDV
-  - type: Sprite
-    sprite: Mobs/Silicon/station_ai.rsi
-    layers:
-    - state: base
-    - state: ai
-      shader: unshaded
-  - type: Anchorable
+# - type: entity
+#   id: PlayerStationAiPDV
+#   parent: PlayerStationAiEmpty
+#   suffix: Ghost Role, PDV
+#   components:
+#   - type: ContainerComp
+#     proto: AiHeldPDV
+#     container: station_ai_mind_slot
+#   - type: ContainerFill
+#     containers:
+#       station_ai_mind_slot:
+#       - StationAiBrainPDV
+#   - type: Sprite
+#     sprite: Mobs/Silicon/station_ai.rsi
+#     layers:
+#     - state: base
+#     - state: ai
+#       shader: unshaded
+#   - type: Anchorable
 
-- type: entity
-  id: StationAiBrainPDV
-  parent: StationAiBrain
-  categories: [ HideSpawnMenu, DoNotMap ]
-  components:
-  - type: Sprite
-  - type: SiliconLawProvider
-    laws: PDVLawset
-  - type: GhostRole
-    name: ghost-role-information-pdv-core
-    description: ghost-role-information-pdv-core-description
-    rules: ghost-role-information-silicon-rules
-    raffle:
-      settings: default
-    prototype: PDVAICore
-  - type: GhostTakeoverAvailable
-  - type: RandomMetadata
-    nameSegments: [ PDVCoreNameset ]
-  - type: LanguageKnowledge
-    speaks:
-    - TauCetiBasic
-    - RobotTalk
-    - Freespeak
-    understands:
-    - TauCetiBasic
-    - RobotTalk
-    - Freespeak
-  - type: Access
-    tags:
-    - Pirate
-    - GrandVizier
-    - PDVCommand
+# - type: entity
+#   id: StationAiBrainPDV
+#   parent: StationAiBrain
+#   categories: [ HideSpawnMenu, DoNotMap ]
+#   components:
+#   - type: Sprite
+#   - type: SiliconLawProvider
+#     laws: PDVLawset
+#   - type: GhostRole
+#     name: ghost-role-information-pdv-core
+#     description: ghost-role-information-pdv-core-description
+#     rules: ghost-role-information-silicon-rules
+#     raffle:
+#       settings: default
+#     prototype: PDVAICore
+#   - type: GhostTakeoverAvailable
+#   - type: RandomMetadata
+#     nameSegments: [ PDVCoreNameset ]
+#   - type: LanguageKnowledge
+#     speaks:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Freespeak
+#     understands:
+#     - TauCetiBasic
+#     - RobotTalk
+#     - Freespeak
+#   - type: Access
+#     tags:
+#     - Pirate
+#     - GrandVizier
+#     - PDVCommand
 
-- type: entity
-  id: AiHeldPDV
-  parent: AiHeldMono
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: IntrinsicRadioTransmitter
-    channels:
-    - Common
-    - Traffic
-    - Science
-    - Supply
-    - Engineering
-    - Medical
-    - Freelance
-  - type: ActiveRadio
-    channels:
-    - Common
-    - Traffic
-    - Science
-    - Supply
-    - Engineering
-    - Medical
-    - Freelance
-  - type: CollectiveMind
-    channels:
-    - Binary
-    defaultChannel: Binary
+# - type: entity
+#   id: AiHeldPDV
+#   parent: AiHeldMono
+#   categories: [ HideSpawnMenu ]
+#   components:
+#   - type: IntrinsicRadioTransmitter
+#     channels:
+#     - Common
+#     - Traffic
+#     - Science
+#     - Supply
+#     - Engineering
+#     - Medical
+#     - Freelance
+#   - type: ActiveRadio
+#     channels:
+#     - Common
+#     - Traffic
+#     - Science
+#     - Supply
+#     - Engineering
+#     - Medical
+#     - Freelance
+#   - type: CollectiveMind
+#     channels:
+#     - Binary
+#     defaultChannel: Binary
 
 # PDV Cyborgs
 
