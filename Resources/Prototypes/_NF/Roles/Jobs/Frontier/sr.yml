@@ -5,10 +5,10 @@
   playTimeTracker: JobHeadOfPersonnel
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 72000 # 20 hrs
+      time: 36000 # triad
     - !type:RoleTimeRequirement
       role: JobSecurityGuard
-      time: 7200 # 2 hrs as security guard - mono
+      time: 3600 # triad
   whitelisted: true
   startingGear: SrGear
   alwaysUseSpawner: true

@@ -6,15 +6,15 @@
   requirements:
   - !type:DepartmentTimeRequirement
     department: UnionOfSovietSocialistPlanets
-    time: 72000 # 20 hours
+    time: 36000 # 10 hours  half by triad
   - !type:RoleTimeRequirement
     role: JobUSSPSergeant
-    time: 10800 # 3 hrs
+    time: 5400 # 3 hrs half by triad
   - !type:RoleTimeRequirement
     role: JobUSSPMedic
-    time: 10800 # 3 hrs
+    time: 5400 # 3 hrs half by triad
   - !type:OverallPlaytimeRequirement
-    time: 144000 # 40 hrs
+    time: 72000 # 20 hrs half by triad
   startingGear: USSPCommissarGear
   alwaysUseSpawner: true
   hideConsoleVisibility: true

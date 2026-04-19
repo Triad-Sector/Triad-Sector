@@ -6,9 +6,9 @@
   requirements:
   - !type:DepartmentTimeRequirement
     department: UnionOfSovietSocialistPlanets
-    time: 54000 # 15 hours
+    time: 27000 # 7.5 hours half by triad
   - !type:OverallPlaytimeRequirement
-    time: 72000 # 20 hrs
+    time: 36000 # 10 Hours half by triad
   startingGear: USSPSergeantGear
   alwaysUseSpawner: true
   hideConsoleVisibility: true

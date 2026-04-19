@@ -7,10 +7,10 @@
   alwaysUseSpawner: true
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 54000 # 20 hrs # mono - change to 15 hr
+      time: 27000 # triad
     - !type:RoleTimeRequirement
       role: JobSecurityGuard
-      time: 3600 # 3 hrs as security guard # mono - change to 1 hr
+      time: 1800 # triad
   canBeAntag: false
   icon: "JobIconStc"
   assignedCompany: Colonial

@@ -6,7 +6,7 @@
   setPreference: true
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 43200
+      time: 21600 # Half by Triad
   assignedCompany: TSF
   canBeAntag: false
   icon: JobIconBorg
