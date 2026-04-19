@@ -1,181 +1,149 @@
 - type: entity
   id: MilitaryStorageStash
-  parent: BaseStructureDynamic
+  parent: BaseStorageStructure
   name: military storage stash
-  description: Tbd
+  description: A reinforced flatpack storage unit for secure operations. Preserves stored items across ship deployments.
   components:
-  - type: Sprite
-    sprite: _Triad/Structure/Storage/ShipStashes/military_storage_stash.rsi
-    state: military_storage_rsi
-    noRot: true
-  - type: Transform
-    noRot: true
-    anchored: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.5,-0.5,0.5,0.5"
-        density: 15
-  - type: InteractionOutline
-  - type: UserInterface
-    interfaces:
-      enum.StorageUiKey.Key:
-        type: StorageBoundUserInterface
-  - type: Storage
-    grid:
-    - 0,0,3,7
-    - 5,0,11,7
-    maxItemSize: Ginormous
-    blacklist:
-      components:
-      - StorageFill
-      - PresetIdCard
-      - IdCard
-      - Access
-      - Store
-      - Cash
-      - Headset
-  - type: HLPersistOnShipSave
+    - type: Sprite
+      sprite: _Triad/Structure/Storage/ShipStashes/military_storage_stash.rsi
+      state: military_storage_rsi
+    - type: InteractionOutline
+    - type: UserInterface
+      interfaces:
+        enum.StorageUiKey.Key:
+          type: StorageBoundUserInterface
+    - type: Storage
+      grid:
+      - 0,0,3,7
+      - 5,0,11,7
+      maxItemSize: Ginormous
+      blacklist:
+        components:
+        - StorageFill
+        - PresetIdCard
+        - IdCard
+        - Access
+        - Store
+        - Cash
+        - Headset
+    - type: HLPersistOnShipSave
+    - type: Construction
+      graph: MilitaryStorageStashGraph
+      node: MilitaryStorageStashNode
 
 - type: entity
-  id: MedicalBluespaceDesk
-  parent: BaseStructureDynamic
-  name: medical bluespace desk
-  description: Tbd
+  id: MedicalSecureStorage
+  parent: BaseStorageStructure
+  name: medical secure storage
+  description: A reinforced flatpack storage unit for secure operations. Preserves stored items across ship deployments.
   components:
-  - type: Sprite
-    sprite: _Triad/Structure/Storage/ShipStashes/medical_bluespace_desk.rsi
-    state: medical_bluespace_desk
-    noRot: true
-  - type: Transform
-    noRot: true
-    anchored: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.5,-0.5,0.5,0.5"
-        density: 15
-  - type: InteractionOutline
-  - type: UserInterface
-    interfaces:
-      enum.StorageUiKey.Key:
-        type: StorageBoundUserInterface
-  - type: Storage
-    grid:
-    - 0,0,2,1
-    - 0,3,2,6
-    - 4,0,9,6
-    maxItemSize: Ginormous
-    whitelist:
-      components:
-        - Pill
-        - Hypospray
-        - MedicalBag
-      tags:
-        - PillCanister
-        - CentrifugeCompatible
-        - Syringe
-        - Ointment
-        - Brutepack
-        - Bloodpack
-        - Gauze
-        - Bottle
-        - GlassBeaker
-        - ChemDispensable
-        - MedicialBluespaceDeskCompatible
-  - type: HLPersistOnShipSave
+    - type: Sprite
+      sprite: _Triad/Structure/Storage/ShipStashes/medical_secure_storage.rsi
+      state: medical_secure_storage
+    - type: InteractionOutline
+    - type: UserInterface
+      interfaces:
+        enum.StorageUiKey.Key:
+          type: StorageBoundUserInterface
+    - type: Storage
+      grid:
+      - 0,0,2,1
+      - 0,3,2,6
+      - 4,0,9,6
+      maxItemSize: Ginormous
+      whitelist:
+        components:
+          - Pill
+          - Hypospray
+          - MedicalBag
+        tags:
+          - PillCanister
+          - CentrifugeCompatible
+          - Syringe
+          - Ointment
+          - Brutepack
+          - Bloodpack
+          - Gauze
+          - Bottle
+          - GlassBeaker
+          - ChemDispensable
+          - MedicialBluespaceDeskCompatible
+    - type: HLPersistOnShipSave
+    - type: Construction
+      graph: MedicalSecureStorageGraph
+      node: MedicalSecureStorageNode
 
 - type: entity
-  id: BotanyTable
-  parent: BaseStructureDynamic
+  id: BotanicalStorageUnit
+  parent: BaseStorageStructure
   name: botany table
   description: Tbd
   components:
-  - type: Sprite
-    sprite: _Triad/Structure/Storage/ShipStashes/botany_table.rsi
-    state: botany_table
-    noRot: true
-  - type: Transform
-    noRot: true
-    anchored: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.5,-0.5,0.5,0.5"
-        density: 15
-  - type: InteractionOutline
-  - type: UserInterface
-    interfaces:
-      enum.StorageUiKey.Key:
-        type: StorageBoundUserInterface
-  - type: Storage
-    grid:
-    - 0,0,0,0
-    - 0,2,0,2
-    - 2,0,2,0
-    - 2,2,2,2
-    - 4,0,4,0
-    - 4,2,4,2
-    - 0,4,4,6
-    - 6,0,9,6
-    maxItemSize: Ginormous
-    whitelist:
-      components:
-      - Produce
-      - Seed
-      tags:
-      - BotanicalTableCompatible
-      - BotanyShovel
-      - BotanyHatchet
-      - PlantSampleTaker
-      - Hoe
-      - BotanyHoe
-      - PlantAnalyzer
-  - type: HLPersistOnShipSave
+    - type: Sprite
+      sprite: _Triad/Structure/Storage/ShipStashes/botany_storage_unit.rsi
+      state: botany_storage_unit
+    - type: InteractionOutline
+    - type: UserInterface
+      interfaces:
+        enum.StorageUiKey.Key:
+          type: StorageBoundUserInterface
+    - type: Storage
+      grid:
+      - 0,0,0,0
+      - 0,2,0,2
+      - 2,0,2,0
+      - 2,2,2,2
+      - 4,0,4,0
+      - 4,2,4,2
+      - 0,4,4,6
+      - 6,0,9,6
+      maxItemSize: Ginormous
+      whitelist:
+        components:
+        - Produce
+        - Seed
+        tags:
+        - BotanicalTableCompatible
+        - BotanyShovel
+        - BotanyHatchet
+        - PlantSampleTaker
+        - Hoe
+        - BotanyHoe
+        - PlantAnalyzer
+    - type: HLPersistOnShipSave
+    - type: Construction
+      graph: BotanicalStorageUnitGraph
+      node: BotanicalStorageUnitNode
 
 - type: entity
   id: CivilianStorageStash
-  parent: BaseStructureDynamic
+  parent: BaseStorageStructure
   name: civilian storage stash
-  description: Tbd
+  description: A flatpack personal storage unit. Deployed stashes retain their contents between ship saves.
   components:
-  - type: Sprite
-    sprite: _Triad/Structure/Storage/ShipStashes/civilian_storage_stash.rsi
-    state: civilian_storage_stash
-    noRot: true
-  - type: Transform
-    noRot: true
-    anchored: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.5,-0.5,0.5,0.5"
-        density: 15
-  - type: InteractionOutline
-  - type: UserInterface
-    interfaces:
-      enum.StorageUiKey.Key:
-        type: StorageBoundUserInterface
-  - type: Storage
-    grid:
-    - 0,0,3,7
-    - 5,0,11,7
-    maxItemSize: Large
-    blacklist:
-      components:
-      - StorageFill
-      - PresetIdCard
-      - IdCard
-      - Access
-      - Store
-      - Cash
-      - Headset
-  - type: HLPersistOnShipSave
+    - type: Sprite
+      sprite: _Triad/Structure/Storage/ShipStashes/civilian_storage_stash.rsi
+      state: civilian_storage_stash
+    - type: InteractionOutline
+    - type: UserInterface
+      interfaces:
+        enum.StorageUiKey.Key:
+          type: StorageBoundUserInterface
+    - type: Storage
+      grid:
+      - 0,0,3,7
+      - 5,0,11,7
+      maxItemSize: Large
+      blacklist:
+        components:
+        - StorageFill
+        - PresetIdCard
+        - IdCard
+        - Access
+        - Store
+        - Cash
+        - Headset
+    - type: HLPersistOnShipSave
+    - type: Construction
+      graph: CivilianStorageStashGraph
+      node: CivilianStorageStashNode
