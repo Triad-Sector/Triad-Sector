@@ -5,13 +5,13 @@
   playTimeTracker: JobWarden
   requirements: # mono - lowers all of these tbh
     - !type:OverallPlaytimeRequirement
-      time: 72000 # 20 hours
+      time: 36000 # triad
     - !type:DepartmentTimeRequirement
       department: Security
-      time: 36000 # 10 hours
+      time: 18000 # triad hours
     - !type:RoleTimeRequirement
       role: JobSeniorOfficer
-      time: 10800 # 3 hours
+      time: 5400 # triad hours
   startingGear: BailiffGear
   icon: JobIconBailiff
   supervisors: job-supervisors-sheriff

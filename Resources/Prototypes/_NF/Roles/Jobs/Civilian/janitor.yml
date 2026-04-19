@@ -5,7 +5,7 @@
   playTimeTracker: JobJanitor
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 7200 # mono - change to 2 hr
+      time: 3600 # triad - change to 1 hr
   startingGear: NFJanitorGear
   alwaysUseSpawner: true
   icon: "JobIconJanitor"

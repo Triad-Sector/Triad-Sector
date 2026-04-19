@@ -5,10 +5,10 @@
   playTimeTracker: JobSecurityCadet
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 32400 # 9 hours # mono
+      time: 16200 # triad
     - !type:DepartmentTimeRequirement
       department: Security
-      time: 72000 # 20 hours # mono
+      time: 36000 # triad
       inverted: true # Leave slots open for newer, less confident players.
   startingGear: CadetGear
   icon: JobIconCadetNF

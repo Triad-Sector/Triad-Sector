@@ -5,10 +5,10 @@
   playTimeTracker: JobDirectorOfCare
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 162000 # mono - 45 hours
+      time: 81000 # triad
     - !type:DepartmentTimeRequirement
       department: Medical
-      time: 72000 # mono - 20 hours
+      time: 36000 # triad
   alternateRequirementSets: # mono
     longerPlaytimeLessSec: # mono
     - !type:OverallPlaytimeRequirement # mono
