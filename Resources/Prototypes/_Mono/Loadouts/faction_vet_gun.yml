@@ -4,21 +4,22 @@
   minLimit: 0
   maxLimit: 1
   loadouts:
-  # TSF playtime guns
-  - ContractorSpecialGunEg4
-  - ContractorSpecialGunAnnie
-  - ContractorSpecialGunVulcan
-  - ContractorSpecialGunEnforcer
-  - ContractorSpecialGunVector9mm
-  - ContractorSpecialGunVector45Acp
-  - ContractorSpecialGunBandit
+  # Triad - Disabled all faction related weapons for the time being, it might return eventually™
+  # TSF playtime guns 
+  # - ContractorSpecialGunEg4
+  # - ContractorSpecialGunAnnie
+  # - ContractorSpecialGunVulcan
+  # - ContractorSpecialGunEnforcer
+  # - ContractorSpecialGunVector9mm
+  # - ContractorSpecialGunVector45Acp
+  # - ContractorSpecialGunBandit
   # USSP -> MERC/CIV playtime guns
   - ContractorSpecialGunAk502
   - ContractorSpecialGunBigLeady
   # Rogue playtime guns
-  - ContractorSpecialGunAnaconda
-  - ContractorSpecialGunMla73
-  - ContractorSpecialGunWspr
+  # - ContractorSpecialGunAnaconda
+  # - ContractorSpecialGunMla73
+  # - ContractorSpecialGunWspr  
   # Civ playtime guns
   - ContractorSpecialGunSmartSMG
   - ContractorSpecialGunMla34
