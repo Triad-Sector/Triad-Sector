@@ -34,7 +34,7 @@
 
 - type: construction
   id: MedicalSecureStorage
-  name: Medical Bluespace Desk
+  name: Medical Sanitized Stash
   description: A reinforced flatpack storage unit for secure operations. Preserves stored items across ship deployments.
   graph: MedicalSecureStorageGraph
   startNode: start
@@ -51,8 +51,8 @@
 
 - type: construction
   id: BotanicalStorageUnit
-  name: Botany Table
-  description: A reinforced flatpack storage unit for secure operations. Preserves stored items across ship deployments.
+  name: Botanical Greenhouse Stash
+  description: Assorted seeds, plants, and gardening gear stash. Contents are securely preserved across ship operations.
   graph: BotanicalStorageUnitGraph
   startNode: start
   targetNode: BotanicalStorageUnitNode

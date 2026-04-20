@@ -478,6 +478,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         EnsureComp<PhysicsComponent>(grid);
         EnsureComp<ShuttleComponent>(grid);
         EnsureComp<IFFComponent>(grid);
+        TryResetUseDelays(grid);
 
         // Load-time sanitation: purge any deserialized joints and reset dock joint references
         // to avoid physics processing invalid joint bodies (e.g., Entity 0) from YAML.

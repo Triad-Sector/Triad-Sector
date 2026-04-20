@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Chemistry.Components;
 using Content.Server.Construction.Components;
+using Content.Server.Spreader;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Store.Components; // HardLight
@@ -43,6 +44,7 @@ using Robust.Shared.Serialization.Markdown.Value;
 using Robust.Shared.Utility;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
+using Content.Server.Light.Components;
 
 namespace Content.Server._NF.Shipyard.Systems;
 
@@ -68,6 +70,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!; // HardLight
+    [Dependency] private readonly AppearanceSystem _appearance = default!; // HardLight
 
     private ISawmill _sawmill = default!;
     private MapLoaderSystem _mapLoader = default!;
@@ -87,7 +90,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         _transformQuery = GetEntityQuery<TransformComponent>();
 
         // Initialize sawmill for logging
-        _sawmill = Logger.GetSawmill("shipyard.gridsave");
+        //_sawmill = Logger.GetSawmill("shipyard.gridsave");
 
         // Get the MapLoaderSystem reference
         _mapLoader = _entitySystemManager.GetEntitySystem<MapLoaderSystem>();
@@ -103,32 +106,38 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
 
         if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
         {
-            _sawmill.Warning("No ID card in shipyard console slot");
+            //_sawmill.Warning("No ID card in shipyard console slot");
             return;
         }
 
         if (!_entityManager.TryGetComponent<ShuttleDeedComponent>(targetId, out var deed))
         {
-            _sawmill.Warning("ID card does not have a shuttle deed");
+            //_sawmill.Warning("ID card does not have a shuttle deed");
             return;
         }
 
         if (deed.ShuttleUid == null)
         {
-            _sawmill.Warning("Shuttle deed does not reference a valid shuttle");
+            //_sawmill.Warning("Shuttle deed does not reference a valid shuttle");
             return;
         }
 
         var shuttleUid = deed.ShuttleUid;
+        if (shuttleUid == null)
+        {
+            //_sawmill.Warning("Shuttle entity is not a valid grid");
+            return;
+        }
 
         // Get player session
         if (!_playerManager.TryGetSessionByEntity(player, out var playerSession))
         {
-            _sawmill.Warning("Could not get player session");
+            //_sawmill.Warning("Could not get player session");
             return;
         }
+        Logger.Info($"Trying to save {playerSession.Name} ship");
 
-        _sawmill.Info($"Starting ship save for {deed.ShuttleName ?? "Unknown_Ship"} owned by {playerSession.Name}");
+        //_sawmill.Info($"Starting ship save for {deed.ShuttleName ?? "Unknown_Ship"} owned by {playerSession.Name}");
 
         // Run save inline on the main thread to avoid off-thread ECS access.
         var success = TrySaveGridAsShip(shuttleUid.Value, deed.ShuttleName ?? "Unknown_Ship", playerSession.UserId.ToString(), playerSession);
@@ -136,7 +145,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         if (success)
         {
             // Clean up the deed after successful save
-            _entityManager.RemoveComponent<ShuttleDeedComponent>(targetId);
+            RemComp<ShuttleDeedComponent>(targetId);
 
             // Also remove any other shuttle deeds that reference this shuttle
             RemoveAllShuttleDeeds(shuttleUid.Value);
@@ -144,7 +153,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             // Transfer semantics: after saving, delete the live ship grid.
             // Use QueueDel to schedule deletion safely at end-of-frame to avoid PVS or in-frame references.
             QueueDel(shuttleUid.Value);
-            _sawmill.Info($"Successfully saved ship {deed.ShuttleName}; queued deletion of grid {shuttleUid.Value}");
+            //_sawmill.Info($"Successfully saved ship {deed.ShuttleName}; queued deletion of grid {shuttleUid.Value}");
         }
         else
         {
@@ -171,7 +180,6 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         foreach (var deedEntity in deedsToRemove)
         {
             RemComp<ShuttleDeedComponent>(deedEntity);
-            _sawmill.Info($"Removed shuttle deed from entity {deedEntity}");
         }
     }
 
@@ -183,7 +191,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     {
         if (!_gridQuery.HasComp(gridUid))
         {
-            _sawmill.Error($"Entity {gridUid} is not a valid grid");
+            //_sawmill.Error($"Entity {gridUid} is not a valid grid");
             return false;
         }
 
@@ -203,6 +211,9 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             // HardLight: Remove components that fail serialization (e.g., player state) from entities on the grid.
             RemoveSerializationBlockingComponentsOnGrid(gridUid);
 
+            // Triad: Removing all EdgeSpreaderComponent
+            RemoveEdgeSpreaderComponentComponentsOnGrid(gridUid);
+
             //_sawmill.Info($"Serializing ship grid {gridUid} as '{shipName}' after transient purge using direct serialization");
 
             // 1) Serialize the grid and its children to a MappingDataNode (engine-standard format)
@@ -218,10 +229,10 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 LogAutoInclude = null
             };
             var (node, category) = _mapLoader.SerializeEntitiesRecursive(entities, opts);
-            if (category != FileCategory.Grid)
+            /* if (category != FileCategory.Grid)
             {
                 _sawmill.Warning($"Expected FileCategory.Grid but got {category}; continuing with sanitation");
-            }
+            } */
 
             // 2) Sanitize the node to match blueprint conventions
             SanitizeShipSaveNode(node);
@@ -232,7 +243,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             // 4) Send to client for local saving
             var saveMessage = new SendShipSaveDataClientMessage(shipName, yaml);
             RaiseNetworkEvent(saveMessage, playerSession);
-            _sawmill.Info($"Sent ship data '{shipName}' to client {playerSession.Name} for local saving");
+            //_sawmill.Info($"Sent ship data '{shipName}' to client {playerSession.Name} for local saving");
 
             // Fire ShipSavedEvent for bookkeeping; DO NOT delete the grid or maps here.
             var gridSavedEvent = new ShipSavedEvent
@@ -243,13 +254,13 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 PlayerSession = playerSession
             };
             RaiseLocalEvent(gridSavedEvent);
-            _sawmill.Info($"Fired ShipSavedEvent for '{shipName}'");
+            //_sawmill.Info($"Fired ShipSavedEvent for '{shipName}'");
 
             return true;
         }
         catch (Exception ex)
         {
-            Logger.Error($"Ship save failed for '{shipName}' on grid {gridUid}: {ex}");
+            Logger.GetSawmill("hardlight").Error($"Ship save failed for '{shipName}' on grid {gridUid}: {ex}");
             return false;
         }
         finally
@@ -288,6 +299,24 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         }
     }
 
+    private void RemoveEdgeSpreaderComponentComponentsOnGrid(EntityUid gridUid)
+    {
+        var toRemove = new HashSet<EntityUid>();
+
+        var edgeSpreader = _entityManager.EntityQueryEnumerator<EdgeSpreaderComponent, TransformComponent>();
+        while (edgeSpreader.MoveNext(out var uid, out var _, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+            toRemove.Add(uid);
+        }
+
+        foreach (var uid in toRemove)
+        {
+            QueueDel(uid);
+        }
+    }
+
     /// <summary>
     /// Adds <see cref="SecretStashComponent"/> to any entity currently hidden inside a SecretStash on the target grid.
     /// This satisfies the explicit requirement to "add secretstashcomponent to anything within the bluespace stash".
@@ -315,8 +344,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 EnsureComp<SecretStashComponent>(hidden.Value);
                 tagged++;
             }
-            if (tagged > 0)
-                _sawmill.Info($"TagStashContents: Added SecretStashComponent to {tagged} hidden item(s) on grid {gridUid}");
+            /* if (tagged > 0)
+                _sawmill.Info($"TagStashContents: Added SecretStashComponent to {tagged} hidden item(s) on grid {gridUid}"); */
         }
         catch (Exception e)
         {
@@ -324,6 +353,12 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         }
     }
 
+
+
+    /// <summary>
+    /// Cleans up broken device links where one or both linked entities no longer exist.
+    /// Preserves valid links where both source and sink entities are still present.
+    /// </summary>
     private void CleanupBrokenDeviceLinks(EntityUid gridUid)
     {
         try
@@ -404,10 +439,10 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 }
             }
 
-            if (preservedStashItemCount > 0)
+            /* if (preservedStashItemCount > 0)
                 _sawmill.Info($"PurgeTransientEntities: Preserving {preservedStashItemCount} secret stash item(s) on grid {gridUid}");
 
-            _sawmill.Info($"PurgeTransientEntities: Scanning grid {gridUid} for transient entities (loose + contained)");
+            _sawmill.Info($"PurgeTransientEntities: Scanning grid {gridUid} for transient entities (loose + contained)"); */
 
             // 1. Collect all entities spatially present on the grid (this won't include items inside containers)
             foreach (var ent in _lookup.GetEntitiesIntersecting(gridUid, grid.LocalAABB))
@@ -488,17 +523,17 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 var fallbackTotal = fallbackLoose.Count + fallbackContained.Count;
                 if (fallbackTotal == 0)
                 {
-                    _sawmill.Info($"PurgeTransientEntities: No transient entities found on grid {gridUid} after fallback (inspected={inspected}, AABB={grid.LocalAABB})");
+                    //_sawmill.Info($"PurgeTransientEntities: No transient entities found on grid {gridUid} after fallback (inspected={inspected}, AABB={grid.LocalAABB})");
                     return;
                 }
 
-                _sawmill.Info($"PurgeTransientEntities: Primary scan empty; fallback found {fallbackTotal} (loose={fallbackLoose.Count}, contained={fallbackContained.Count}) on grid {gridUid}");
+                //_sawmill.Info($"PurgeTransientEntities: Primary scan empty; fallback found {fallbackTotal} (loose={fallbackLoose.Count}, contained={fallbackContained.Count}) on grid {gridUid}");
                 DeleteEntityList(fallbackContained, "contained-fallback");
                 DeleteEntityList(fallbackLoose, "loose-fallback");
                 return;
             }
 
-            _sawmill.Info($"PurgeTransientEntities: Deleting {total} entities (loose={looseDeletes.Count}, contained={containerContentDeletes.Count}) on grid {gridUid}");
+            //_sawmill.Info($"PurgeTransientEntities: Deleting {total} entities (loose={looseDeletes.Count}, contained={containerContentDeletes.Count}) on grid {gridUid}");
 
             // Delete contained entities first (so container state is clean before possibly deleting loose objects referencing them)
             DeleteEntityList(containerContentDeletes, "contained");
@@ -521,6 +556,12 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         // Skip if terminating
         if (_entityManager.GetComponent<MetaDataComponent>(uid).EntityLifeStage >= EntityLifeStage.Terminating)
             return false;
+        // HardLight: Remove uplink currencies
+        if (IsNonPersistentShipSaveCurrency(uid))
+            return true;
+        // HardLight: Remove used disposable implanters
+        if (IsSpentDisposableImplanter(uid))
+            return true;
         if (_secretStashQuery.HasComp(uid) || _persistOnSaveQuery.HasComp(uid))
             return false; // preserve stash root outright
         if (_gridQuery.HasComp(uid))
@@ -554,6 +595,36 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         // Only unanchored entities are eligible for deletion. If it's unanchored (loose) or unanchored-in-container, delete.
         return true;
     }
+
+    // HardLight start
+    // Checks if the entity is a currency that matches any in the NonPersistentShipSaveCurrencies list.
+    private bool IsNonPersistentShipSaveCurrency(EntityUid uid)
+    {
+        if (!TryComp<CurrencyComponent>(uid, out var currency) || currency.Price.Count == 0)
+            return false;
+
+        foreach (var currencyId in currency.Price.Keys)
+        {
+            if (NonPersistentShipSaveCurrencies.Contains(currencyId))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Checks if the entity is an implanter that is marked as implant-only and has no implant currently slotted.
+    private bool IsSpentDisposableImplanter(EntityUid uid)
+    {
+        if (!TryComp<ImplanterComponent>(uid, out var implanter))
+            return false;
+
+        // Disposable implanters are marked implant-only. Once used, they have no implant in the slot.
+        if (!implanter.ImplantOnly)
+            return false;
+
+        return implanter.ImplanterSlot.ContainerSlot?.ContainedEntity is not { Valid: true };
+    }
+    // HardLight end
 
     private bool TryQueueLoose(EntityUid ent, List<EntityUid> list, HashSet<EntityUid> processed)
     {
@@ -628,6 +699,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 return true; // Found stash root above.
             if (HasComp<MachineComponent>(owner))
                 return true; // This is so machines keep their upgraded parts.
+            if (HasComp<PoweredLightComponent>(owner)) // HardLight
+                return true; // Keep bulbs inside powered lights so ship loads don't depend on ContainerFill.
             current = owner;
         }
         return false;
@@ -655,9 +728,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     /// - Remove mapInit/paused from entities
     /// - Remove Transform.rot entries
     /// - Remove SpreaderGrid update accumulator
-    /// - Remove components: Joint, StationMember, NavMap, ShuttleDeed, IFF, LinkedLifecycleGridParent,
-    ///   AccessReader, DeviceList, DeviceNetwork, DeviceNetworkComponent, UserInterface, Docking,
-    ///   ActionGrant, ContainerFill, Forensics
+    /// - Remove components: Joint, StationMember, NavMap, ShuttleDeed, IFF, LinkedLifecycleGridParent
     /// </summary>
     private void SanitizeShipSaveNode(MappingDataNode root)
     {
@@ -681,7 +752,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     /// </summary>
     public void CleanGridForSaving(EntityUid gridUid)
     {
-        _sawmill.Info($"Starting grid cleanup for {gridUid}");
+        //_sawmill.Info($"Starting grid cleanup for {gridUid}");
 
         var allEntities = new HashSet<EntityUid>();
 
@@ -696,19 +767,18 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             }
         }
 
-        _sawmill.Info($"Found {allEntities.Count} entities to clean on grid");
+        //_sawmill.Info($"Found {allEntities.Count} entities to clean on grid");
 
-        var entitiesRemoved = 0;
         var componentsRemoved = 0;
 
         // PHASE 1: Do not delete entities to preserve physics counts
         // We'll clean by removing components instead (e.g., VendingMachineComponent)
-        _sawmill.Info("Phase 1: Skipping entity deletions to preserve physics components");
-        _sawmill.Info($"Phase 1 complete: deleted {entitiesRemoved} entities");
+       //_sawmill.Info("Phase 1: Skipping entity deletions to preserve physics components");
+        //_sawmill.Info($"Phase 1 complete: deleted {entitiesRemoved} entities");
 
         // PHASE 2: Clean components from remaining entities
         // Re-gather remaining entities to avoid processing deleted ones
-        _sawmill.Info("Phase 2: Cleaning components from remaining entities");
+        //_sawmill.Info("Phase 2: Cleaning components from remaining entities");
 
         var remainingEntities = new HashSet<EntityUid>();
 
@@ -722,7 +792,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             }
         }
 
-        _sawmill.Info($"Found {remainingEntities.Count} remaining entities to clean components from");
+        //_sawmill.Info($"Found {remainingEntities.Count} remaining entities to clean components from");
 
         foreach (var entity in remainingEntities)
         {
@@ -759,17 +829,17 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 if (_entityManager.RemoveComponent<AtmosDeviceComponent>(entity))
                     componentsRemoved++;
 
-                // ChemMaster: Log buffer solution state for debugging
+				// ChemMaster: Log buffer solution state for debugging
                 if (_entityManager.TryGetComponent<ChemMasterComponent>(entity, out var chemMaster))
                 {
                     if (_entitySystemManager.TryGetEntitySystem<SharedSolutionContainerSystem>(out var solutionSystem))
                     {
                         if (solutionSystem.TryGetSolution(entity, "buffer", out var bufferEntity, out var bufferSolution))
                         {
-                            Logger.Info($"ChemMaster {entity} buffer before save: {bufferSolution.Volume}u, {bufferSolution.Contents.Count} types");
+                            Logger.GetSawmill("hardlight").Info($"ChemMaster {entity} buffer before save: {bufferSolution.Volume}u, {bufferSolution.Contents.Count} types");
                             foreach (var reagent in bufferSolution.Contents)
                             {
-                                Logger.Info($"  - {reagent.Reagent.Prototype}: {reagent.Quantity}u");
+                                Logger.GetSawmill("hardlight").Info($"  - {reagent.Reagent.Prototype}: {reagent.Quantity}u");
                             }
                         }
                     }
@@ -784,7 +854,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             }
         }
 
-        _sawmill.Info($"Grid cleanup complete: deleted {entitiesRemoved} entities, removed {componentsRemoved} components from {remainingEntities.Count} remaining entities");
+        //_sawmill.Info($"Grid cleanup complete: deleted {entitiesRemoved} entities, removed {componentsRemoved} components from {remainingEntities.Count} remaining entities");
     }
 
     /// <summary>
@@ -801,12 +871,12 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             await using var writer = new StreamWriter(stream);
             await writer.WriteAsync(yamlData);
 
-            _sawmill.Info($"Temporary YAML file written: {resPath}");
+            //_sawmill.Info($"Temporary YAML file written: {resPath}");
             return true;
         }
         catch (Exception ex)
         {
-            _sawmill.Error($"Failed to write temporary YAML file {fileName}: {ex}");
+            //_sawmill.Error($"Failed to write temporary YAML file {fileName}: {ex}");
             return false;
         }
     }
