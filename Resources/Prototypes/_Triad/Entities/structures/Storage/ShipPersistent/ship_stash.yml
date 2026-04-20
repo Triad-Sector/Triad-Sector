@@ -34,7 +34,7 @@
 - type: entity
   id: MedicalSecureStorage
   parent: BaseStorageStructure
-  name: medical secure storage
+  name: medical sanitized stash
   description: A reinforced flatpack storage unit for secure operations. Preserves stored items across ship deployments.
   components:
     - type: Sprite
@@ -76,8 +76,8 @@
 - type: entity
   id: BotanicalStorageUnit
   parent: BaseStorageStructure
-  name: botany table
-  description: A specialized workstation for plant research and cultivation. Stored materials remain intact between expeditions.
+  name: botanical greenhouse stash
+  description: Assorted seeds, plants, and gardening gear stash. Contents are securely preserved across ship operations.
   components:
     - type: Sprite
       sprite: _Triad/Structure/Storage/ShipStashes/botany_storage_unit.rsi
@@ -119,7 +119,7 @@
   id: CivilianStorageStash
   parent: BaseStorageStructure
   name: civilian storage stash
-  description: A flatpack personal storage unit. Deployed stashes retain their contents between ship saves.
+  description: A compact personal storage solution for everyday use. Items stored within persist between ship deployments.
   components:
     - type: Sprite
       sprite: _Triad/Structure/Storage/ShipStashes/civilian_storage_stash.rsi
