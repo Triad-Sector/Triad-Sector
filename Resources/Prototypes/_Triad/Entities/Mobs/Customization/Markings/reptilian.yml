@@ -2,6 +2,7 @@
   id: LizardChestUnderbellyFeminine
   bodyPart: Chest
   markingCategory: Chest
+  speciesRestriction: [Reptilian]
   sprites:
   - sprite: _Triad/Mobs/Customization/Reptilian/underbelly_feminine.rsi
     state: body_underbelly
@@ -10,6 +11,7 @@
   id: LizardChestFemaleAlternate
   bodyPart: Chest
   markingCategory: Chest
+  speciesRestriction: [Reptilian]
   sprites:
   - sprite: _Triad/Mobs/Customization/Reptilian/reptilian_female_alternate_chest.rsi
     state: chest
