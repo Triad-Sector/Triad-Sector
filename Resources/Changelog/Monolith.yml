@@ -19376,3 +19376,14 @@ Entries:
   id: 2138
   time: '2026-04-19T12:30:11.0000000+00:00'
   url: https://github.com/Triad-Sector/Triad-Sector/pull/25
+- author: DDrakov
+  changes:
+    - type: Fix
+      message: Should fix ship saving bug
+    - type: Tweak
+      message: medical bluespace desk -> medical sanitized stash
+    - type: Tweak
+      message: botany table -> botanical greenhouse stash
+  id: 2139
+  time: '2026-04-20T14:51:18.0000000+00:00'
+  url: https://github.com/Triad-Sector/Triad-Sector/pull/33
