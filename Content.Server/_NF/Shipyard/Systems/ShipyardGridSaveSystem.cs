@@ -45,6 +45,8 @@ using Robust.Shared.Utility;
 using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using Content.Server.Light.Components;
+using Content.Shared._Triad.Shipyard;
+using System.Linq;
 
 namespace Content.Server._NF.Shipyard.Systems;
 
@@ -70,10 +72,13 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!; // HardLight
-    [Dependency] private readonly AppearanceSystem _appearance = default!; // HardLight
+
+    public List<ShipSaveLimitsPrototype> ShipSaveEntityLimits { get; private set; } = new();
 
     private ISawmill _sawmill = default!;
     private MapLoaderSystem _mapLoader = default!;
+
+    private HashSet<Entity<ShipSaveLimitComponent>> _limitedEntitiesList = new();
 
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<SecretStashComponent> _secretStashQuery;
@@ -90,81 +95,58 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         _transformQuery = GetEntityQuery<TransformComponent>();
 
         // Initialize sawmill for logging
-        //_sawmill = Logger.GetSawmill("shipyard.gridsave");
+        _sawmill = Logger.GetSawmill("shipyard.gridsave");
 
         // Get the MapLoaderSystem reference
         _mapLoader = _entitySystemManager.GetEntitySystem<MapLoaderSystem>();
 
-        // Subscribe to shipyard console events
-        SubscribeLocalEvent<ShipyardConsoleComponent, ShipyardConsoleSaveMessage>(OnSaveShipMessage);
+        ShipSaveEntityLimits = GetSaveShipEntityLimits(_prototypeManager);
     }
 
-    private void OnSaveShipMessage(EntityUid consoleUid, ShipyardConsoleComponent component, ShipyardConsoleSaveMessage args)
+    /// <summary>
+    /// Tries to save a ship, remove the given deed's deed component, and clean up the grid after saving.
+    /// </summary>
+    public bool TrySaveShip(EntityUid grid, EntityUid deedUid, ICommonSession playerSession)
     {
-        if (args.Actor is not { Valid: true } player)
-            return;
-
-        if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
+        if (!_entityManager.TryGetComponent<ShuttleDeedComponent>(deedUid, out var deed))
         {
-            //_sawmill.Warning("No ID card in shipyard console slot");
-            return;
+            _sawmill.Warning($"Player {playerSession.Name} tried to save ship with invalid deed UID: {deedUid}");
+            return false;
         }
 
-        if (!_entityManager.TryGetComponent<ShuttleDeedComponent>(targetId, out var deed))
-        {
-            //_sawmill.Warning("ID card does not have a shuttle deed");
-            return;
-        }
+        var shipName = deed.ShuttleName ?? "Unknown_Ship";
 
-        if (deed.ShuttleUid == null)
-        {
-            //_sawmill.Warning("Shuttle deed does not reference a valid shuttle");
-            return;
-        }
+        if (deed.ShuttleUid != grid)
+            return false;
 
-        var shuttleUid = deed.ShuttleUid;
-        if (shuttleUid == null)
-        {
-            //_sawmill.Warning("Shuttle entity is not a valid grid");
-            return;
-        }
+        // Integrate with ShipyardGridSaveSystem for ship saving functionality
+        _sawmill.Info($"Trying to save {playerSession.Name} ship {shipName}");
 
-        // Get player session
-        if (!_playerManager.TryGetSessionByEntity(player, out var playerSession))
-        {
-            //_sawmill.Warning("Could not get player session");
-            return;
-        }
-        Logger.Info($"Trying to save {playerSession.Name} ship");
-
-        //_sawmill.Info($"Starting ship save for {deed.ShuttleName ?? "Unknown_Ship"} owned by {playerSession.Name}");
-
-        // Run save inline on the main thread to avoid off-thread ECS access.
-        var success = TrySaveGridAsShip(shuttleUid.Value, deed.ShuttleName ?? "Unknown_Ship", playerSession.UserId.ToString(), playerSession);
+        var success = TrySaveGridAsShip(grid, shipName, playerSession.UserId.ToString(), playerSession);
 
         if (success)
         {
-            // Clean up the deed after successful save
-            RemComp<ShuttleDeedComponent>(targetId);
+            RemComp<ShuttleDeedComponent>(deedUid);
 
             // Also remove any other shuttle deeds that reference this shuttle
-            RemoveAllShuttleDeeds(shuttleUid.Value);
+            RemoveAllShuttleDeeds(grid);
 
-            // Transfer semantics: after saving, delete the live ship grid.
-            // Use QueueDel to schedule deletion safely at end-of-frame to avoid PVS or in-frame references.
-            QueueDel(shuttleUid.Value);
-            //_sawmill.Info($"Successfully saved ship {deed.ShuttleName}; queued deletion of grid {shuttleUid.Value}");
+            // Delete the shuttle
+            QueueDel(grid);
         }
         else
         {
             _sawmill.Error($"Failed to save ship {deed.ShuttleName}");
+            return false;
         }
+
+        return true;
     }
 
     /// <summary>
     /// Removes all ShuttleDeedComponents that reference the specified shuttle EntityUid
     /// </summary>
-    private void RemoveAllShuttleDeeds(EntityUid shuttleUid)
+    public void RemoveAllShuttleDeeds(EntityUid shuttleUid)
     {
         var query = _entityManager.EntityQueryEnumerator<ShuttleDeedComponent>();
         var deedsToRemove = new List<EntityUid>();
@@ -181,6 +163,65 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         {
             RemComp<ShuttleDeedComponent>(deedEntity);
         }
+    }
+
+    /// <summary>
+    /// Checks if this grid obeys the limits for certain entities
+    /// </summary>
+    public bool CheckGridEntityLimits(EntityUid gridUid, out string message)
+    {
+        message = string.Empty;
+
+        if (!_gridQuery.HasComp(gridUid))
+            return false;
+
+        _limitedEntitiesList.Clear();
+
+        var entityAmount = new Dictionary<string, int>();
+
+        // Get the entities on the grid with the ship save limit comp
+        var gridTransform = _transformQuery.GetComponent(gridUid);
+        var worldAABB = _lookup.GetWorldAABB(gridUid, gridTransform);
+        _lookup.GetEntitiesIntersecting(gridTransform.MapID, worldAABB, _limitedEntitiesList);
+
+        foreach ((var ent, var limit) in _limitedEntitiesList)
+        {
+            if (ent == gridUid)
+                continue;
+
+            var limitId = limit.LimitId;
+            entityAmount.TryGetValue(limitId, out var count);
+            entityAmount[limitId] = count + 1;
+        }
+
+        var obeysLimit = true;
+
+        foreach (var (id, amount) in entityAmount)
+        {
+            foreach (var limitProto in ShipSaveEntityLimits)
+            {
+                if (!limitProto.Limits.TryGetValue(id, out var max))
+                    continue;
+
+                var limitIdLoc = Loc.GetString("shipyard-grid-save-limit-" + id);
+                var messagePart = Loc.GetString("shipyard-grid-save-limit-message", ("id", limitIdLoc), ("max", max));
+
+                if (amount > max)
+                {
+                    message += $"{messagePart}\n";
+                    obeysLimit = false;
+                }
+            }
+        }
+
+        return obeysLimit;
+    }
+
+    public static List<ShipSaveLimitsPrototype> GetSaveShipEntityLimits(IPrototypeManager prototypeManager)
+    {
+        return prototypeManager
+            .EnumeratePrototypes<ShipSaveLimitsPrototype>()
+            .ToList();
     }
 
     /// <summary>

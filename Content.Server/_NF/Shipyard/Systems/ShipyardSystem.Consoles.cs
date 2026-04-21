@@ -60,6 +60,7 @@ using Content.Shared.Tag;
 using Robust.Shared.Timing;
 using Robust.Shared.Log;
 using Content.Shared._HL.Shipyard;
+using Content.Server.Shuttles.Save;
 
 // Suppress naming style rule for the _NF namespace prefix (project convention)
 #pragma warning disable IDE1006
@@ -89,6 +90,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private readonly ShuttleConsoleLockSystem _shuttleConsoleLock = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly TagSystem _tagSystem = default!;
+    [Dependency] private readonly ShipyardGridSaveSystem _shipyardGridSaveSystem = default!; // Triad
 
     private static readonly ProtoId<TagPrototype> CrewedShuttleTag = "CrewedShuttle";
     private static readonly Regex DeedRegex = new(@"\s*\([^()]*\)");
@@ -448,6 +450,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         deed.ShuttleName = String.Join(" ", nameParts.SkipLast(hasSuffix ? 1 : 0));
     }
 
+    // Triad
     public void OnSaveMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleSaveMessage args)
     {
         if (args.Actor is not { Valid: true } player)
@@ -475,9 +478,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
-        // Request ship save through the ShipSaveSystem
-        var shipSaveSystem = _entitySystemManager.GetEntitySystem<Content.Server.Shuttles.Save.ShipSaveSystem>();
-
         // Get player session from mind component
         if (!_mind.TryGetMind(player, out var mindUid, out var mindComp) || mindComp.UserId == null)
         {
@@ -494,10 +494,31 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
-        shipSaveSystem.RequestSaveShip(targetId, playerSession);
+        var shuttleUid = deed.ShuttleUid;
+        if (shuttleUid == null)
+        {
+            ConsolePopup(player, "Unable to save ship - grid not found");
+            PlayDenySound(player, uid, component);
+            return;
+        }
 
-        // Note: Deed removal happens after server confirms save success in ShipSaveSystem
-        ConsolePopup(player, $"Saving ship {deed.ShuttleName}... Check your Exports folder.");
+        // Ensure the limits for limited entites doesn't exceed while saving
+        if (!_shipyardGridSaveSystem.CheckGridEntityLimits(shuttleUid.Value, out var message))
+        {
+            ConsolePopup(player, message);
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        // Attempt to save the ship
+        if (!_shipyardGridSaveSystem.TrySaveShip(shuttleUid.Value, targetId, playerSession))
+        {
+            ConsolePopup(player, $"Failed to store ship {deed.ShuttleName}.");
+            PlayDenySound(player, uid, component);
+            return;
+        }
+
+        ConsolePopup(player, $"Storing ship {deed.ShuttleName} at shipyard.. Have a nice day!");
         PlayConfirmSound(player, uid, component);
 
         // Refresh UI with current deed info and player's balance
@@ -506,14 +527,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             balance = bankAcc.Balance;
 
         var fullName = GetFullName(deed);
-        var sellValue = 0;
-        if (deed.ShuttleUid != null)
-        {
-            sellValue = (int)_pricing.AppraiseGrid((EntityUid)(deed?.ShuttleUid!), LacksPreserveOnSaleComp);
-            sellValue = CalculateShipResaleValue((uid, component), sellValue);
-        }
-
-        RefreshState(uid, balance, true, fullName, sellValue, targetId, (ShipyardConsoleUiKey)args.UiKey, false);
+        RefreshState(uid, balance, true, fullName, 0, targetId, (ShipyardConsoleUiKey)args.UiKey, false);
     }
 
     public void OnLoadMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleLoadMessage args)

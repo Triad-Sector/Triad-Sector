@@ -30,6 +30,8 @@
     - type: Construction
       graph: MilitaryStorageStashGraph
       node: MilitaryStorageStashNode
+    - type: ShipSaveLimit
+      limitId: MilitaryStash
 
 - type: entity
   id: MedicalSecureStorage
@@ -72,6 +74,8 @@
     - type: Construction
       graph: MedicalSecureStorageGraph
       node: MedicalSecureStorageNode
+    - type: ShipSaveLimit
+      limitId: MedicalStash
 
 - type: entity
   id: BotanicalStorageUnit
@@ -114,6 +118,8 @@
     - type: Construction
       graph: BotanicalStorageUnitGraph
       node: BotanicalStorageUnitNode
+    - type: ShipSaveLimit
+      limitId: HydroponicsStash
 
 - type: entity
   id: CivilianStorageStash
@@ -147,3 +153,5 @@
     - type: Construction
       graph: CivilianStorageStashGraph
       node: CivilianStorageStashNode
+    - type: ShipSaveLimit
+      limitId: CivilianStash

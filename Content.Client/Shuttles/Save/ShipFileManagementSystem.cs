@@ -189,11 +189,6 @@ namespace Content.Client.Shuttles.Save
             }
         }
 
-        public void RequestSaveShip(EntityUid deedUid)
-        {
-            RaiseNetworkEvent(new RequestSaveShipServerMessage((uint)deedUid.Id));
-        }
-
         public async Task LoadShipFromFile(string filePath)
         {
             var yamlData = await GetShipYamlData(filePath);

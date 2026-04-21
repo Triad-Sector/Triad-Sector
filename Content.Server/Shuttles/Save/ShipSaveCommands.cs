@@ -5,6 +5,7 @@ using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Player;
+using Content.Server._NF.Shipyard.Systems;
 
 namespace Content.Server.Shuttles.Save
 {
@@ -45,12 +46,26 @@ namespace Content.Server.Shuttles.Save
                 return;
             }
 
-            var shipSaveSystem = _entitySystemManager.GetEntitySystem<ShipSaveSystem>();
-            // Trigger the save process manually
-            // This will call the OnRequestSaveShipServer method in ShipSaveSystem
-            shipSaveSystem.RequestSaveShip(entityUid, shell.Player); // Pass the deed Uid and player session
+            var shuttleUid = deedComponent.ShuttleUid;
+            if (shuttleUid == null)
+            {
+                shell.WriteLine("Grid not found for this deed");
+                return;
+            }
 
-            shell.WriteLine($"Attempting to save ship for deed {entityUid}");
+            if (shell.Player == null)
+            {
+                shell.WriteLine("No player session found");
+                return;
+            }
+
+            var shipGridSaveSystem = _entitySystemManager.GetEntitySystem<ShipyardGridSaveSystem>();
+
+            // Try to save the ship now
+            if (shipGridSaveSystem.TrySaveShip(shuttleUid.Value, entityUid, shell.Player))
+                shell.WriteLine($"Saved ship for deed {entityUid}");
+            else
+                shell.WriteLine($"Failed to save ship for deed {entityUid}");
         }
     }
 }

@@ -6,17 +6,6 @@ using Robust.Shared.GameObjects;
 namespace Content.Shared.Shuttles.Save
 {
     [Serializable, NetSerializable]
-    public sealed class RequestSaveShipServerMessage : EntityEventArgs
-    {
-        public uint DeedUid { get; }
-
-        public RequestSaveShipServerMessage(uint deedUid)
-        {
-            DeedUid = deedUid;
-        }
-    }
-
-    [Serializable, NetSerializable]
     public sealed class SendShipSaveDataClientMessage : EntityEventArgs
     {
         public string ShipName { get; }
